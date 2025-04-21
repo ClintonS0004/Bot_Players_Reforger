@@ -1,0 +1,47 @@
+PerceptionManager PerceptionManager1 : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
+ coords 7344.537 16.308 6773.906
+}
+SCR_FactionManager FactionManager_USxUSSR1 : "{589540B35EBA8CDC}Prefabs/MP/Managers/Factions/FactionManager_USxUSSR.et" {
+ coords 7337.938 17.13 6777.017
+ Flags 2097152
+ Factions {
+  SCR_Faction "{56B2B46E999BF3BF}" {
+   FactionKey "FIA"
+   UIInfo SCR_FactionUIInfo "{528C961236B7DCD3}" {
+    Icon "{FB266CDD4502D60B}UI/Textures/Editor/EditableEntities/Factions/EditableEntity_Faction_Fia.edds"
+    m_sNameUpper "#AR-Faction_FIA-UC"
+   }
+   m_sFactionFlag "{B784E694BA4A7D40}UI/Textures/Flags/Everon-flag-base-3it.edds"
+   m_FactionFlagMaterial "{9BE1341F99D33483}Assets/Props/Fabric/Flags/Data/Flag_1_2_EVERON.emat"
+   m_FactionLabel FACTION_FIA
+  }
+  SCR_Faction "{56B2B46E9AF80999}" {
+   m_bIsPlayable 0
+  }
+ }
+ m_bCanChangeFactionsPlayable 0
+}
+SCR_LoadoutManager : "{97EF4C1A41F63DDB}Prefabs/MP/Managers/Loadouts/LoadoutManager_USxUSSR.et" {
+ coords 7341.401 16.704 6774.959
+ Flags 2097152
+ m_aPlayerLoadouts {
+  SCR_FactionPlayerLoadout "{56B2B461C34A570F}" {
+   m_sAffiliatedFaction "FIA"
+  }
+  SCR_FactionPlayerLoadout "{5A2494BE3D648F60}" {
+   m_sAffiliatedFaction "FIA"
+  }
+  SCR_FactionPlayerLoadout "{56B2B461C275B309}" {
+   m_sAffiliatedFaction "FIA"
+  }
+  SCR_FactionPlayerLoadout "{56B2B461C7495F41}" {
+   m_sAffiliatedFaction "FIA"
+  }
+  SCR_FactionPlayerLoadout "{56B2B461C047DCDA}" {
+   m_sAffiliatedFaction "FIA"
+  }
+  SCR_FactionPlayerLoadout "{56B2B4613C48D08E}" {
+   m_sAffiliatedFaction "FIA"
+  }
+ }
+}

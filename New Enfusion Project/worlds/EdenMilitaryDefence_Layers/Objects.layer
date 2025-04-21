@@ -1,0 +1,380 @@
+SCR_AIWorld SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
+ coords 7114.537 74.769 6403
+ Flags 2097155
+ {
+  CommentEntity {
+   coords 0 1 0
+   m_Comment "SCR_AIWorld: "\
+   "Configure navigation mesh"
+   m_Color 0 0 0
+   m_FaceCamera 1
+   m_TextBackground 1
+   m_BackgroundColor 1 0.6 0
+   m_BackgroundTransparency 0
+  }
+ }
+}
+PerceptionManager PerceptionManager : "{028DAEAD63E056BE}Prefabs/World/Game/PerceptionManager.et" {
+ coords 7114.537 75.004 6402
+ Flags 2097155
+}
+SCR_CampaignFactionManager CampaignFactionManager : "{F1AC26310BAE3788}Prefabs/MP/Campaign/CampaignFactionManager.et" {
+ coords 7114.537 74.535 6404
+ Factions {
+  SCR_CampaignFaction "{50B30C3AF4BFD934}" {
+   FactionKey "FIA"
+   FactionColor 0 0.44 0.078 1
+   UIInfo SCR_FactionUIInfo "{528C96127F8B6B08}" {
+    Name "#AR-Faction_FIA"
+    Icon "{FB266CDD4502D60B}UI/Textures/Editor/EditableEntities/Factions/EditableEntity_Faction_Fia.edds"
+    m_sNameUpper "#AR-Faction_FIA-UC"
+   }
+   "Identity of soldiers" FactionIdentity "{570CFDC6685B6B25}" {
+    SoundIdentityArray {
+     SoundIdentity "{570EDB84CC3FD4B9}" {
+     }
+     SoundIdentity "{5B0EABB09D6FA49C}" {
+     }
+     SoundIdentity "{5B0EABB09346E05D}" {
+     }
+     SoundIdentity "{5B0EABB088B84F07}" {
+     }
+     SoundIdentity "{5B0EABB0852FB418}" {
+     }
+     SoundIdentity "{5B0EABB0BDB4087F}" {
+     }
+    }
+   }
+   m_iOrder 2000
+   m_OutlineFactionColor 0.001 0.082 0.023 1
+   m_NotificationFactionColor 0 0.44 0.078 1
+   m_NotificationTextFactionColor 0 0.296 0.055 1
+   m_sFactionFlag "{B784E694BA4A7D40}UI/Textures/Flags/Everon-flag-base-3it.edds"
+   m_FactionFlagMaterial "{9BE1341F99D33483}Assets/Props/Fabric/Flags/Data/Flag_1_2_EVERON.emat"
+   m_FactionLabel FACTION_FIA
+   m_sFactionRadioEncryptionKey "candleSauce"
+   m_iFactionRadioFrequency 52000
+   m_aEntityCatalogs {
+    SCR_EntityCatalogMultiList "{5C68A0EABE8B7B2A}" {
+    }
+    SCR_EntityCatalogMultiList "{5C68A0EABB80080C}" {
+    }
+    SCR_EntityCatalogMultiList "{5C68A0EAB887A0C4}" {
+    }
+    SCR_EntityCatalog "{5C68A0EAA323888C}" {
+    }
+    SCR_EntityCatalogMultiList "{5C68C44CB0CFC935}" {
+    }
+    SCR_EntityCatalog "{5C9EDDD370331114}" {
+    }
+   }
+   m_sGroupFlagsImageSet "{301FC1A2A46D3E0D}UI/Textures/GroupManagement/FlagIcons/GroupFlagsIndfor.imageset"
+   m_sGroupFlagsImageSetOutlines "{C07D82625600BA21}UI/Textures/GroupManagement/FlagIcons/GroupFlagsIndfor-outline.imageset"
+   m_sFactionBackground "{81BF3B1DCC106577}UI/Textures/DeployMenu/Loadout-BG/Loadout_BG_FIA.imageset"
+   m_DefendersGroupPrefab "{F22EDFBEFC193357}Prefabs/Groups/Campaign/Group_FIA_Remnants.et"
+   m_aStartingVehicles {
+    "{57A441224AC02CF3}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_covered_CIV_Randomized.et"
+   }
+   m_RadioPrefab "{4181B1C8B5E56392}Prefabs/Items/Equipment/Radios/Radio_R107M_FIA.et"
+   m_BaseBuildingHQ "{7CB2EB208F93C6D4}PrefabsEditable/Auto/Compositions/Slotted/SlotFlatSmall/E_Headquarters_S_FIA_01.et"
+   m_BaseBuildingSupplyDepot "{E8B6339148792C0E}PrefabsEditable/Auto/Compositions/Slotted/SlotFlatSmall/E_SupplyCache_S_FIA_01.et"
+  }
+  SCR_CampaignFaction "{50B30C3ADB052C80}" {
+   FactionKey "USSR"
+   FactionColor 0.855 0.031 0.028 1
+   UIInfo SCR_FactionUIInfo "{528C961236B7DCD3}" {
+    Name "#AR-Faction_USSR"
+    Icon "{40B12B0DF911B856}UI/Textures/Editor/EditableEntities/Factions/EditableEntity_Faction_USSR.edds"
+    m_sNameUpper "#AR-Faction_USSR"
+   }
+   "Identity of soldiers" FactionIdentity "{570D128F4022EF5A}" {
+    VisualIdentityArray {
+     VisualIdentity "{570CE64C790A3C7D}" {
+      Head "{24D28E910BF9F648}Prefabs/Characters/Heads/Head_Asian_02.et"
+      Body "{32B5FE236D152368}Prefabs/Characters/Basebody/CharacterBasebody_Asian_02.et"
+     }
+     VisualIdentity "{570CE64C784286B5}" {
+      Head "{EAF055495BA85CA1}Prefabs/Characters/Heads/Head_White_02.et"
+     }
+     VisualIdentity "{570CFDC06CAAD480}" {
+      Head "{0F6C19B0574DCBCA}Prefabs/Characters/Heads/Head_White_03.et"
+     }
+     VisualIdentity "{570CFDC05A2BFCE8}" {
+      Head "{32583C88222142FD}Prefabs/Characters/Heads/Head_White_04.et"
+     }
+     VisualIdentity "{570CFDC037CCBCD3}" {
+      Head "{D7C470712EC4D596}Prefabs/Characters/Heads/Head_White_05.et"
+     }
+     VisualIdentity "{570CFDC1C8B17A43}" {
+      Head "{BB90449192005AB8}Prefabs/Characters/Heads/Head_White_06.et"
+     }
+     VisualIdentity "{570EDB838B8AC563}" {
+      Head "{C1F80EE178D948D6}Prefabs/Characters/Heads/Head_White_08.et"
+      Body "{0023F898C0FF18AA}Prefabs/Characters/Basebody/CharacterBasebody.et"
+     }
+    }
+    SoundIdentityArray {
+     SoundIdentity "{56E6A4E2A10529BB}" {
+      VoiceID 101
+     }
+     SoundIdentity "{5AEC87AFA4B23BE3}" {
+      VoiceID 101
+      VoicePitch 0.8
+     }
+     SoundIdentity "{5AEC87AC5B4BBECE}" {
+      VoiceID 101
+      VoicePitch -1
+     }
+     SoundIdentity "{5AEC87AC4DBA2966}" {
+      VoiceID 102
+     }
+     SoundIdentity "{5AEC87AC49BC45A0}" {
+      VoiceID 102
+     }
+     SoundIdentity "{5AEC87AC43D515D1}" {
+      VoiceID 102
+      VoicePitch -1
+     }
+    }
+    SocialIdentity SocialIdentity "{56E4EBD9F0C03530}" {
+     NamesConfig {
+      "#AR-FirstName_RU_Alexander" "#AR-FirstName_RU_Alexey" "#AR-FirstName_RU_Andrei" "#AR-FirstName_RU_Arkady" "#AR-FirstName_RU_Artyom" "#AR-FirstName_RU_Boris" "#AR-FirstName_RU_Dmitry" "#AR-FirstName_RU_Evgeny" "#AR-FirstName_RU_Fyodor" "#AR-FirstName_RU_Grigory" "#AR-FirstName_RU_Iosif" "#AR-FirstName_RU_Ivan" "#AR-FirstName_RU_Lev" "#AR-FirstName_RU_Maxim" "#AR-FirstName_RU_Mikhail" "#AR-FirstName_RU_Oleg" "#AR-FirstName_RU_Rodion" "#AR-FirstName_RU_Roman" "#AR-FirstName_RU_Sergei" "#AR-FirstName_RU_Vasily" "#AR-FirstName_RU_Victor" "#AR-FirstName_RU_Vladimir" "#AR-FirstName_RU_Yury"
+     }
+     SurnamesConfig {
+      "#AR-Surname_RU_Abramov" "#AR-Surname_RU_Agafonov" "#AR-Surname_RU_Baranov" "#AR-Surname_RU_Fedorov" "#AR-Surname_RU_Golubev" "#AR-Surname_RU_Ivanov" "#AR-Surname_RU_Koganovich" "#AR-Surname_RU_Kuznetsov" "#AR-Surname_RU_Lebedev" "#AR-Surname_RU_Levin" "#AR-Surname_RU_Morozov" "#AR-Surname_RU_Nikitin" "#AR-Surname_RU_Orlov" "#AR-Surname_RU_Pasternak" "#AR-Surname_RU_Petrov" "#AR-Surname_RU_Popov" "#AR-Surname_RU_Semenov" "#AR-Surname_RU_Shevchenko" "#AR-Surname_RU_Smirnov" "#AR-Surname_RU_Sokolov" "#AR-Surname_RU_Turgenev" "#AR-Surname_RU_Volkov" "#AR-Surname_RU_Zaitsev"
+     }
+    }
+   }
+   m_iOrder 1000
+   m_OutlineFactionColor 0.168 0.006 0.007 1
+   m_NotificationFactionColor 0.855 0.031 0.028 1
+   m_NotificationTextFactionColor 0.521 0.021 0.019 1
+   m_bIsPlayable 0
+   m_sFactionFlag "{50824EB9F2C215AB}UI/Textures/Flags/USSR-flag-base-3it.edds"
+   m_FactionFlagMaterial "{B47B52D9DA68905D}Assets/Props/Fabric/Flags/Data/Flag_1_2_SovietArmy.emat"
+   m_FactionLabel FACTION_USSR
+   m_sFactionRadioEncryptionKey "coldBorscht"
+   m_iFactionRadioFrequency 42000
+   m_aRanks {
+    SCR_CharacterRank "{528E9D9FAAB617C6}" {
+    }
+    SCR_CharacterRank "{528E9D9FAB192253}" {
+    }
+    SCR_CharacterRank "{528E9D9FAB87F519}" {
+    }
+    SCR_CharacterRank "{528E9D9FA4EA5C39}" {
+    }
+    SCR_CharacterRank "{528E9D9FA563C005}" {
+    }
+    SCR_CharacterRank "{528E9D9FA64A043C}" {
+    }
+    SCR_CharacterRank "{528E9D9FA77F696E}" {
+    }
+   }
+   m_aEntityCatalogs {
+    SCR_EntityCatalogMultiList "{5C68A0E9BD5E5DD9}" {
+    }
+    SCR_EntityCatalogMultiList "{5C9E82F285C09E24}" {
+    }
+    SCR_EntityCatalogMultiList "{5C68A0E9B9AA3C2D}" {
+    }
+    SCR_EntityCatalog "{5C68A0E9A51460AB}" {
+    }
+    SCR_EntityCatalogMultiList "{5C68A0E9AFE1E631}" {
+    }
+    SCR_EntityCatalog "{5C9EDDD378BA3298}" {
+    }
+   }
+   m_sGroupFlagsImageSet "{7CD99D22C7AE8195}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor.imageset"
+   m_sGroupFlagsImageSetOutlines "{B9356E7B2E974DCD}UI/Textures/GroupManagement/FlagIcons/GroupFlagsOpfor-outline.imageset"
+   m_sFactionBackground "{21533F2089005056}UI/Textures/DeployMenu/Loadout-BG/Loadout_BG_USSR.imageset"
+   m_aBaseCallsigns {
+    SCR_MilitaryBaseCallsign "{5C9108F95F3FB520}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95F0034DB}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95F6514E7}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95F4EE8BF}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95F5021F9}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95FBA4C89}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95F9C00A9}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95FE17E10}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95FCBA475}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95E2B2963}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95E3040F5}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95E17C67D}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95E797F8A}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95E431F83}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95EA7F87E}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95E88C6B9}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95EEDE322}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95EF6244A}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95EDAF04A}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95D3CCF27}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95D076483}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95D68D0F3}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95D4C0F8E}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95D56EEEE}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95DBA92EE}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95C69680D}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95C4FD930}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95C5255FD}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95CB621AE}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95C9545BC}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95CFE26C3}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95CDD263C}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95B27128C}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95B08D83D}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95B6D3FC2}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95B712949}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95B57D185}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95BB17114}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95B97C054}" {
+    }
+    SCR_MilitaryBaseCallsign "{5C9108F95BFC33E5}" {
+    }
+   }
+  }
+  SCR_CampaignFaction "{56F0C3A6336375DC}" {
+   FactionKey "CIV"
+   UIInfo SCR_FactionUIInfo "{5570936866E0AD08}" {
+    Name "#AR-Faction_CIV"
+    Icon "{7BB7AE674BE729CE}UI/Textures/Editor/EditableEntities/Factions/EditableEntity_Faction_CIV.edds"
+    m_sNameUpper "#AR-Faction_Civilians"
+   }
+   m_sFactionFlag "{76A2D42714BB3806}UI/Textures/Flags/Civilian-flag-base_3it.edds"
+   m_FactionFlagMaterial "{41FF5ED4614840C9}Assets/Props/Fabric/Flags/Data/Flag_1_2_CIVILIAN.emat"
+   m_FactionLabel FACTION_CIV
+   m_aFriendlyFactionsIds {
+    "FIA"
+   }
+   m_sGroupFlagsImageSet "{D7E06968B5F9FC92}UI/Textures/GroupManagement/FlagIcons/GroupFlagsCivilian.imageset"
+   m_sGroupFlagsImageSetOutlines "{824ADD5E7A28B03E}UI/Textures/GroupManagement/FlagIcons/GroupFlagsCivilian-outline.imageset"
+   m_sFactionBackground "{781301447441F404}UI/Textures/DeployMenu/Loadout-BG/Loadout_BG_Civilian.imageset"
+  }
+ }
+ {
+  CommentEntity {
+   coords 0 1 0
+   m_Comment "CampaignFactionManager: "\
+   "Make sure one faction is non-playable to use for Independent units."
+   m_Color 0 0 0
+   m_FaceCamera 1
+   m_TextBackground 1
+   m_BackgroundColor 1 0.6 0
+   m_BackgroundTransparency 0
+  }
+ }
+}
+GenericEntity this_test : "{1391CE8C0E255636}Prefabs/Systems/MilitaryBase/ConflictMilitaryBase.et" {
+ components {
+  SCR_FactionAffiliationComponent "{5AFC974A2595F05D}" {
+   Enabled 0
+   "faction affiliation" "FIA"
+  }
+ }
+ coords 7114.537 73.832 6407
+ {
+  CommentEntity {
+   coords 0 1 0
+   m_Comment "ConflictMilitaryBase: "\
+   "At least two bases need \"Can be HQ\" param checked. Place bases and control points wherever you wish."
+   m_Color 0 0 0
+   m_FaceCamera 1
+   m_TextBackground 1
+   m_BackgroundColor 1 0.6 0
+   m_BackgroundTransparency 0
+  }
+ }
+}
+SCR_BaseTaskManager CampaignTaskManager : "{17E3EF2CF455460F}Prefabs/MP/Campaign/CampaignTaskManager.et" {
+ coords 7114.537 74.301 6405
+}
+SCR_DestructibleEntity Wall_Cover : "{43EB690D46E15669}Prefabs/Structures/Walls/Concrete/ConcreteWall_01/ConcreteWall_01_6m_B.et" {
+ coords 7528.885 5.685 6728.383
+ angleY -50.637
+ Flags 3
+}
+$grp StaticModelEntity : "{48A04E0A139BB167}Prefabs/Structures/Military/Camps/TentSmallFIA_01/TentSmallFIA_01.et" {
+ {
+  coords 6922.546 124.541 6994.394
+  angleY -180
+  angleZ -15
+ }
+ {
+  coords 6919.63 125.789 6976.127
+  angleZ 15
+ }
+ {
+  coords 6922.821 124.901 6976.178
+  angleZ 15
+ }
+ {
+  coords 6919.539 125.334 6994.417
+  angleY -180
+  angleZ -15
+ }
+}
+SCR_LoadoutManager CampaignLoadoutManager : "{58FBD035E53D95C1}Prefabs/MP/Campaign/CampaignLoadoutManager.et" {
+ coords 7114.537 74.066 6406
+ m_aPlayerLoadouts {
+  SCR_FactionPlayerLoadout "{5690D9DB9BA76597}" {
+   m_sAffiliatedFaction "FIA"
+  }
+  SCR_PlayerArsenalLoadout "{5B108B49559B24A2}" {
+   m_sAffiliatedFaction "FIA"
+  }
+ }
+}
+$grp GenericEntity : "{9D548D484C1F4066}Prefabs/Structures/Military/CamoNets/FIA/CamoNet_Tent_FIA_01_V2.et" {
+ Tent_home {
+  coords 7439.834 15.324 6684.25
+  angleY 155
+ }
+ Tent_Forward {
+  coords 6397.175 170.138 6954.684
+  angleY 90
+ }
+}
+GameEntity : "{D9842C11742C00CF}Prefabs/Props/Civilian/Fireplace_01.et" {
+ coords 6923.29 124.632 6984.408
+ angleX 3.251
+ angleY 178.397
+ angleZ -13.788
+}

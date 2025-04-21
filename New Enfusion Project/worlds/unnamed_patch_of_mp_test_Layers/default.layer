@@ -1,0 +1,22 @@
+SCR_AIWorld SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
+ components {
+  NavmeshWorldComponent "{5584F30E67F617AD}" {
+   NavmeshSettings NavmeshWorld "{50FC63BEBE3973C5}" {
+    NavmeshFilesConfig BaseNavmeshFilesConfig "{64B6B55D4F68435B}" {
+    }
+   }
+  }
+ }
+ coords 0 0 0
+}
+$grp SCR_PlayerController : "{6E2BB64764E3BE9B}Prefabs/Characters/Core/DefaultPlayerController.et" {
+ DefaultPlayerController1 {
+  coords 145.649 1 147.117
+ }
+ DefaultPlayerController2 {
+  coords 147.293 1 142.025
+ }
+}
+SCR_AIWaypoint MoveC : "{06E1B6EBD480C6E0}Prefabs/AI/Waypoints/AIWaypoint_ForcedMove.et" {
+ coords 129.427 1 150.925
+}

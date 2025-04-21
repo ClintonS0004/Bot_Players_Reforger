@@ -1,0 +1,180 @@
+$grp SCR_GameModeCampaign : "{3B230AAC5252108F}Prefabs/MP/Modes/Conflict/GameMode_Campaign.et" {
+ original {
+  components {
+   SCR_CampaignMilitaryBaseComponent "{630EC401A8DAF3F0}" {
+    m_bIsControlPoint 1
+    m_bCanBeHQ 1
+    m_bDisableWhenUnusedAsHQ 0
+    m_bIsSupplyHub 1
+    m_sMapLocationName "This is testing"
+   }
+  }
+  coords 7456.707 7.832 6740.327
+  Flags 2097152
+  userScript "	// code here"\
+  "	void pop_btr( IEntity Entity_BTR )"\
+  "	{"\
+  "		if( !GetGame() ){ Print(\"[pop_btr] Unable to get a game instance!\"); }"\
+  "		SCR_BaseCompartmentManagerComponent BTR_BaseCompartment_Component = "\
+  "		SCR_BaseCompartmentManagerComponent.Cast("\
+  "			Entity_BTR.FindComponent( SCR_BaseCompartmentManagerComponent )"\
+  "		);"\
+  "		const array<ECompartmentType> My_default_occupants = {"\
+  "			ECompartmentType.PILOT, "\
+  "			ECompartmentType.TURRET, "\
+  "			ECompartmentType.CARGO"\
+  "		};"\
+  "		BTR_BaseCompartment_Component.SpawnDefaultOccupants( My_default_occupants );"\
+  "	}"\
+  "	"\
+  "	"\
+  "	void set_waypoints( AIGroup group, array<string> wp_name )"\
+  "	{"\
+  "		foreach ( string name : wp_name) // huh is this not c#?"\
+  "		{"\
+  "			AIWaypoint waypoint = AIWaypoint.Cast(GetGame().GetWorld().FindEntityByName(name));"\
+  "			if (!waypoint) {"\
+  "				Print(\"[GameMode_GameManager::set_my_wp] Unable to find waypoint\" + name + \"!\", LogLevel.ERROR);"\
+  "				return;"\
+  "			}"\
+  "			group.AddWaypoint(waypoint);"\
+  "		}"\
+  "	}"\
+  "	"\
+  "	void set_my_wp( IEntity Entity_BTR )"\
+  "	{"\
+  "		if( !GetGame() ){"\
+  "			Print(\"[set_my_wp] Unable to get a game instance!\");"\
+  "			return;"\
+  "		}"\
+  "		IEntity pilot_e = Vehicle.Cast(Entity_BTR).GetPilot();"\
+  "		if( !pilot_e ) { "\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 2048, false, Entity_BTR);"\
+  "			return;"\
+  "		}"\
+  "		// not the BTR but the little Jefferies inside it"\
+  "		AIControlComponent AIcc = AIControlComponent.Cast("\
+  "		pilot_e.FindComponent(AIControlComponent));"\
+  "		if( !AIcc ) { "\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 2048, false, Entity_BTR);"\
+  "			return;"\
+  "		}"\
+  "		AIAgent AIag = AIcc.GetControlAIAgent();"\
+  "		if( !AIag ) { "\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 2048, false, Entity_BTR);"\
+  "			return;"\
+  "		}"\
+  "		AIGroup occupants_group = AIag.GetParentGroup();"\
+  "		if( !occupants_group ) { // figure out the timing"\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 100, false, Entity_BTR);"\
+  "			return;"\
+  "		}		"\
+  "		const array<string> waypoints = {\"Russia_FM_Clear\"};"\
+  "		// {\"Russia_FM_1\",\"Russia_FM_Clear\", \"Russia_SND\"};"\
+  "		set_waypoints(occupants_group, waypoints);"\
+  "		return;"\
+  "	}"
+  OnGameStart ""\
+  "		/* code here */"\
+  "		/* code here */"\
+  "		IEntity BTR_ENT = GetGame().GetWorld().FindEntityByName(\"BTR1\");"\
+  "		pop_btr(BTR_ENT);"\
+  "		set_my_wp(BTR_ENT); "\
+  "		SCR_GameModeCampaign.Cast(this).OnGameStart();"\
+  "	"
+  m_eTestGameFlags 0
+  m_bAutostart 0
+  m_bTerminateScenario 0
+  m_sBLUFORFactionKey "FIA"
+  m_sINDFORFactionKey "US"
+  m_bRandomizeSupplies 0
+  m_iSuicidePenaltyCooldown 0
+  m_iSuicideRespawnDelay 0
+  m_iSuicideForgiveCooldown 0
+ }
+ GameMode_Campaign {
+  coords 7114.537 75.238 6401
+  userScript "	// code TraceSphere"\
+  "	void pop_btr( IEntity Entity_BTR )"\
+  "	{"\
+  "		if( !GetGame() ){ Print(\"[pop_btr] Unable to get a game instance!\"); }"\
+  "		SCR_BaseCompartmentManagerComponent BTR_BaseCompartment_Component = "\
+  "		SCR_BaseCompartmentManagerComponent.Cast("\
+  "			Entity_BTR.FindComponent( SCR_BaseCompartmentManagerComponent )"\
+  "		);"\
+  "		const array<ECompartmentType> My_default_occupants = {"\
+  "			ECompartmentType.PILOT, "\
+  "			ECompartmentType.TURRET, "\
+  "			ECompartmentType.CARGO"\
+  "		};"\
+  "		BTR_BaseCompartment_Component.SpawnDefaultOccupants( My_default_occupants );"\
+  "	}"\
+  "	"\
+  "	"\
+  "	void set_waypoints( AIGroup group, array<string> wp_name )"\
+  "	{"\
+  "		foreach ( string name : wp_name) // huh is this not c#?"\
+  "		{"\
+  "			AIWaypoint waypoint = AIWaypoint.Cast(GetGame().GetWorld().FindEntityByName(name));"\
+  "			if (!waypoint) {"\
+  "				Print(\"[GameMode_GameManager::set_my_wp] Unable to find waypoint\" + name + \"!\", LogLevel.ERROR);"\
+  "				return;"\
+  "			}"\
+  "			group.AddWaypoint(waypoint);"\
+  "		}"\
+  "	}"\
+  "	"\
+  "	void set_my_wp( IEntity Entity_BTR )"\
+  "	{"\
+  "		if( !GetGame() ){"\
+  "			Print(\"[set_my_wp] Unable to get a game instance!\");"\
+  "			return;"\
+  "		}"\
+  "		IEntity pilot_e = Vehicle.Cast(Entity_BTR).GetPilot();"\
+  "		if( !pilot_e ) { "\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 2048, false, Entity_BTR);"\
+  "			return;"\
+  "		}"\
+  "		// not the BTR but the little Jefferies inside it"\
+  "		AIControlComponent AIcc = AIControlComponent.Cast("\
+  "		pilot_e.FindComponent(AIControlComponent));"\
+  "		if( !AIcc ) { "\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 2048, false, Entity_BTR);"\
+  "			return;"\
+  "		}"\
+  "		AIAgent AIag = AIcc.GetControlAIAgent();"\
+  "		if( !AIag ) { "\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 2048, false, Entity_BTR);"\
+  "			return;"\
+  "		}"\
+  "		AIGroup occupants_group = AIag.GetParentGroup();"\
+  "		if( !occupants_group ) { // figure out the timing"\
+  "			GetGame().GetCallqueue().CallLater( set_my_wp, 100, false, Entity_BTR);"\
+  "			return;"\
+  "		}		"\
+  "		const array<string> waypoints = {\"Russia_FM_Clear\"};"\
+  "		// {\"Russia_FM_1\",\"Russia_FM_Clear\", \"Russia_SND\"};"\
+  "		set_waypoints(occupants_group, waypoints);"\
+  "		return;"\
+  "	}"\
+  ""\
+  "	override void OnGameStart()"\
+  "	{"\
+  "		/* code here */"\
+  "		/* code here */"\
+  "		IEntity BTR_ENT = GetGame().GetWorld().FindEntityByName(\"BTR1\");"\
+  "		pop_btr(BTR_ENT);"\
+  "		set_my_wp(BTR_ENT); "\
+  "		SCR_GameModeCampaign.Cast(this).OnGameStart();"\
+  "	}"
+  m_bTerminateScenario 0
+  m_iControlPointsThreshold 1
+  m_fVictoryTimer 0
+  m_sBLUFORFactionKey "FIA"
+  m_sINDFORFactionKey "CIV"
+  m_bRandomizeSupplies 0
+  m_iSuicidePenaltyCooldown 0
+  m_iSuicideRespawnDelay 0
+  m_iSuicideForgiveCooldown 0
+ }
+}

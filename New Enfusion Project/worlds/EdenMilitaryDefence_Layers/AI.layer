@@ -1,0 +1,24 @@
+SCR_AIGroup : "{2E9C920C3ACA2C6F}Prefabs/Groups/INDFOR/Group_FIA_ReconTeam.et" {
+ coords 7412.71 9.687 6728.466
+ Flags 2097155
+ DangerEventRange 300
+}
+SCR_AIGroup : "{6307F42403E9B8A4}Prefabs/Groups/INDFOR/Group_FIA_SharpshooterTeam.et" {
+ coords 7440.174 15.343 6683.575
+ Flags 2097155
+ DangerEventRange 300
+ m_aStaticWaypoints {
+  "tent"
+ }
+}
+SCR_AIGroup USSR_inf : "{E552DABF3636C2AD}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad.et" {
+ coords 7232.885 35.703 6981.49
+ angleY -54.7
+ m_aUnitPrefabSlots {
+  "{5436629450D8387A}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_SL.et" "{23ADBBC31B6A3DC6}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_AR.et" "{612F43A4D5AE765F}Prefabs/Characters/Factions/OPFOR/USSR_Army/Character_USSR_RTO.et"
+ }
+ m_aStaticWaypoints {
+  "Russia_GIN" "Russia_GO" "Russia_FM_1" "Russia_FM_Final" "Russia_attack_radio"
+ }
+ m_bDeleteWhenEmpty 0
+}

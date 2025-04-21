@@ -1,0 +1,34 @@
+$grp SCR_AIWaypoint : "{06E1B6EBD480C6E0}Prefabs/AI/Waypoints/AIWaypoint_ForcedMove.et" {
+ Russia_FM_Clear {
+  coords 7283.009 22.977 6786.527
+  CompletionRadius 3
+  Autocomplete 0
+ }
+ Russia_FM_1 {
+  coords 7283.887 22.314 6773.95
+ }
+ Russia_FM_Final {
+  coords 7349.188 11.933 6692.741
+ }
+}
+SCR_EntityWaypoint Russia_attack_radio : "{1B0E3436C30FA211}Prefabs/AI/Waypoints/AIWaypoint_Attack.et" {
+ coords 7442.289 9.687 6768.097
+ angleY 126
+ Autocomplete 1
+}
+SCR_BoardingTimedWaypoint Russia_GIN : "{B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et" {
+ coords 7229.915 36.449 6984.666
+ angleY 128.2
+ CompletionRadius 10
+ m_TimedWaypointParameters SCR_AITimedWaypointParameters "{60D1159AE7F2C5EE}" {
+ }
+}
+SCR_TimedWaypoint Russia_SND : "{B3E7B8DC2BAB8ACC}Prefabs/AI/Waypoints/AIWaypoint_SearchAndDestroy.et" {
+ coords 7434.685 8.625 6718.145
+ CompletionRadius 200
+ CompletionType Leader
+}
+SCR_BoardingWaypoint Russia_GO : "{C40316EE26846CAB}Prefabs/AI/Waypoints/AIWaypoint_GetOut.et" {
+ coords 7275.442 23.702 6806.349
+ m_fPriorityLevel 2000
+}

@@ -1,0 +1,18 @@
+SCR_AIGroup : "{EACD97CF4A702FAE}Prefabs/Groups/BLUFOR/Group_US_Base.et" {
+ ID "0000000000000001"
+ components {
+  SCR_AIConfigComponent "{512CC1759AE69D6D}" {
+   m_Skill 0.1
+  }
+  SCR_GroupIdentityComponent "{56366C5C50AD3CF2}" {
+   m_MilitarySymbol SCR_MilitarySymbol "{56366C5C4E32A359}" {
+    m_Identity UNKNOWN
+   }
+  }
+ }
+ m_faction ""
+ m_bDeleteWhenEmpty 0
+ m_iMaxMembers 12
+ m_bPlayable 1
+ m_bDeleteIfNoPlayer 0
+}

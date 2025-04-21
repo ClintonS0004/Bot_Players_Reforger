@@ -1,0 +1,21 @@
+$grp GenericEntity : "{1391CE8C0E255636}Prefabs/Systems/MilitaryBase/ConflictMilitaryBase.et" {
+ {
+  components {
+   SCR_CampaignMilitaryBaseComponent "{5AFC974A70234D1C}" {
+    m_bCanBeHQ 1
+   }
+  }
+  coords 7437.734 9.403 6758.323
+ }
+ {
+  components {
+   SCR_CampaignMilitaryBaseComponent "{5AFC974A70234D1C}" {
+    m_bCanBeHQ 1
+   }
+  }
+  coords 5638.293 122.948 7797.16
+ }
+}
+StaticModelEntity : "{EB76EABE84D6687D}Prefabs/Structures/Core/Tent_Base.et" {
+ coords 7432.509 9.688 6774.973
+}
