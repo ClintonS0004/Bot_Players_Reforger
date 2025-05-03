@@ -22,5 +22,21 @@ modded class ArmaReforgerScripted
 					spawnParams
 			);
 		}
+		
+		CLINTON_BotWaypointManagerEntity movementEnt = CLINTON_BotWaypointManagerEntity.Cast(world.FindEntityByName("CLINTON_BotWaypointManagerEntity"));
+	
+		if( !movementEnt )
+		{  // this is to be expected
+			ref Resource reso = Resource.Load("{796941AE041E3F18}Prefabs/CLINTON_BotWaypointManagerEntity.et");
+			
+			EntitySpawnParams spawnParams = new EntitySpawnParams();
+			spawnParams.TransformMode = ETransformMode.WORLD;
+			spawnParams.Transform[3] = "0 0 0";
+			GetGame().SpawnEntityPrefab(
+					reso,
+					world,
+					spawnParams
+			);
+		}
 	}
 }

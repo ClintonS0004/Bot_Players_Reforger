@@ -798,7 +798,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		
 		// Get Combo Box selections
 		XComboBoxWidget factionBox = XComboBoxWidget.Cast(GetRootWidget().FindAnyWidget("CLINTON_ComboBox"));
-		int faction_setting = factionBox.GetCurrentItem();
+		int faction_setting = factionBox.GetCurrentItem() -1;
 		
 		Widget w = GetRootWidget().FindAnyWidget("CLINTON_ComboRoot");
 		SCR_ComboBoxComponent scr = SCR_ComboBoxComponent.Cast(w.GetHandler(0));
@@ -807,7 +807,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		
 		int last_existing_bot_index = CLINTON_RoboPlayerManager.GetPlayers().Count();
 		string bot_name;
-		if(faction_setting == 0)
+		if(faction_setting < 0)
 		{
 			int j = 0;
 			foreach(Faction faction : m_aFactions)
@@ -832,7 +832,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		// Consider another way todo this
 		int i = 0;
 		int j = converted;
-		if(faction_setting == 0) j = j * m_aFactions.Count();
+		if(faction_setting < 0) j = j * m_aFactions.Count();
 		while( i < j)
 		{
 			//UpdatePlayerList( true, last_existing_bot_index + i);
@@ -859,16 +859,16 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		
 		// Get Combo Box selections
 		XComboBoxWidget factionBox = XComboBoxWidget.Cast(GetRootWidget().FindAnyWidget("CLINTON_ComboBox"));
-		int faction_setting = factionBox.GetCurrentItem();
+		int faction_setting = factionBox.GetCurrentItem() -1;
 		
 		array<int> deleted_indexes = {};
 		
-		if(faction_setting == 0)
+		if(faction_setting < 0)
 		{
 			deleted_indexes = CLINTON_RoboPlayerManager.getInstance().remove_bots_on_each_team(converted, m_aEntries);
 		} else {
 			string factionKey = m_aFactions[faction_setting].GetFactionKey();
-			deleted_indexes = CLINTON_RoboPlayerManager.getInstance().remove_bots_on_faction(factionKey, converted);
+			deleted_indexes = CLINTON_RoboPlayerManager.getInstance().remove_bots_on_faction(factionKey, converted, m_aEntries);
 		}
 		foreach( int index : deleted_indexes)
 		{

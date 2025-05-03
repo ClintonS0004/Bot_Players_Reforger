@@ -183,7 +183,7 @@ class CLINTON_RoboPlayerManager
 	}
 	
 	
-	array<int> remove_bots_on_faction(string faction, int quantity)
+	array<int> remove_bots_on_faction(string faction, int quantity, array<ref SCR_PlayerListEntry> widgets_representing_bot)
 	{
 		array<int> removed_bots = {};
 		
@@ -203,7 +203,12 @@ class CLINTON_RoboPlayerManager
 			// check the current bots faction
 			if( bot_faction == faction )
 			{
-				m_aBots.Remove(bot_list_iterator);
+				 
+				m_aBots.RemoveOrdered(bot_list_iterator);  // hsould this be ordered?
+				widgets_representing_bot[bot_list_iterator].m_wRow.RemoveFromHierarchy();
+				widgets_representing_bot.RemoveOrdered(bot_list_iterator);
+				// won't work when sorted
+				//m_aBots.Remove(bot_list_iterator);
 				
 				// Reverse engineer the indexes
 				removed_bots.Insert(bot_list_iterator + (quantity - total_count) );
@@ -572,7 +577,7 @@ class CLINTON_Virtual_Player
 			// emptGroup.SetDeleteWhenEmpty(true);
 			
 			// TODO: Waypoints made from tasks
-			ref AIWaypoint waypoint = AIWaypoint.Cast(world.FindEntityByName("MoveC"));
+			//ref AIWaypoint waypoint = AIWaypoint.Cast(world.FindEntityByName("MoveC"));
 			
 			// ref Resource soos = Resource.Load("{750A8D1695BD6998}Prefabs/AI/Waypoints/AIWaypoint_Move.et");
 			
@@ -582,18 +587,29 @@ class CLINTON_Virtual_Player
 			
 			// AIWaypoint new_move = AIWaypoint.Cast(GetGame().SpawnEntityPrefab(soos, null, spawnParams2));
 			// emptGroup.AddWaypointToGroup(new_move);
-			emptGroup.AddWaypoint(waypoint);
+			//emptGroup.AddWaypoint(waypoint);
 			
-			if( !waypoint )
-			{
-				Print("No waypoints.",  LogLevel.ERROR);
-			}
+			//if( !waypoint )
+			//{
+			//	Print("No waypoints.",  LogLevel.ERROR);
+			//}
 			
 			emptGroup.AddAIEntityToGroup(SCR_ChimeraCharacter.Cast(this.GetCurrentCharacter()));
 			faction_groups.Insert(emptGroup);  // null reference?
 			groups.Set(this.GetFactionKey(), faction_groups);
+			
+			CLINTON_BotWaypointManagerEntity.getInstance().update_group(emptGroup, this.GetFactionKey());
+		} else {
+			CLINTON_BotWaypointManagerEntity.getInstance().update_group(current_group, this.GetFactionKey());
 		}
-		
 		return true;
+	}
+	
+	void update_groups_waypoints(SCR_AIGroup emptGroup)
+	{
+		array<AIWaypoint> outWaypoints = new array<AIWaypoint>();
+		int waypoint_count = emptGroup.GetWaypoints(outWaypoints);
+		
+		
 	}
 }
