@@ -1,0 +1,369 @@
+BehaviorTree "{DC293B239CA25DF2}AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe.bt" {
+ Name "AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos 525.919 -458.223
+   Nodes {
+    Sequence Sequence {
+     Name "Sequence"
+     EditorPos 521.7 41.762
+     Nodes {
+      SCR_AIGetInNearestWaypointParameters "SCR_AI Get In Nearest Waypoint Parameters" {
+       Name "SCR_AI Get In Nearest Waypoint Parameters"
+       EditorPos -650.259 323.004
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "WaypointIn"
+        }
+       }
+       OutPorts {
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 0
+         PortName "WaypointOut"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port -1
+         PortName "Radius"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port -1
+         PortName "Origin"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 1
+         PortName "PriorityLevel"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 2
+         PortName "BoardingParams"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 3
+         PortName "HoldingTime"
+        }
+       }
+      }
+      SCR_AISendGoalMessage_GetIn "SCR_AI Send Goal Message_ Get In" {
+       Name "SCR_AI Send Goal Message_ Get In"
+       EditorPos 220.389 324.204
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "Receiver"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 1
+         PortName "PriorityLevel"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "IsWaypointRelated"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "VehicleEntity"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 2
+         PortName "BoardingParams"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "RoleInVehicle"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "CompartmentSlot"
+        }
+       }
+       m_bIsWaypointRelated 1
+       m_eRoleInVehicle None
+      }
+      Selector Selector {
+       Name "Selector"
+       EditorPos 1238.123 160.192
+       Nodes {
+        DecoratorEntity Entity {
+         Name "Entity"
+         EditorPos 823.514 362.446
+         Nodes {
+          Sequence Sequence {
+           Name "Sequence"
+           EditorPos 856.748 611.577
+           Nodes {
+            SCR_AIPrintDebug "SCR_AI Print Debug" {
+             Name "SCR_AI Print Debug"
+             EditorPos 414.158 1046.895
+             InPorts {
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "DebugMessage"
+              }
+             }
+             m_sDebugMessage "Hello It ran #####################!"
+            }
+            SCR_AICompleteWaypoint "SCR_AI Complete Waypoint" {
+             Name "SCR_AI Complete Waypoint"
+             EditorPos 612.291 1071.389
+             InPorts {
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "WaypointIn"
+              }
+             }
+            }
+           }
+          }
+         }
+         Group "{65B2980AD8F10A1D}"
+         AbortType AbortChildrenBranchAndParentFurtherChildren
+         InEntity 4
+         TEST {
+          CLINTON_AIDecoTestIsInVehicleCondition "{6570AC250AD513E0}" {
+          }
+         }
+        }
+        Sequence Sequence {
+         Name "Sequence"
+         EditorPos 1484.263 420.003
+         Nodes {
+          SCR_AITaskTimerGate "SCR_AI Task Timer Gate" {
+           Name "SCR_AI Task Timer Gate"
+           EditorPos 1225.523 730.535
+           InPorts {
+            SingleInputPortContainer SingleInputPortContainer {
+             Port 5
+             PortName "Time"
+            }
+            SingleInputPortContainer SingleInputPortContainer {
+             Port -1
+             PortName "ResetTime"
+            }
+           }
+           OutPorts {
+            SingleOutputPortContainer SingleOutputPortContainer {
+             Port -1
+             PortName "Trigger"
+            }
+            SingleOutputPortContainer SingleOutputPortContainer {
+             Port -1
+             PortName "ElapsedTime"
+            }
+            SingleOutputPortContainer SingleOutputPortContainer {
+             Port -1
+             PortName "ResetTimeOut"
+            }
+           }
+          }
+          SCR_AIPrintDebug "SCR_AI Print Debug" {
+           Name "SCR_AI Print Debug"
+           EditorPos 1468.396 733.56
+           InPorts {
+            SingleInputPortContainer SingleInputPortContainer {
+             Port -1
+             PortName "DebugMessage"
+            }
+           }
+          }
+          SCR_AICompleteWaypoint "SCR_AI Complete Waypoint" {
+           Name "SCR_AI Complete Waypoint"
+           EditorPos 1634.033 732.123
+           InPorts {
+            SingleInputPortContainer SingleInputPortContainer {
+             Port -1
+             PortName "WaypointIn"
+            }
+           }
+          }
+          AITaskReturnState "Return State" {
+           Name "Return State"
+           EditorPos 1858.088 735.099
+           Result RUNNING
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  Sequence Sequence {
+   Name "Sequence"
+   EditorPos -87.962 -594.172
+   Nodes {
+    SCR_AICompleteWaypoint "SCR_AI Complete Waypoint" {
+     Name "SCR_AI Complete Waypoint"
+     EditorPos -284.545 -372.961
+     InPorts {
+      SingleInputPortContainer SingleInputPortContainer {
+       Port -1
+       PortName "WaypointIn"
+      }
+     }
+    }
+    AITaskReturnState "Return State" {
+     Name "Return State"
+     EditorPos 41.977 -309.574
+     Result RUNNING
+    }
+   }
+  }
+  DecoratorEntity Entity {
+   Name "Entity"
+   EditorPos 1518.484 -0.567
+   AbortType AbortChildrenBranchAndParentFurtherChildren
+   InEntity -1
+   TEST {
+    SCR_AIDecoTestIsInVehicleCondition "{65B21DFCEF7B5268}" {
+    }
+   }
+  }
+  SCR_AIGetMoveIndividuallyBehaviorParameters "SCR_AI Get Move Individually Behavior Parameters" {
+   Name "SCR_AI Get Move Individually Behavior Parameters"
+   EditorPos 135.358 745.229
+   OutPorts {
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port -1
+     PortName "Position"
+    }
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port -1
+     PortName "Entity"
+    }
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port -1
+     PortName "Radius"
+    }
+   }
+  }
+  AITaskMoveToEntity "Move To Entity" {
+   Name "Move To Entity"
+   EditorPos 561.279 1498.138
+   InPrecisionXZ 8
+   InEntity 7
+  }
+  SCR_AIGetMoveIndividuallyBehaviorParameters "SCR_AI Get Move Individually Behavior Parameters" {
+   Name "SCR_AI Get Move Individually Behavior Parameters"
+   EditorPos -97.336 1544.829
+   OutPorts {
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port 6
+     PortName "Position"
+    }
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port 7
+     PortName "Entity"
+    }
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port 8
+     PortName "Radius"
+    }
+   }
+  }
+  SCR_AIFailAction "SCR_AI Fail Action" {
+   Name "SCR_AI Fail Action"
+   EditorPos 899.286 1270.54
+  }
+  SCR_AICompleteAction "SCR_AI Complete Action" {
+   Name "SCR_AI Complete Action"
+   EditorPos 872.868 1062.53
+  }
+  AITaskReturnState "Return State" {
+   Name "Return State"
+   EditorPos 1069.835 1068.714
+   Result RUNNING
+  }
+ }
+ Variables {
+  Variable waypoint {
+   VariableName "waypoint"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable PriorityLevel {
+   VariableName "PriorityLevel"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable BoardingParameters {
+   VariableName "BoardingParameters"
+   VariableTypeName "SCR_AIBoardingParameters"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable waitingTime {
+   VariableName "waitingTime"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable targetPosition {
+   VariableName "targetPosition"
+   VariableTypeName "vector"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable targetEntity {
+   VariableName "targetEntity"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable precisionXZ {
+   VariableName "precisionXZ"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference waypoint {
+   VariableType 0
+   EditorPos -50.044 300.53
+  }
+  VariableReference PriorityLevel {
+   VariableType 1
+   EditorPos -55.275 390.566
+  }
+  VariableReference BoardingParameters {
+   VariableType 2
+   EditorPos -182.765 485.574
+  }
+  VariableReference waitingTime {
+   VariableType 3
+   EditorPos -58.601 602.57
+  }
+  VariableReference waypoint {
+   VariableType 0
+   EditorPos 597.691 441.954
+   Group "{65B2980AD8F10A1D}"
+  }
+  VariableReference waitingTime {
+   VariableType 3
+   EditorPos 1025.964 765.105
+  }
+  VariableReference targetPosition {
+   VariableType 4
+   EditorPos 246.458 1747.561
+  }
+  VariableReference targetEntity {
+   VariableType 5
+   EditorPos 178.019 1904.211
+  }
+  VariableReference precisionXZ {
+   VariableType 6
+   EditorPos 457.86 1969.609
+  }
+ }
+ Groups {
+  BTGroup "{65B2980AD8F10A1D}" {
+   Name "Consider testing with this set to comp waypoint"
+   Color 0.6 0.6 0.6 0.251
+  }
+ }
+}

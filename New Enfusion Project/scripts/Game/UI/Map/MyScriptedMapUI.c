@@ -198,8 +198,11 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		Widget footerBack = GetRootWidget().FindAnyWidget("Footer");
 		SCR_InputButtonComponent back = SCR_InputButtonComponent.GetInputButtonComponent(UIConstants.BUTTON_BACK, footerBack);
 		if (back)
+		{
 			back.m_OnActivated.Insert(OnBack);  // It's OnActivated not OnClicked
-		
+			
+			//back.SetLabel("Make my Tab");
+		}
 		// Set button actionsS
 		/*
 		Widget w = GetGame().GetWorkspace().CreateWidgets(m_sScoreboardRow, m_wTable);
@@ -219,6 +222,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		{
 			m_Mute.SetEnabled(true);
 			m_Mute.m_OnActivated.Insert(OnAddClick);
+			m_Mute.SetLabel(" Add ");
 		}
 		
 		m_Block = SCR_InputButtonComponent.GetInputButtonComponent("Block", footer);
@@ -226,6 +230,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		{
 			m_Block.SetEnabled(true);
 			m_Block.m_OnActivated.Insert(OnRemoveClick);
+			m_Block.SetLabel("Remove");
 		}
 		
 		//SetupComboBoxDropdown(m_aFactions);
@@ -497,7 +502,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		string mem = bot.GetVirtualPlayerName();
 		if( mem == "[Character not dressed yet!]")
 		{
-			GetGame().GetCallqueue().CallLater(delayed_name_set, 516, true, entry, bot_id);
+			GetGame().GetCallqueue().CallLater(delayed_name_set, 512, true, entry, bot_id);
 			return;
 		}
 		entry.m_wName.SetText(mem);

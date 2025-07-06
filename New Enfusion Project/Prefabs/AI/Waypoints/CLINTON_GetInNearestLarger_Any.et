@@ -1,0 +1,9 @@
+SCR_BoardingTimedWaypoint : "{ACF243A12F64B002}Prefabs/AI/Waypoints/CLINTON_GetInNearestLarger.et" {
+ ID "568C71ECE1AF6020"
+ coords 191.608 1 125.718
+ Autocomplete 1
+ CompletionType Any
+ m_TimedWaypointParameters SCR_AITimedWaypointParameters "{60D1159AE7F2C5EE}" {
+  m_holdingTime 3
+ }
+}

@@ -38,5 +38,12 @@ modded class ArmaReforgerScripted
 					spawnParams
 			);
 		}
+		float standard_respawn_time = 10;
+		SCR_RespawnTimerComponent debug_me = SCR_RespawnTimerComponent.Cast(
+		SCR_BaseGameMode.Cast(GetGameMode()).FindComponent(SCR_RespawnTimerComponent));
+		if( debug_me )
+		{
+			standard_respawn_time = debug_me.GetRespawnTime();
+		}
 	}
 }

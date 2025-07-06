@@ -14,6 +14,7 @@ class CLINTON_RoboPlayerManager
 	ref protected map<string, ref array<SCR_AIGroup>> m_aGroups        = new map<string, ref array<SCR_AIGroup>>();
 	
 	protected static CLINTON_RoboPlayerManager s_Instance;
+	protected static float standard_respawn_time;
 	
 	void CLINTON_RoboPlayerManager(notnull World world)
 	{
@@ -33,6 +34,18 @@ class CLINTON_RoboPlayerManager
 		
 		edit_world(world);
 		discover_loadouts(world);
+		
+		standard_respawn_time = 10;
+		SCR_RespawnTimerComponent debug_me = SCR_RespawnTimerComponent.Cast(
+		SCR_BaseGameMode.Cast(GetGame().GetGameMode()).FindComponent(SCR_RespawnTimerComponent));
+		if( debug_me )
+		{
+			standard_respawn_time = debug_me.GetRespawnTime();
+			if( standard_respawn_time == float.INFINITY )
+			{
+				standard_respawn_time = 10.0;
+			}
+		}
 	}
 	
 	void ~CLINTON_RoboPlayerManager(){
@@ -46,6 +59,9 @@ class CLINTON_RoboPlayerManager
 	
 	void edit_world(World world)
 	{
+		// Incase someone places it by the workdesk
+		if( world.IsEditMode()) return;
+		
 		fm = FactionManager.Cast(     world.FindEntityByName("FactionManager"));
 		lm = SCR_LoadoutManager.Cast( world.FindEntityByName("LoadoutManager"));
 		
@@ -238,19 +254,28 @@ class CLINTON_RoboPlayerManager
 		
 		foreach(CLINTON_Virtual_Player player : m_aBots)
 		{
-			if( player.GetCharacterAlive() == false )
+			if( player.GetCharacterAlive() == false && player.GetCharacterWaitingToRespawn() == false )
 			{
-				Print("Spawning...",LogLevel.DEBUG);
-				// spawn
-				player_state = player.spawnIn(this.GetGroups());
-				if ( !player_state ) missing = true;
-				player.SetCharacterAlive(player_state);
-				
-				// check_deaths(player);
-				
+				player.SetCharacterWaitingToRespawn(true);
+				GetGame().GetCallqueue().CallLater(queue_respawn, standard_respawn_time*10.24, false, player);
 			}
 		}
-		if (missing) GetGame().GetCallqueue().CallLater(check_respawns,2048,false);
+	}
+	
+	void queue_respawn(CLINTON_Virtual_Player player)
+	{
+		Print("Spawning...",LogLevel.DEBUG);
+		// spawn
+		bool player_state = player.spawnIn(this.GetGroups());
+		player.SetCharacterAlive(player_state);
+		
+		// check_deaths(player);
+		if (!player_state)
+		{
+			GetGame().GetCallqueue().CallLater(queue_respawn,2048,false, player);
+		} else {
+			player.SetCharacterWaitingToRespawn(false);
+		}
 	}
 	
 	/*
@@ -371,6 +396,11 @@ class CLINTON_RoboPlayerManager
 		return m_aBots;
 	}
 	
+	static int GetPlayersCount()
+	{
+		return m_aBots.Count();
+	}
+	
 	int GetFactionListSize()
 	{
 		if( !m_iFactionListSize )
@@ -390,6 +420,7 @@ class CLINTON_Virtual_Player
 	protected IEntity m_cCurrentCharacter;
 	protected string  m_sFactionKey;
 	protected int m_iGroupSetting;
+	protected bool m_bCharacterWaitingToRespawn;
 	
 	float m_fSpawnDelay;
 	
@@ -410,6 +441,7 @@ class CLINTON_Virtual_Player
 		// rest of the init code
 		
 		m_bCharacterAlive = false;
+		m_bCharacterWaitingToRespawn = false;
 		m_fSpawnDelay = 0.0;
 		m_cCurrentCharacter = null;
 		m_sFactionKey = factionKey;
@@ -480,6 +512,16 @@ class CLINTON_Virtual_Player
 		m_bCharacterAlive = state;
 	}
 	
+	bool GetCharacterWaitingToRespawn()
+	{
+		return m_bCharacterWaitingToRespawn;
+	}
+	
+	void SetCharacterWaitingToRespawn(bool state)
+	{
+		m_bCharacterWaitingToRespawn = state;
+	}
+	
 	void SetCurrentCharacter(IEntity character)
 	{
 		m_cCurrentCharacter = character;
@@ -495,6 +537,7 @@ class CLINTON_Virtual_Player
 		return m_sFactionKey;
 	}
 	
+	//------------------------------------------------------------------------------------------------
 	bool spawnIn(map<string, ref array<SCR_AIGroup>> groups)
 	{
 		// TODO: Decisions for which spawnpoint to pick
@@ -502,6 +545,8 @@ class CLINTON_Virtual_Player
 		World world = GetGame().GetWorld();
 		// TODO: Logic for when there are no spawns atm
 		if( !sp ) return false;
+		
+		//float spawnDelay = 10  //sp.GetRespawnTime();
 		
 		// TODO: Decisions for which loadout to use
 		Resource reso = Resource.Load(CLINTON_RoboPlayerManager.GetLoadouts()
@@ -517,8 +562,6 @@ class CLINTON_Virtual_Player
 			spawnParams
 		));
 		check_deaths();
-		
-		
 		
 		SCR_BaseGameMode 			   bgm = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
 		ref SCR_GroupsManagerComponent gmc = SCR_GroupsManagerComponent.GetInstance();
@@ -538,27 +581,111 @@ class CLINTON_Virtual_Player
 		ref SCR_AIGroup        current_group;
 		bool terminate = false;
 		
-		if(faction_groups)
-		{
-			// check for fullness
-			int i = 0;
-			while( !terminate 	&& i < faction_groups.GetSizeOf() )
+		const protected float distance_cutoff = 500.00;
+		
+		if(m_iGroupSetting == 0)
+		{  // Based on Distance
+			protected vector sp_coords = IEntity.Cast(sp).GetOrigin();
+			
+			ref SCR_AIGroup closest_group = null;
+			float closest_group_distance = 0.00;
+			if(faction_groups)
 			{
-				current_group = faction_groups[i];
-				if( current_group && !current_group.IsFull() )
-				{  
-					current_group.AddAIEntityToGroup(SCR_ChimeraCharacter.Cast(this.GetCurrentCharacter()));
-					faction_groups.Set(i, current_group);
+				foreach(SCR_AIGroup grp : faction_groups)
+				{
+					vector coords = grp.GetLeaderEntity().GetOrigin();
+					float iterator_distance = vector.Distance(coords, sp_coords);
+					if( !coords ) continue;
+					if( !closest_group )
+					{
+						if( iterator_distance < distance_cutoff )
+						{
+							closest_group = grp;
+							closest_group_distance = iterator_distance;
+						}
+						continue;
+					}
+					if( iterator_distance < distance_cutoff & iterator_distance < closest_group_distance)
+					{
+						closest_group = grp;
+						closest_group_distance = iterator_distance;
+					}
+				}
+				if( !closest_group )
+				{
+					// TODO: Make own group
+					// no groups yet in faction
+					faction_groups = new array<SCR_AIGroup>();
+				}
+				else
+				{
+					// TODO: Add npc to group
+					closest_group.AddAIEntityToGroup(SCR_ChimeraCharacter.Cast(this.GetCurrentCharacter()));
+					faction_groups.Insert(closest_group);
 					groups.Set(this.GetFactionKey(), faction_groups);
 					terminate = true;
 				}
-				// Ending the entire group's characters somehow sets the group to null
-				// current_group.AddAgent(AIAgent.Cast(vPlayer.GetCurrentCharacter()));
 			}
-		} else
-		{
-			// no groups yet in faction
-			faction_groups = new array<SCR_AIGroup>();
+			else
+			{
+				// no groups yet in faction
+				faction_groups = new array<SCR_AIGroup>();
+			}
+		}
+		
+		if(m_iGroupSetting == 1)
+		{  // Supposibly, Choose player groups first
+			if(faction_groups)
+			{
+				// check for fullness
+				int i = 0;
+				while( !terminate 	&& i < faction_groups.GetSizeOf() )
+				{
+					current_group = faction_groups[i];
+					if( current_group && !current_group.IsFull() )
+					{  
+						current_group.AddAIEntityToGroup(SCR_ChimeraCharacter.Cast(this.GetCurrentCharacter()));
+						faction_groups.Set(i, current_group);
+						groups.Set(this.GetFactionKey(), faction_groups);
+						terminate = true;
+					}
+					i++;
+				}
+			} 
+			else
+			{
+				// no groups yet in faction
+				faction_groups = new array<SCR_AIGroup>();
+			}
+		}
+		
+		if(m_iGroupSetting == 2)
+		{  // Have fun coding the structured groups
+			//SCR_AIGroup.SetMaxMembers();
+			int desired_group_sizes = Math.Sqrt(CLINTON_RoboPlayerManager.GetPlayersCount());
+			
+			if(faction_groups)
+			{
+				// check for fullness
+				int i = 0;
+				while( !terminate && i < faction_groups.GetSizeOf() )
+				{
+					current_group = faction_groups[i];
+					if( current_group && current_group.GetPlayerAndAgentCount() <= desired_group_sizes )
+					{  
+						current_group.AddAIEntityToGroup(SCR_ChimeraCharacter.Cast(this.GetCurrentCharacter()));
+						faction_groups.Set(i, current_group);
+						groups.Set(this.GetFactionKey(), faction_groups);
+						terminate = true;
+					}
+					i++;
+				}
+			} 
+			else
+			{
+				// no groups yet in faction
+				faction_groups = new array<SCR_AIGroup>();
+			}
 		}
 		
 		// All groups were full
@@ -568,31 +695,13 @@ class CLINTON_Virtual_Player
 			// spawnParams.TransformMode      = ETransformMode.WORLD;
 			// spawnParams.Transform[3]       = IEntity.Cast(sp).GetOrigin();
 			
-			ref Resource emptGroupResource = Resource.Load("{89CE895CA0AE72DF}Prefabs/CLINTON_Group_Base_Again.et");
+			ref Resource emptGroupResource = Resource.Load("{395114220D070BE7}Prefabs/CLINTON_Group_Base_Three.et");
 			ref IEntity emptGroupEnt       = GetGame().SpawnEntityPrefab(emptGroupResource, world, spawnParams);
 			ref SCR_AIGroup emptGroup      = SCR_AIGroup.Cast(emptGroupEnt);
 			
 			emptGroup.SetFaction(fm.GetFactionByKey(this.GetFactionKey()));
 			// emptGroup.SetCanDeleteIfNoPlayer(false);
 			// emptGroup.SetDeleteWhenEmpty(true);
-			
-			// TODO: Waypoints made from tasks
-			//ref AIWaypoint waypoint = AIWaypoint.Cast(world.FindEntityByName("MoveC"));
-			
-			// ref Resource soos = Resource.Load("{750A8D1695BD6998}Prefabs/AI/Waypoints/AIWaypoint_Move.et");
-			
-			// EntitySpawnParams spawnParams2  = new EntitySpawnParams();
-			// spawnParams2.TransformMode      = ETransformMode.WORLD;
-			// spawnParams2.Transform[3]       = IEntity.Cast(waypoint).GetOrigin();
-			
-			// AIWaypoint new_move = AIWaypoint.Cast(GetGame().SpawnEntityPrefab(soos, null, spawnParams2));
-			// emptGroup.AddWaypointToGroup(new_move);
-			//emptGroup.AddWaypoint(waypoint);
-			
-			//if( !waypoint )
-			//{
-			//	Print("No waypoints.",  LogLevel.ERROR);
-			//}
 			
 			emptGroup.AddAIEntityToGroup(SCR_ChimeraCharacter.Cast(this.GetCurrentCharacter()));
 			faction_groups.Insert(emptGroup);  // null reference?
@@ -609,7 +718,5 @@ class CLINTON_Virtual_Player
 	{
 		array<AIWaypoint> outWaypoints = new array<AIWaypoint>();
 		int waypoint_count = emptGroup.GetWaypoints(outWaypoints);
-		
-		
 	}
 }

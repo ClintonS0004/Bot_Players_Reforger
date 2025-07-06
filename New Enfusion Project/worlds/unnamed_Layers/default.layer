@@ -9,3 +9,25 @@ SCR_AIWaypoint MoveC : "{06E1B6EBD480C6E0}Prefabs/AI/Waypoints/AIWaypoint_Forced
  }
  coords 5153.539 14.32 3978.493
 }
+SCR_AIWaypoint test_far : "{750A8D1695BD6998}Prefabs/AI/Waypoints/AIWaypoint_Move.et" {
+ coords 4141.062 96.327 4015.287
+}
+SCR_BoardingTimedWaypoint gTesting : "{B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et" {
+ coords 5268.478 22.713 4057.688
+ CompletionType Any
+ m_TimedWaypointParameters SCR_AITimedWaypointParameters "{60D1159AE7F2C5EE}" {
+  m_holdingTime 10
+ }
+}
+SCR_AIGroup Test_Group : "{EACD97CF4A702FAE}Prefabs/Groups/BLUFOR/Group_US_Base.et" {
+ coords 5222.661 27.194 4150.244
+ m_aUnitPrefabSlots {
+  "{CD28EE7C5690D3BB}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo.et" "{CD28EE7C5690D3BB}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo.et" "{CD28EE7C5690D3BB}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo.et" "{CD28EE7C5690D3BB}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Ammo.et"
+ }
+ m_aStaticWaypoints {
+  "gTesting" "test_far"
+ }
+}
+Vehicle M151A1 : "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et" {
+ coords 5264.454 21.9 4050.217
+}

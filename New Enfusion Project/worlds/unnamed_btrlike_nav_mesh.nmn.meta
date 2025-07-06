@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{51E41DA923B63D81}worlds/unnamed_btrlike_nav_mesh.nmn"
+ Configurations {
+  NavMeshResourceClass PC {
+  }
+  NavMeshResourceClass XBOX_ONE : PC {
+  }
+  NavMeshResourceClass XBOX_SERIES : PC {
+  }
+  NavMeshResourceClass PS4 : PC {
+  }
+  NavMeshResourceClass PS5 : PC {
+  }
+  NavMeshResourceClass HEADLESS : PC {
+  }
+ }
+}

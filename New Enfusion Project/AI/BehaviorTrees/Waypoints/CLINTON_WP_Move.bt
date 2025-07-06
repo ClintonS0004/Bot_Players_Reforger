@@ -1,0 +1,241 @@
+BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
+ Name "AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos 128.247 -359.745
+   Nodes {
+    Sequence Sequence {
+     Name "Sequence"
+     EditorPos 125.422 -212.36
+     Nodes {
+      SCR_AIGetWaypointParameters "SCR_AI Get Waypoint Parameters" {
+       Name "SCR_AI Get Waypoint Parameters"
+       EditorPos -1272.144 -3.096
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "WaypointIn"
+        }
+       }
+       OutPorts {
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 0
+         PortName "WaypointOut"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 2
+         PortName "Radius"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 3
+         PortName "Origin"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 1
+         PortName "PriorityLevel"
+        }
+       }
+      }
+      DecoTestVariable "Test Variable" {
+       Name "Test Variable"
+       EditorPos -452.118 -5.072
+       Nodes {
+        RunBT RunBT {
+         Name "RunBT"
+         EditorPos 219.614 291.732
+         Group "{65CA7C0AB243824E}"
+         BehaviorTree "{BFA95B76EDFF1BD3}AI/BehaviorTrees/Chimera/Soldier/MoveIndividually.bt"
+        }
+       }
+       ForceNodeResult Success
+       InVariable 4
+       TestType BiggerThanValue
+       TestValue "0"
+      }
+      AITaskReturnState "Return State" {
+       Name "Return State"
+       EditorPos 164.888 107.536
+       Result RUNNING
+      }
+     }
+    }
+   }
+  }
+  Sequence Sequence {
+   Name "Sequence"
+   EditorPos -413.732 251.554
+   Nodes {
+    AITaskGetGroupChildren "Get Group Children" {
+     Name "Get Group Children"
+     EditorPos -714.294 493.654
+     OutEntity 5
+    }
+    ForEachChild "For Each Child" {
+     Name "For Each Child"
+     EditorPos -39.886 418.247
+     Nodes {
+      RunOnEntity "Run On Entity" {
+       Name "Run On Entity"
+       EditorPos 36.987 635.007
+       Group "{65CA7C0AB243824E}"
+       InEntity 8
+      }
+     }
+     InGroup 7
+     OutEntity 6
+    }
+   }
+  }
+  AITaskMove Move {
+   Name "Move"
+   EditorPos 526.223 451.7
+  }
+  RunBT RunBT {
+   Name "RunBT"
+   EditorPos -212.923 211.402
+   InPorts {
+    SingleInputPortContainer SingleInputPortContainer {
+     Port 3
+     PortName "moveLocation"
+    }
+    SingleInputPortContainer SingleInputPortContainer {
+     Port -1
+     PortName "moveEntity"
+    }
+    SingleInputPortContainer SingleInputPortContainer {
+     Port -1
+     PortName "isWaypointRelated"
+    }
+    SingleInputPortContainer SingleInputPortContainer {
+     Port -1
+     PortName "completionDistance"
+    }
+   }
+   Group "{65CAE664592B193E}"
+   BehaviorTree "{95047C62D02A9450}AI/BehaviorTrees/Chimera/Group/MoveToLocation.bt"
+  }
+  SCR_AIGetMoveIndividuallyBehaviorParameters "SCR_AI Get Move Individually Behavior Parameters" {
+   Name "SCR_AI Get Move Individually Behavior Parameters"
+   EditorPos -784.771 653.976
+   OutPorts {
+    SingleOutputPortContainer SingleOutputPortContainerClass {
+     PortName "Position"
+    }
+    SingleOutputPortContainer SingleOutputPortContainerClass {
+     PortName "Entity"
+    }
+    SingleOutputPortContainer SingleOutputPortContainerClass {
+     PortName "Radius"
+    }
+   }
+  }
+ }
+ Variables {
+  Variable waypointEntity {
+   VariableName "waypointEntity"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable priorityLevel {
+   VariableName "priorityLevel"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable groupMember {
+   VariableName "groupMember"
+   VariableTypeName "AIAgent"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable behaviorTree {
+   VariableName "behaviorTree"
+   VariableTypeName "string"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable entityVehicle {
+   VariableName "entityVehicle"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable precisionXZ {
+   VariableName "precisionXZ"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable origin {
+   VariableName "origin"
+   VariableTypeName "vector"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable chimeraGroupMember {
+   VariableName "chimeraGroupMember"
+   VariableTypeName "ChimeraAIAgent"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable cGroupMemberArray {
+   VariableName "cGroupMemberArray"
+   VariableTypeName "array<AIAgent>"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable completionDistance {
+   VariableName "completionDistance"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference waypointEntity {
+   VariableType 0
+   EditorPos -922.254 30.965
+  }
+  VariableReference priorityLevel {
+   VariableType 1
+   EditorPos -924.021 148.301
+  }
+  VariableReference precisionXZ {
+   VariableType 5
+   EditorPos -910 244
+  }
+  VariableReference origin {
+   VariableType 6
+   EditorPos -694.6 67.85
+   Group "{65CAE664592B193E}"
+  }
+  VariableReference priorityLevel {
+   VariableType 1
+   EditorPos -927.135 359.053
+  }
+  VariableReference cGroupMemberArray {
+   VariableType 8
+   EditorPos -474.95 529
+  }
+  VariableReference groupMember {
+   VariableType 2
+   EditorPos 199.235 445.616
+  }
+  VariableReference cGroupMemberArray {
+   VariableType 8
+   EditorPos -439.533 425.845
+  }
+  VariableReference groupMember {
+   VariableType 2
+   EditorPos -264.632 672.227
+  }
+ }
+ Groups {
+  BTGroup "{65CAE664592B193E}" {
+   Name "Try Moving group without formation like linked in discord"
+   Color 0.6 0.6 0.6 0.251
+  }
+ }
+}

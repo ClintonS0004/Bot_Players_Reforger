@@ -1,0 +1,197 @@
+BehaviorTree "{B496CA74B3D8FCE4}AI/BehaviorTrees/Waypoints/CLINTON_CloseSoldiersGetInNearestVehicle.bt" {
+ Name "AI/BehaviorTrees/Waypoints/CLINTON_CloseSoldiersGetInNearestVehicle.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos -50 -45
+   Nodes {
+    AITaskReturnState "Return State" {
+     Name "Return State"
+     EditorPos 156.01 119.302
+     Result SUCCESS
+    }
+   }
+  }
+  Sequence Sequence {
+   Name "Sequence"
+   EditorPos -50.355 171.717
+   Nodes {
+    SCR_AIGetInNearestWaypointParameters "SCR_AI Get In Nearest Waypoint Parameters" {
+     Name "SCR_AI Get In Nearest Waypoint Parameters"
+     EditorPos -816.611 412.328
+     InPorts {
+      SingleInputPortContainer SingleInputPortContainer {
+       Port -1
+       PortName "WaypointIn"
+      }
+     }
+     OutPorts {
+      SingleOutputPortContainer SingleOutputPortContainer {
+       Port -1
+       PortName "WaypointOut"
+      }
+      SingleOutputPortContainer SingleOutputPortContainer {
+       Port 0
+       PortName "Radius"
+      }
+      SingleOutputPortContainer SingleOutputPortContainer {
+       Port 1
+       PortName "Origin"
+      }
+      SingleOutputPortContainer SingleOutputPortContainer {
+       Port -1
+       PortName "PriorityLevel"
+      }
+      SingleOutputPortContainer SingleOutputPortContainer {
+       Port 2
+       PortName "BoardingParams"
+      }
+      SingleOutputPortContainer SingleOutputPortContainer {
+       Port -1
+       PortName "HoldingTime"
+      }
+     }
+    }
+    AITaskGetGroupChildren "Get Group Children" {
+     Name "Get Group Children"
+     EditorPos -91.25 348
+     OutEntity 3
+    }
+    DecoTestVariable "Test Variable" {
+     Name "Test Variable"
+     EditorPos 448.296 407.95
+     Nodes {
+      Repeater Repeater {
+       Name "Repeater"
+       EditorPos 492.2 695.75
+       Nodes {
+        Selector Selector {
+         Name "Selector"
+         EditorPos 491.65 833.6
+         Nodes {
+          Sequence Sequence {
+           Name "Sequence"
+           EditorPos 370.2 981.95
+           Nodes {
+            SCR_AIFindAvailableVehicle "SCR_AI Find Available Vehicle" {
+             Name "SCR_AI Find Available Vehicle"
+             EditorPos 223.927 1106.91
+             InPorts {
+              SingleInputPortContainer SingleInputPortContainer {
+               Port 1
+               PortName "OriginIn"
+              }
+              SingleInputPortContainer SingleInputPortContainer {
+               Port 0
+               PortName "RadiusIn"
+              }
+              SingleInputPortContainer SingleInputPortContainer {
+               Port 2
+               PortName "SearchParams"
+              }
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "VehicleIn"
+              }
+             }
+             OutPorts {
+              SingleOutputPortContainer SingleOutputPortContainer {
+               Port 5
+               PortName "VehicleOut"
+              }
+              SingleOutputPortContainer SingleOutputPortContainer {
+               Port -1
+               PortName "RoleOut"
+              }
+              SingleOutputPortContainer SingleOutputPortContainer {
+               Port -1
+               PortName "CompartmentOut"
+              }
+             }
+            }
+           }
+          }
+          AITaskIdle Idle {
+           Name "Idle"
+           EditorPos 619.85 992.45
+          }
+         }
+        }
+       }
+      }
+     }
+     NegativeCondition 1
+     ForceNodeResult Success
+     AbortType AbortChildrenBranch
+     InVariable 4
+     TestType EqualsValue
+     TestValue "true"
+    }
+   }
+  }
+ }
+ Variables {
+  Variable radius {
+   VariableName "radius"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable origin {
+   VariableName "origin"
+   VariableTypeName "vector"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable waypointParams {
+   VariableName "waypointParams"
+   VariableTypeName "SCR_AIBoardingParameters"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable leader {
+   VariableName "leader"
+   VariableTypeName "AIAgent"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable vehicleFound {
+   VariableName "vehicleFound"
+   VariableTypeName "bool"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable vehicle {
+   VariableName "vehicle"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference radius {
+   VariableType 0
+   EditorPos -256.712 440.073
+  }
+  VariableReference origin {
+   VariableType 1
+   EditorPos -254.279 532.322
+  }
+  VariableReference waypointParams {
+   VariableType 2
+   EditorPos -255.739 627.324
+  }
+  VariableReference leader {
+   VariableType 3
+   EditorPos 124.2 347.3
+  }
+  VariableReference vehicleFound {
+   VariableType 4
+   EditorPos 207 531.3
+  }
+  VariableReference vehicle {
+   VariableType 5
+   EditorPos 577.932 1177.157
+  }
+ }
+}

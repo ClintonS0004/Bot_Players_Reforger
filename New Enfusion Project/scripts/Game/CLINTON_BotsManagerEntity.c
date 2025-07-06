@@ -13,6 +13,7 @@ class CLINTON_BotsManagerEntity : GenericEntity
 	
 	protected static CLINTON_BotsManagerEntity s_Instance;
 	
+	//------------------------------------------------------------------------------------------------
 	void check_that_the_groups_are_alive()
 	{
 		/*
