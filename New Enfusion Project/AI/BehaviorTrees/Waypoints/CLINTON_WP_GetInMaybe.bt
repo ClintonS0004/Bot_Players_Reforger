@@ -47,7 +47,7 @@ BehaviorTree "{DC293B239CA25DF2}AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe
       }
       SCR_AISendGoalMessage_GetIn "SCR_AI Send Goal Message_ Get In" {
        Name "SCR_AI Send Goal Message_ Get In"
-       EditorPos 220.389 324.204
+       EditorPos 218.868 324.204
        InPorts {
         SingleInputPortContainer SingleInputPortContainer {
          Port -1
@@ -95,7 +95,7 @@ BehaviorTree "{DC293B239CA25DF2}AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe
            Nodes {
             SCR_AIPrintDebug "SCR_AI Print Debug" {
              Name "SCR_AI Print Debug"
-             EditorPos 414.158 1046.895
+             EditorPos 647.475 783.407
              InPorts {
               SingleInputPortContainer SingleInputPortContainer {
                Port -1
@@ -106,7 +106,7 @@ BehaviorTree "{DC293B239CA25DF2}AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe
             }
             SCR_AICompleteWaypoint "SCR_AI Complete Waypoint" {
              Name "SCR_AI Complete Waypoint"
-             EditorPos 612.291 1071.389
+             EditorPos 811.415 836.06
              InPorts {
               SingleInputPortContainer SingleInputPortContainer {
                Port -1
@@ -190,92 +190,6 @@ BehaviorTree "{DC293B239CA25DF2}AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe
     }
    }
   }
-  Sequence Sequence {
-   Name "Sequence"
-   EditorPos -87.962 -594.172
-   Nodes {
-    SCR_AICompleteWaypoint "SCR_AI Complete Waypoint" {
-     Name "SCR_AI Complete Waypoint"
-     EditorPos -284.545 -372.961
-     InPorts {
-      SingleInputPortContainer SingleInputPortContainer {
-       Port -1
-       PortName "WaypointIn"
-      }
-     }
-    }
-    AITaskReturnState "Return State" {
-     Name "Return State"
-     EditorPos 41.977 -309.574
-     Result RUNNING
-    }
-   }
-  }
-  DecoratorEntity Entity {
-   Name "Entity"
-   EditorPos 1518.484 -0.567
-   AbortType AbortChildrenBranchAndParentFurtherChildren
-   InEntity -1
-   TEST {
-    SCR_AIDecoTestIsInVehicleCondition "{65B21DFCEF7B5268}" {
-    }
-   }
-  }
-  SCR_AIGetMoveIndividuallyBehaviorParameters "SCR_AI Get Move Individually Behavior Parameters" {
-   Name "SCR_AI Get Move Individually Behavior Parameters"
-   EditorPos 135.358 745.229
-   OutPorts {
-    SingleOutputPortContainer SingleOutputPortContainer {
-     Port -1
-     PortName "Position"
-    }
-    SingleOutputPortContainer SingleOutputPortContainer {
-     Port -1
-     PortName "Entity"
-    }
-    SingleOutputPortContainer SingleOutputPortContainer {
-     Port -1
-     PortName "Radius"
-    }
-   }
-  }
-  AITaskMoveToEntity "Move To Entity" {
-   Name "Move To Entity"
-   EditorPos 561.279 1498.138
-   InPrecisionXZ 8
-   InEntity 7
-  }
-  SCR_AIGetMoveIndividuallyBehaviorParameters "SCR_AI Get Move Individually Behavior Parameters" {
-   Name "SCR_AI Get Move Individually Behavior Parameters"
-   EditorPos -97.336 1544.829
-   OutPorts {
-    SingleOutputPortContainer SingleOutputPortContainer {
-     Port 6
-     PortName "Position"
-    }
-    SingleOutputPortContainer SingleOutputPortContainer {
-     Port 7
-     PortName "Entity"
-    }
-    SingleOutputPortContainer SingleOutputPortContainer {
-     Port 8
-     PortName "Radius"
-    }
-   }
-  }
-  SCR_AIFailAction "SCR_AI Fail Action" {
-   Name "SCR_AI Fail Action"
-   EditorPos 899.286 1270.54
-  }
-  SCR_AICompleteAction "SCR_AI Complete Action" {
-   Name "SCR_AI Complete Action"
-   EditorPos 872.868 1062.53
-  }
-  AITaskReturnState "Return State" {
-   Name "Return State"
-   EditorPos 1069.835 1068.714
-   Result RUNNING
-  }
  }
  Variables {
   Variable waypoint {
@@ -346,18 +260,6 @@ BehaviorTree "{DC293B239CA25DF2}AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe
   VariableReference waitingTime {
    VariableType 3
    EditorPos 1025.964 765.105
-  }
-  VariableReference targetPosition {
-   VariableType 4
-   EditorPos 246.458 1747.561
-  }
-  VariableReference targetEntity {
-   VariableType 5
-   EditorPos 178.019 1904.211
-  }
-  VariableReference precisionXZ {
-   VariableType 6
-   EditorPos 457.86 1969.609
   }
  }
  Groups {

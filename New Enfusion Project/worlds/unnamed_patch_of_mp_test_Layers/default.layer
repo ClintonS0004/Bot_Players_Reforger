@@ -27,35 +27,32 @@ SCR_AIWorld SCR_AIWorld : "{E0A05C76552E7F58}Prefabs/AI/SCR_AIWorld.et" {
 $grp SCR_AIWaypoint : "{06E1B6EBD480C6E0}Prefabs/AI/Waypoints/AIWaypoint_ForcedMove.et" {
  MoveC {
   coords 126.616 1 165.973
-  CompletionType All
  }
  MoveAfter {
   coords 154.485 1 204.465
-  AIBehaviorTreeMoveTo "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt"
- }
-}
-SCR_AIGroup : "{84E5BBAB25EA23E5}Prefabs/Groups/BLUFOR/Group_US_FireTeam.et" {
- coords 123.516 1 151.061
- m_aStaticWaypoints {
-  "MoveC" "test_gi_wp" "MoveAfter"
+  AIBehaviorTreeMoveTo "{BD69DA0B733A5091}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move_Two.bt"
  }
 }
 SCR_AIGroup test_group : "{9624D2B39397E148}Prefabs/Groups/BLUFOR/Group_US_SapperTeam.et" {
+ components {
+  SCR_AIConfigComponent "{512CC1759AE69D6D}" {
+   m_aGoalReactions {
+    SCR_AIGoalReaction_Carpool "{65D8A0304543335E}" {
+     m_eType CARPOOL
+    }
+   }
+  }
+ }
  coords 126.795 1 143.833
  m_aUnitPrefabSlots {
   "{2F912ED6E399FF47}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Unarmed.et" "{2F912ED6E399FF47}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Unarmed.et"
  }
+ m_aStaticWaypoints {
+  "MoveC" "MoveAfter"
+ }
 }
-$grp SCR_BoardingTimedWaypoint : "{B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et" {
- test_gi_wpx {
-  coords 153.853 1 165.764
-  AIBehaviorTree "{DC293B239CA25DF2}AI/BehaviorTrees/Waypoints/CLINTON_WP_GetInMaybe.bt"
-  m_TimedWaypointParameters SCR_AITimedWaypointParameters "{60D1159AE7F2C5EE}" {
-  }
- }
- test_gi_wp {
-  coords 148.704 1 165.16
- }
+SCR_BoardingTimedWaypoint test_gi_wp : "{B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et" {
+ coords 148.704 1 165.16
 }
 Vehicle M151A1 : "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et" {
  coords 156.488 1 166.404

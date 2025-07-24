@@ -1,0 +1,425 @@
+BehaviorTree {
+ Name "AI/BehaviorTrees/Chimera/Group/CLINTON_MovePlanning.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos -50 -45
+   Nodes {
+    Sequence Sequence {
+     Name "Sequence"
+     EditorPos -54.707 177.396
+     Nodes {
+      AITaskGetGroupChildren "Get Group Children" {
+       Name "Get Group Children"
+       EditorPos -2635.62 531.75
+       IndexTo 0
+       OutEntity 15
+       ReturnControlledEntity 0
+      }
+      AITaskGetControlledEntity "Get Controlled Entity" {
+       Name "Get Controlled Entity"
+       EditorPos -2133.712 513.703
+       InEntity 15
+       OutControlledEntity 5
+      }
+      Selector Selector {
+       Name "Selector"
+       EditorPos -1336.993 861.166
+       Nodes {
+        DecoTestVariable "Test Variable" {
+         Name "Test Variable"
+         EditorPos -1968.124 1133.951
+         Nodes {
+          Selector Selector {
+           Name "Selector"
+           EditorPos -1936.874 1314.062
+           Nodes {
+            DecoratorEntity Entity {
+             Name "Entity"
+             EditorPos -2598.85 1523.872
+             Nodes {
+              Sequence Sequence {
+               Name "Sequence"
+               EditorPos -2546.541 1793.229
+               Nodes {
+                SCR_AILeaveStaticVehicles "SCR_AI Leave Static Vehicles" {
+                 Name "SCR_AI Leave Static Vehicles"
+                 EditorPos -2959.065 2018.753
+                 m_fUpdateInterval_ms 50
+                }
+                SCR_AIOccupyMovableVehicles "SCR_AI Occupy Movable Vehicles" {
+                 Name "SCR_AI Occupy Movable Vehicles"
+                 EditorPos -2678.91 2017.943
+                 m_fUpdateInterval_ms 60
+                }
+                SCR_AIOccupyDriversInUsedVehicles "SCR_AI Occupy Drivers In Used Vehicles" {
+                 Name "SCR_AI Occupy Drivers In Used Vehicles"
+                 EditorPos -2372.62 2015.087
+                 OutPorts {
+                  SingleOutputPortContainer SingleOutputPortContainer {
+                   Port 4
+                   PortName "CanUseVehicle"
+                  }
+                 }
+                 m_fMaxDistanceOfSearch_m 200
+                 m_fUpdateInterval_ms 50
+                }
+               }
+              }
+             }
+             NegativeCondition 1
+             TEST {
+              SCR_AIDecoTestIsOutOfVehicle "{5C90F89095176105}" {
+              }
+             }
+            }
+            DecoratorEntity Entity {
+             Name "Entity"
+             EditorPos -1524.184 1480.11
+             Nodes {
+              Sequence Sequence {
+               Name "Sequence"
+               EditorPos -1289.112 1754.467
+               Nodes {
+                SCR_AIGetUsableVehicle "SCR_AI Get Usable Vehicle" {
+                 Name "SCR_AI Get Usable Vehicle"
+                 EditorPos -1641.93 1964.228
+                 InPorts {
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port -1
+                   PortName "CompartmentTypeIn"
+                  }
+                 }
+                 OutPorts {
+                  SingleOutputPortContainer SingleOutputPortContainer {
+                   Port 8
+                   PortName "VehicleOut"
+                  }
+                  SingleOutputPortContainer SingleOutputPortContainer {
+                   Port 2
+                   PortName "CompartmentOut"
+                  }
+                 }
+                }
+                SCR_AISendGoalMessage_GetIn "SCR_AI Send Goal Message_ Get In" {
+                 Name "SCR_AI Send Goal Message_ Get In"
+                 EditorPos -1252.26 1966.431
+                 InPorts {
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port -1
+                   PortName "Receiver"
+                  }
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port 12
+                   PortName "PriorityLevel"
+                  }
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port -1
+                   PortName "IsWaypointRelated"
+                  }
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port 8
+                   PortName "VehicleEntity"
+                  }
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port -1
+                   PortName "BoardingParams"
+                  }
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port -1
+                   PortName "RoleInVehicle"
+                  }
+                  SingleInputPortContainer SingleInputPortContainer {
+                   Port 2
+                   PortName "CompartmentSlot"
+                  }
+                 }
+                 m_eRoleInVehicle Pilot
+                }
+                AITaskSetVariable "Set Variable" {
+                 Name "Set Variable"
+                 EditorPos -886.874 2001.312
+                 SetValue "true"
+                 OutVariable 10
+                }
+               }
+              }
+             }
+             TEST {
+              SCR_AIDecoTestCanGroupDriveVehicle "{5C90F892697D0BD2}" {
+              }
+             }
+            }
+           }
+          }
+         }
+         InVariable 0
+         TestType EqualsValue
+         TestValue "true"
+        }
+        Sequence Sequence {
+         Name "Sequence"
+         EditorPos -408.541 1147.062
+         Nodes {
+          DecoratorEntity Entity {
+           Name "Entity"
+           EditorPos -669.235 1376.269
+           Nodes {
+            SCR_AISendGoalMessage_GetOut "SCR_AI Send Goal Message_ Get Out" {
+             Name "SCR_AI Send Goal Message_ Get Out"
+             EditorPos -708.874 1584.562
+             InPorts {
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "Receiver"
+              }
+              SingleInputPortContainer SingleInputPortContainer {
+               Port 3
+               PortName "PriorityLevel"
+              }
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "IsWaypointRelated"
+              }
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "VehicleEntity"
+              }
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "BoardingParams"
+              }
+             }
+            }
+           }
+           NegativeCondition 1
+           ForceNodeResult Success
+           TEST {
+            SCR_AIDecoTestIsOutOfVehicle "{5C91002C4CF4AA63}" {
+            }
+           }
+          }
+          AITaskSetVariable "Set Variable" {
+           Name "Set Variable"
+           EditorPos -243.505 1358.777
+           SetValue "false"
+           OutVariable 11
+          }
+         }
+        }
+       }
+      }
+      Selector Selector {
+       Name "Selector"
+       EditorPos 1289.673 918.348
+       Nodes {
+        DecoTestVariable "Test Variable" {
+         Name "Test Variable"
+         EditorPos 1130.721 1129.825
+         Nodes {
+          DecoratorEntity Entity {
+           Name "Entity"
+           EditorPos 1096.134 1325.991
+           Nodes {
+            AITaskReturnState "Return  State" {
+             Name "Return  State"
+             EditorPos 1133.276 1543.483
+             Group "{5C90F890398F68EA}"
+             Result RUNNING
+            }
+           }
+           Group "{5C90F890398F68EA}"
+           ForceNodeResult Success
+           AbortType AbortChildrenBranch
+           TEST {
+            SCR_AIDecoTestIsOutOfVehicle "{5C90F89095176105}" {
+            }
+           }
+          }
+         }
+         Group "{5C90F890398F68EA}"
+         InVariable 9
+         TestType EqualsValue
+         TestValue "true"
+        }
+        DecoIsInVehicle "Is In Vehicle" {
+         Name "Is In Vehicle"
+         EditorPos 1541.305 1114.979
+         Nodes {
+          AITaskReturnState "Return  State" {
+           Name "Return  State"
+           EditorPos 1586.591 1317.054
+           Group "{5C90F890398F68EA}"
+           Result RUNNING
+          }
+         }
+         Group "{5C90F890398F68EA}"
+         ForceNodeResult Success
+         AbortType AbortChildrenBranch
+         EntityIn 1
+        }
+       }
+       Group "{5C90F890398F68EA}"
+      }
+      ForEachChild "For Each Child" {
+       Name "For Each Child"
+       EditorPos 2560.237 878.48
+       Nodes {
+        SCR_AISendGoalMessage_KeepFormation "SCR_AI Send Goal Message_ Keep Formation" {
+         Name "SCR_AI Send Goal Message_ Keep Formation"
+         EditorPos 2460.185 1036.575
+         InPorts {
+          SingleInputPortContainer SingleInputPortContainer {
+           Port 13
+           PortName "Receiver"
+          }
+          SingleInputPortContainer SingleInputPortContainer {
+           Port 6
+           PortName "PriorityLevel"
+          }
+          SingleInputPortContainer SingleInputPortContainer {
+           Port 14
+           PortName "IsWaypointRelated"
+          }
+         }
+        }
+       }
+       OutEntity 7
+       ReturnControlledEntity 0
+      }
+     }
+    }
+   }
+  }
+ }
+ Variables {
+  Variable useVehicle {
+   VariableName "useVehicle"
+   VariableTypeName "bool"
+   VariableExposedInput 1
+   VariableExposedOutput 0
+  }
+  Variable leaderEntity {
+   VariableName "leaderEntity"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable compartmentSlot {
+   VariableName "compartmentSlot"
+   VariableTypeName "BaseCompartmentSlot"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable priorityLevel {
+   VariableName "priorityLevel"
+   VariableTypeName "float"
+   VariableExposedInput 1
+   VariableExposedOutput 0
+  }
+  Variable canUseVehicle {
+   VariableName "canUseVehicle"
+   VariableTypeName "bool"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable groupMember {
+   VariableName "groupMember"
+   VariableTypeName "AIAgent"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable vehicleUsed {
+   VariableName "vehicleUsed"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable isWaypointRelated {
+   VariableName "isWaypointRelated"
+   VariableTypeName "bool"
+   VariableExposedInput 1
+   VariableExposedOutput 0
+  }
+  Variable leaderAgent {
+   VariableName "leaderAgent"
+   VariableTypeName "AIAgent"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference useVehicle {
+   VariableType 0
+   EditorPos -2204.291 1254.118
+  }
+  VariableReference leaderEntity {
+   VariableType 1
+   EditorPos 1336.012 1125.276
+   Group "{5C90F890398F68EA}"
+  }
+  VariableReference compartmentSlot {
+   VariableType 2
+   EditorPos -1650.167 2310.082
+  }
+  VariableReference priorityLevel {
+   VariableType 3
+   EditorPos -1002.318 1553.856
+  }
+  VariableReference canUseVehicle {
+   VariableType 4
+   EditorPos -2000.917 2118.927
+  }
+  VariableReference leaderEntity {
+   VariableType 1
+   EditorPos -1858.128 680.255
+  }
+  VariableReference priorityLevel {
+   VariableType 3
+   EditorPos 2243.82 1130.777
+  }
+  VariableReference groupMember {
+   VariableType 5
+   EditorPos 2743.127 909.479
+  }
+  VariableReference vehicleUsed {
+   VariableType 6
+   EditorPos -1512.208 2210.34
+  }
+  VariableReference canUseVehicle {
+   VariableType 4
+   EditorPos 855.031 1255.491
+   Group "{5C90F890398F68EA}"
+  }
+  VariableReference canUseVehicle {
+   VariableType 4
+   EditorPos -676.874 2105.312
+  }
+  VariableReference canUseVehicle {
+   VariableType 4
+   EditorPos -34.172 1482.777
+  }
+  VariableReference priorityLevel {
+   VariableType 3
+   EditorPos -1463.51 2102.098
+  }
+  VariableReference groupMember {
+   VariableType 5
+   EditorPos 2222.895 1046.731
+  }
+  VariableReference isWaypointRelated {
+   VariableType 7
+   EditorPos 2220.011 1214.943
+  }
+  VariableReference leaderAgent {
+   VariableType 8
+   EditorPos -2383.87 647.833
+  }
+ }
+ Groups {
+  BTGroup "{5C90F890398F68EA}" {
+   Name "Wait for at least the leader"
+   Color 0.6 0.6 0.6 0.251
+  }
+ }
+}

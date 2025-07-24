@@ -1,0 +1,258 @@
+BehaviorTree {
+ Name "AI/BehaviorTrees/Chimera/Soldier/CLINTON_MoveIndividually.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos -50 -45
+   Nodes {
+    Sequence Sequence {
+     Name "Sequence"
+     EditorPos -54.171 103.562
+     Nodes {
+      SCR_AIGetMoveIndividuallyBehaviorParameters "SCR_AI Get Move Individually Behavior Parameters" {
+       Name "SCR_AI Get Move Individually Behavior Parameters"
+       EditorPos -1981.981 344.752
+       OutPorts {
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 7
+         PortName "Position"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 12
+         PortName "Entity"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 4
+         PortName "Radius"
+        }
+       }
+      }
+      SCR_AICharacterSetMovementSpeed "SCR_AI Character Set Movement Speed" {
+       Name "SCR_AI Character Set Movement Speed"
+       EditorPos -1223.806 366.935
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "Speed"
+        }
+       }
+       m_eSpeed RUN
+      }
+      SCR_AISetWeaponRaised "SCR_AI Set Weapon Raised" {
+       Name "SCR_AI Set Weapon Raised"
+       EditorPos -820.314 340.169
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "Raised"
+        }
+       }
+      }
+      SCR_AISetStance "SCR_AI Set Stance" {
+       Name "SCR_AI Set Stance"
+       EditorPos -452.814 343.919
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "Stance"
+        }
+       }
+      }
+      Selector Selector {
+       Name "Selector"
+       EditorPos 36.59 297.133
+       Nodes {
+        DecoTestVariable "Test Variable" {
+         Name "Test Variable"
+         EditorPos -307.695 497.609
+         Nodes {
+          DecoTestVariable "Test Variable" {
+           Name "Test Variable"
+           EditorPos -307.635 691.598
+           Nodes {
+            AITaskMoveToEntity "Move To Entity" {
+             Name "Move To Entity"
+             EditorPos -379.624 879.787
+             InTargetOrientation -1
+             InPrecisionXZ 10
+             PrecisionXZ 3
+             RequestResult 0
+             InEntity 6
+            }
+           }
+           InVariable 1
+          }
+         }
+         UseChildResult 1
+         InVariable 6
+        }
+        DecoTestVariable "Test Variable" {
+         Name "Test Variable"
+         EditorPos 229.448 501.895
+         Nodes {
+          DecoTestVariable "Test Variable" {
+           Name "Test Variable"
+           EditorPos 228.4 662.942
+           Nodes {
+            DecoTestVariable "Test Variable" {
+             Name "Test Variable"
+             EditorPos 230.936 810.169
+             Nodes {
+              AITaskMove Move {
+               Name "Move"
+               EditorPos 160.389 989.271
+               InTargetLocation 8
+               InTargetOrientation -1
+               InPrecisionXZ 9
+               PrecisionXZ 0.9
+               RequestResult 5
+              }
+             }
+             InVariable 13
+            }
+           }
+           UseChildResult 1
+           InVariable 2
+          }
+         }
+         NegativeCondition 1
+         UseChildResult 1
+         InVariable 3
+        }
+        DecoTestVariable "Test Variable" {
+         Name "Test Variable"
+         EditorPos 551.686 503.419
+         Nodes {
+          Sequence Sequence {
+           Name "Sequence"
+           EditorPos 570.436 727.169
+           Nodes {
+            SCR_AIPrintDebug "SCR_AI Print Debug" {
+             Name "SCR_AI Print Debug"
+             EditorPos 457.186 893.919
+             InPorts {
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "DebugMessage"
+              }
+             }
+             m_bIncludeMe 1
+             m_sDebugMessage "Movement to unreachable position!"
+            }
+            SCR_AIFailAction "SCR_AI Fail Action" {
+             Name "SCR_AI Fail Action"
+             EditorPos 632.186 895.169
+            }
+            AITaskReturnState "Return  State" {
+             Name "Return  State"
+             EditorPos 809.186 882.169
+             Result RUNNING
+            }
+           }
+          }
+         }
+         InVariable 11
+         TestType EqualsValue
+         TestValue "7"
+        }
+       }
+      }
+      SCR_AICompleteAction "SCR_AI Complete Action" {
+       Name "SCR_AI Complete Action"
+       EditorPos 705.043 311.955
+      }
+      AITaskReturnState "Return State" {
+       Name "Return State"
+       EditorPos 1041.876 301.562
+       Result RUNNING
+      }
+     }
+    }
+   }
+  }
+ }
+ Variables {
+  Variable Result {
+   VariableName "Result"
+   VariableTypeName "int"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable precisionXZ {
+   VariableName "precisionXZ"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable targetPosition {
+   VariableName "targetPosition"
+   VariableTypeName "vector"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable targetEntity {
+   VariableName "targetEntity"
+   VariableTypeName "IEntity"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference Result {
+   VariableType 0
+   EditorPos -82.314 871.419
+  }
+  VariableReference precisionXZ {
+   VariableType 1
+   EditorPos -631.028 757.848
+  }
+  VariableReference targetPosition {
+   VariableType 2
+   EditorPos -18.648 648.419
+  }
+  VariableReference targetEntity {
+   VariableType 3
+   EditorPos -20.314 526.419
+  }
+  VariableReference precisionXZ {
+   VariableType 1
+   EditorPos -1453.743 612.705
+  }
+  VariableReference Result {
+   VariableType 0
+   EditorPos 445.686 1091.419
+  }
+  VariableReference targetEntity {
+   VariableType 3
+   EditorPos -710.234 610.546
+  }
+  VariableReference targetPosition {
+   VariableType 2
+   EditorPos -1448.087 429.964
+  }
+  VariableReference targetPosition {
+   VariableType 2
+   EditorPos -95.267 965.562
+  }
+  VariableReference precisionXZ {
+   VariableType 1
+   EditorPos -51.028 1127.848
+  }
+  VariableReference precisionXZ {
+   VariableType 1
+   EditorPos -653.885 1024.99
+  }
+  VariableReference Result {
+   VariableType 0
+   EditorPos 425.686 641.419
+  }
+  VariableReference targetEntity {
+   VariableType 3
+   EditorPos -1445.064 506.548
+  }
+  VariableReference precisionXZ {
+   VariableType 1
+   EditorPos 9.507 777.848
+  }
+ }
+}

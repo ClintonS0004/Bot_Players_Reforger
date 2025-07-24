@@ -1,5 +1,5 @@
 BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
- Name "AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt"
+ Name "AI/BehaviorTrees/Waypoints/CLINTON_WP_Move_Two.bt"
  Nodes {
   RootNode Root {
    Name "Root"
@@ -37,6 +37,34 @@ BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
         }
        }
       }
+      DecoTestVariable "Test Variable" {
+       Name "Test Variable"
+       EditorPos -446.035 52.721
+       Nodes {
+        ForEachChild "For Each Child" {
+         Name "For Each Child"
+         EditorPos -568.113 345.424
+         Nodes {
+          SCR_AISendOrder_ReturnToDefault "SCR_AI Send Order_ Return To Default" {
+           Name "SCR_AI Send Order_ Return To Default"
+           EditorPos -538.268 571.925
+           InPorts {
+            SingleInputPortContainer SingleInputPortContainer {
+             Port 4
+             PortName "Receiver"
+            }
+           }
+          }
+         }
+         InGroup -1
+         OutEntity 4
+        }
+       }
+       ForceNodeResult Success
+       InVariable 3
+       TestType BiggerThanValue
+       TestValue "0"
+      }
       SCR_AISendGoalMessage_Carpool "SCR_AI Send Goal Message_ Carpool" {
        Name "SCR_AI Send Goal Message_ Carpool"
        EditorPos 138.94 208.984
@@ -46,7 +74,7 @@ BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
          PortName "Receiver"
         }
         SingleInputPortContainer SingleInputPortContainer {
-         Port 6
+         Port 5
          PortName "PriorityLevel"
         }
         SingleInputPortContainer SingleInputPortContainer {
@@ -54,7 +82,7 @@ BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
          PortName "IsWaypointRelated"
         }
         SingleInputPortContainer SingleInputPortContainer {
-         Port 7
+         Port 6
          PortName "FollowEntity"
         }
         SingleInputPortContainer SingleInputPortContainer {
@@ -72,47 +100,23 @@ BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
       }
       AITaskReturnState "Return State" {
        Name "Return State"
-       EditorPos 416.745 86.548
+       EditorPos 792.781 77.803
        Result RUNNING
       }
      }
     }
    }
   }
-  RunBT RunBT {
-   Name "RunBT"
-   EditorPos -1257.08 471.654
-   InPorts {
-    SingleInputPortContainer SingleInputPortContainer {
-     Port 3
-     PortName "moveLocation"
-    }
-    SingleInputPortContainer SingleInputPortContainer {
-     Port -1
-     PortName "moveEntity"
-    }
-    SingleInputPortContainer SingleInputPortContainer {
-     Port -1
-     PortName "isWaypointRelated"
-    }
-    SingleInputPortContainer SingleInputPortContainer {
-     Port -1
-     PortName "completionDistance"
-    }
-   }
-   Group "{65CAE664592B193E}"
-   BehaviorTree "{95047C62D02A9450}AI/BehaviorTrees/Chimera/Group/MoveToLocation.bt"
-  }
   SCR_AISendGoalMessage_Move "SCR_AI Send Goal Message_ Move" {
    Name "SCR_AI Send Goal Message_ Move"
-   EditorPos 491.09 253.758
+   EditorPos 469.2 305.9
    InPorts {
     SingleInputPortContainer SingleInputPortContainer {
      Port -1
      PortName "Receiver"
     }
     SingleInputPortContainer SingleInputPortContainer {
-     Port -1
+     Port 5
      PortName "PriorityLevel"
     }
     SingleInputPortContainer SingleInputPortContainer {
@@ -120,7 +124,7 @@ BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
      PortName "IsWaypointRelated"
     }
     SingleInputPortContainer SingleInputPortContainer {
-     Port -1
+     Port 6
      PortName "FollowEntity"
     }
     SingleInputPortContainer SingleInputPortContainer {
@@ -132,38 +136,9 @@ BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
      PortName "UseVehicles"
     }
    }
-  }
-  CLINTON_MoveIndividual "CLINTON_ Move Individual" {
-   Name "CLINTON_ Move Individual"
-   EditorPos 442.997 567.153
-  }
-  DecoTestVariable "Test Variable" {
-   Name "Test Variable"
-   EditorPos -446.035 52.721
-   Nodes {
-    ForEachChild "For Each Child" {
-     Name "For Each Child"
-     EditorPos -568.113 345.424
-     Nodes {
-      SCR_AISendOrder_ReturnToDefault "SCR_AI Send Order_ Return To Default" {
-       Name "SCR_AI Send Order_ Return To Default"
-       EditorPos -536.945 571.925
-       InPorts {
-        SingleInputPortContainer SingleInputPortContainer {
-         Port 5
-         PortName "Receiver"
-        }
-       }
-      }
-     }
-     InGroup -1
-     OutEntity 5
-    }
-   }
-   ForceNodeResult Success
-   InVariable 4
-   TestType BiggerThanValue
-   TestValue "0"
+   m_bIsWaypointRelated 1
+   m_eMovementType RUN
+   m_bUseVehicles 1
   }
  }
  Variables {
@@ -240,11 +215,6 @@ BehaviorTree "{FE476C7ADC3365EE}AI/BehaviorTrees/Waypoints/CLINTON_WP_Move.bt" {
   VariableReference precisionXZ {
    VariableType 5
    EditorPos -910 244
-  }
-  VariableReference origin {
-   VariableType 6
-   EditorPos -1458.916 545.329
-   Group "{65CAE664592B193E}"
   }
   VariableReference priorityLevel {
    VariableType 1

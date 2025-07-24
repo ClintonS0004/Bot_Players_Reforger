@@ -1,0 +1,413 @@
+BehaviorTree {
+ Name "AI/BehaviorTrees/Chimera/Group/CLINTON_MoveToLocation.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos -50 -45
+   Nodes {
+    Selector Selector {
+     Name "Selector"
+     EditorPos -49.049 125.994
+     Nodes {
+      Sequence Sequence {
+       Name "Sequence"
+       EditorPos -1284.382 343.994
+       Nodes {
+        Selector Selector {
+         Name "Selector"
+         EditorPos -2331.549 834.494
+         Nodes {
+          DecoTestVariable "Test Variable" {
+           Name "Test Variable"
+           EditorPos -2617.214 1130.089
+           Nodes {
+            AITaskSetVariable "Set Variable" {
+             Name "Set Variable"
+             EditorPos -2638.553 1323.891
+             Group "{5C8EE28CE23F7241}"
+             SetValue "5.0"
+             OutVariable 0
+             InVariable -1
+            }
+           }
+           Group "{5C8EE28CE23F7241}"
+           UseChildResult 1
+           ForceNodeResult None
+           InVariable -1
+          }
+          AITaskSetVariable "Set Variable" {
+           Name "Set Variable"
+           EditorPos -2101.596 1104.208
+           Group "{5C8EE28CE23F7241}"
+           OutVariable 1
+           InVariable 22
+          }
+         }
+         Group "{5C8EE28CE23F7241}"
+        }
+        AITaskSetVariable "Set Variable" {
+         Name "Set Variable"
+         EditorPos -1319.735 830.355
+         Group "{5D36DA60A56DFE3B}"
+         SetValue ""
+         ClearVariable 1
+         OutVariable 5
+        }
+        Selector Selector {
+         Name "Selector"
+         EditorPos -686.081 837.966
+         Nodes {
+          DecoratorEntity Entity {
+           Name "Entity"
+           EditorPos -1292.221 1068.262
+           Nodes {
+            Sequence Sequence {
+             Name "Sequence"
+             EditorPos -1482.61 1488.371
+             Nodes {
+              AITaskSetVariable "Set Variable" {
+               Name "Set Variable"
+               EditorPos -2139.918 2023.776
+               Group "{5D36DA60A56DFE3B}"
+               SetValue "true"
+               OutVariable 16
+              }
+              Selector Selector {
+               Name "Selector"
+               EditorPos -1393.549 1676.605
+               Nodes {
+                AITaskMoveToWaypoint "Move To Waypoint" {
+                 Name "Move To Waypoint"
+                 EditorPos -1683.192 2021.614
+                 Group "{5D36DA60A56DFE3B}"
+                 InPrecisionXZ 14
+                 PrecisionXZ 5
+                 RequestResult 17
+                 LastNavlink -1
+                 FailedHandlerId 18
+                 InWaypointEntity 12
+                }
+                DecoTestVariable "Test Variable" {
+                 Name "Test Variable"
+                 EditorPos -929.727 1994.423
+                 Nodes {
+                  Sequence Sequence {
+                   Name "Sequence"
+                   EditorPos -917.76 2177.962
+                   Nodes {
+                    RunBT RunBT {
+                     Name "RunBT"
+                     EditorPos -1263.668 2368.053
+                     Group "{5D36DA60A56DFE3B}"
+                     BehaviorTree "{F88BC712659BFFAC}AI/BehaviorTrees/Chimera/Group/HandleFailedNavlinkDoor.bt"
+                    }
+                    AITaskReturnState "Return  State" {
+                     Name "Return  State"
+                     EditorPos -812.728 2368.422
+                     Group "{5D36DA60A56DFE3B}"
+                     Result FAIL
+                    }
+                   }
+                   Group "{5D36DA60A56DFE3B}"
+                  }
+                 }
+                 Group "{5D36DA60A56DFE3B}"
+                 InVariable 17
+                 TestType EqualsValue
+                 TestValue "4"
+                }
+               }
+               Group "{5D36DA60A56DFE3B}"
+              }
+             }
+             Group "{5D36DA60A56DFE3B}"
+            }
+           }
+           Group "{5D36DA60A56DFE3B}"
+           UseChildResult 1
+           InEntity 7
+           TEST {
+            SCR_AIDecoTestIsWaypoint "{5D46ED497EC5F334}" {
+            }
+           }
+          }
+          DecoratorEntity Entity {
+           Name "Entity"
+           EditorPos -917.549 1064.994
+           Nodes {
+            DecoratorEntity Entity {
+             Name "Entity"
+             EditorPos -898.664 1247.28
+             Nodes {
+              Sequence Sequence {
+               Name "Sequence"
+               EditorPos -816.204 1417.498
+               Nodes {
+                AITaskSetVariable "Set Variable" {
+                 Name "Set Variable"
+                 EditorPos -1022.751 1614.046
+                 Group "{5D36DA60A56DFE3B}"
+                 SetValue "true"
+                 OutVariable 11
+                }
+                AITaskGroupMoveToEntity "Group Move To Entity" {
+                 Name "Group Move To Entity"
+                 EditorPos -694.692 1600.439
+                 Group "{5D36DA60A56DFE3B}"
+                 InPrecisionXZ 14
+                 InPrecisionY -1
+                 PrecisionXZ 5
+                 RequestResult 2
+                 InEntity 12
+                 FailedHandlerId 10
+                }
+               }
+               Group "{5D36DA60A56DFE3B}"
+              }
+             }
+             Group "{5D36DA60A56DFE3B}"
+             UseChildResult 1
+             InEntity 9
+             TEST {
+              DecoratorTestNotNull DecoratorTestNotNull {
+              }
+             }
+            }
+           }
+           Group "{5D36DA60A56DFE3B}"
+           NegativeCondition 1
+           UseChildResult 1
+           InEntity 9
+           TEST {
+            SCR_AIDecoTestIsWaypoint "{5D46ED497EC5F334}" {
+            }
+           }
+          }
+          DecoTestVariable "Test Variable" {
+           Name "Test Variable"
+           EditorPos -427.513 1061.883
+           Nodes {
+            AITaskGroupMove "Group Move" {
+             Name "Group Move"
+             EditorPos -494.6 1266.923
+             Group "{5D36DA60A56DFE3B}"
+             InTargetLocation 19
+             InPrecisionXZ 4
+             PrecisionXZ 5
+             RequestResult 6
+             FailedHandlerId 13
+            }
+           }
+           Group "{5D36DA60A56DFE3B}"
+           NegativeCondition 1
+           UseChildResult 1
+           InVariable 20
+           TestType EqualsValue
+           TestValue "true"
+          }
+         }
+         Group "{5D36DA60A56DFE3B}"
+        }
+       }
+      }
+      SCR_AIProcessFailedMovementResult "SCR_AI Process Failed Movement Result" {
+       Name "SCR_AI Process Failed Movement Result"
+       EditorPos 342.451 810.494
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 15
+         PortName "MoveResult"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 8
+         PortName "FailedHandlerId"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "IsWaypointRelated"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 21
+         PortName "MoveLocation"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+ Variables {
+  Variable precisionXZ {
+   VariableName "precisionXZ"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable moveResult {
+   VariableName "moveResult"
+   VariableTypeName "int"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable isWaypointRelated {
+   VariableName "isWaypointRelated"
+   VariableTypeName "bool"
+   VariableExposedInput 1
+   VariableExposedOutput 0
+  }
+  Variable dontExecute {
+   VariableName "dontExecute"
+   VariableTypeName "bool"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable moveEntity {
+   VariableName "moveEntity"
+   VariableTypeName "IEntity"
+   VariableExposedInput 1
+   VariableExposedOutput 0
+  }
+  Variable failedHadlerId {
+   VariableName "failedHadlerId"
+   VariableTypeName "int"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable moveLocation {
+   VariableName "moveLocation"
+   VariableTypeName "vector"
+   VariableExposedInput 1
+   VariableExposedOutput 0
+  }
+  Variable completionDistance {
+   VariableName "completionDistance"
+   VariableTypeName "float"
+   VariableExposedInput 1
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference precisionXZ {
+   VariableType 0
+   EditorPos -2422.382 1379.466
+   Group "{5C8EE28CE23F7241}"
+  }
+  VariableReference precisionXZ {
+   VariableType 0
+   EditorPos -1881.394 1138.019
+   Group "{5C8EE28CE23F7241}"
+  }
+  VariableReference moveResult {
+   VariableType 1
+   EditorPos -292.858 1623.454
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference isWaypointRelated {
+   VariableType 2
+   EditorPos 69.562 901.494
+  }
+  VariableReference precisionXZ {
+   VariableType 0
+   EditorPos -690.33 1311.415
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference dontExecute {
+   VariableType 3
+   EditorPos -1105.942 904.633
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference moveResult {
+   VariableType 1
+   EditorPos -102.878 1264.53
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference moveEntity {
+   VariableType 4
+   EditorPos -1515.781 1158.632
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference failedHadlerId {
+   VariableType 5
+   EditorPos 122.201 829.244
+  }
+  VariableReference moveEntity {
+   VariableType 4
+   EditorPos -1127.62 1224.633
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference failedHadlerId {
+   VariableType 5
+   EditorPos -286.549 1726.744
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference dontExecute {
+   VariableType 3
+   EditorPos -757.584 1816.816
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference moveEntity {
+   VariableType 4
+   EditorPos -1890.906 2145.221
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference failedHadlerId {
+   VariableType 5
+   EditorPos -102.049 1367.244
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference precisionXZ {
+   VariableType 0
+   EditorPos -1847.025 2287.614
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference moveResult {
+   VariableType 1
+   EditorPos 135.007 750.828
+  }
+  VariableReference dontExecute {
+   VariableType 3
+   EditorPos -2127.228 2143.912
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference moveResult {
+   VariableType 1
+   EditorPos -1171.325 2052.95
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference failedHadlerId {
+   VariableType 5
+   EditorPos -1239.049 2150.494
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference moveLocation {
+   VariableType 6
+   EditorPos -713.386 1227.725
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference dontExecute {
+   VariableType 3
+   EditorPos -640.466 1121.391
+   Group "{5D36DA60A56DFE3B}"
+  }
+  VariableReference moveLocation {
+   VariableType 6
+   EditorPos 97.479 975.883
+  }
+  VariableReference completionDistance {
+   VariableType 7
+   EditorPos -2354.072 1137.256
+   Group "{5C8EE28CE23F7241}"
+  }
+ }
+ Groups {
+  BTGroup "{5D36DA60A56DFE3B}" {
+   Name "Move to either entity, location or waypoint"
+   Color 0.6 0.6 0.6 0.251
+  }
+  BTGroup "{5C8EE28CE23F7241}" {
+   Name "Should use vehicles or not?"
+   Color 0.6 0.6 0.6 0.251
+  }
+ }
+}

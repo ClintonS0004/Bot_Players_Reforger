@@ -129,6 +129,15 @@ BehaviorTree "{B496CA74B3D8FCE4}AI/BehaviorTrees/Waypoints/CLINTON_CloseSoldiers
     }
    }
   }
+  SCR_AIDropMagazines "SCR_AI Drop Magazines" {
+   Name "SCR_AI Drop Magazines"
+   EditorPos 388 73
+   InPorts {
+    SingleInputPortContainer SingleInputPortContainerClass {
+     PortName "MagazineWell"
+    }
+   }
+  }
  }
  Variables {
   Variable radius {
