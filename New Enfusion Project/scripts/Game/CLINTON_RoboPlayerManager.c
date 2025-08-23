@@ -12,6 +12,8 @@ class CLINTON_RoboPlayerManager
 	
 	ref protected SCR_BasePlayerLoadout 			  defaultUSLoadout = null;
 	ref protected map<string, ref array<SCR_AIGroup>> m_aGroups        = new map<string, ref array<SCR_AIGroup>>();
+	// a ref to a null object signifies a released/free compartment
+	protected ref map<AIAgent,ref BaseCompartmentSlot> m_mAgentsReservedCompartment;
 	
 	protected static CLINTON_RoboPlayerManager s_Instance;
 	protected static float standard_respawn_time;
@@ -46,6 +48,8 @@ class CLINTON_RoboPlayerManager
 				standard_respawn_time = 10.0;
 			}
 		}
+		
+		m_mAgentsReservedCompartment = new map<AIAgent,ref BaseCompartmentSlot>();
 	}
 	
 	void ~CLINTON_RoboPlayerManager(){
@@ -408,6 +412,19 @@ class CLINTON_RoboPlayerManager
 			Print("Faction list size not ready!", LogLevel.ERROR);
 		}
 		return m_iFactionListSize;
+	}
+	
+	void SetPlayerSeat(SCR_ChimeraAIAgent c, BaseCompartmentSlot b)
+	{
+		m_mAgentsReservedCompartment.Set(c, b);
+	}
+	
+	// When using the Carpool behavior, a player/agent will reserve a seat in a nearby vehicle
+	bool QueryPlayerSeatingArangement(SCR_ChimeraAIAgent c)
+	{
+		BaseCompartmentSlot b = m_mAgentsReservedCompartment.Get(c);
+		if (!b) return false;  // No reservation
+		return true;
 	}
 }
 

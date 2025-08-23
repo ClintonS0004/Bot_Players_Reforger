@@ -1,0 +1,194 @@
+BehaviorTree {
+ Name "AI/BehaviorTrees/Waypoints/WP_Carpool.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos -311.855 -203.7
+   Nodes {
+    Sequence Sequence {
+     Name "Sequence"
+     EditorPos -316.177 -67.482
+     Nodes {
+      SCR_AICarpoolActivityParameters "SCR_AI Carpool Activity Parameters" {
+       Name "SCR_AI Carpool Activity Parameters"
+       EditorPos -894.01 108.445
+       OutPorts {
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 0
+         PortName "WaypointRelated"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 2
+         PortName "Waypoint"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 5
+         PortName "Position"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 1
+         PortName "PriorityLevel"
+        }
+       }
+      }
+      Repeater Repeater {
+       Name "Repeater"
+       EditorPos -122.325 130.415
+       Nodes {
+        Sequence Sequence {
+         Name "Sequence"
+         EditorPos -126.002 236.362
+         Nodes {
+          AITaskIdle Idle {
+           Name "Idle"
+           EditorPos -300.169 359.404
+           Period 5.12
+          }
+          Selector Selector {
+           Name "Selector"
+           EditorPos 30.606 426.471
+           Nodes {
+            CLINTON_AIDecoTestGroupStillCarpoolCondition "CLINTON_AI Deco Test Group Still Carpool Condition" {
+             Name "CLINTON_AI Deco Test Group Still Carpool Condition"
+             EditorPos -232.694 666.143
+             NegativeCondition 1
+            }
+            SCR_AICompleteWaypoint "SCR_AI Complete Waypoint" {
+             Name "SCR_AI Complete Waypoint"
+             EditorPos 396.948 650.935
+             InPorts {
+              SingleInputPortContainer SingleInputPortContainer {
+               Port -1
+               PortName "WaypointIn"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  SCR_AIGetWaypointParameters "SCR_AI Get Waypoint Parameters" {
+   Name "SCR_AI Get Waypoint Parameters"
+   EditorPos -915.68 317.181
+   InPorts {
+    SingleInputPortContainer SingleInputPortContainer {
+     Port -1
+     PortName "WaypointIn"
+    }
+   }
+   OutPorts {
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port -1
+     PortName "WaypointOut"
+    }
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port -1
+     PortName "Radius"
+    }
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port -1
+     PortName "Origin"
+    }
+    SingleOutputPortContainer SingleOutputPortContainer {
+     Port -1
+     PortName "PriorityLevel"
+    }
+   }
+  }
+  SCR_AISendGoalMessage_Carpool "SCR_AI Send Goal Message_ Carpool" {
+   Name "SCR_AI Send Goal Message_ Carpool"
+   EditorPos -694.657 459.93
+   InPorts {
+    SingleInputPortContainer SingleInputPortContainer {
+     Port -1
+     PortName "Receiver"
+    }
+    SingleInputPortContainer SingleInputPortContainer {
+     Port 4
+     PortName "PriorityLevel"
+    }
+    SingleInputPortContainer SingleInputPortContainer {
+     Port 3
+     PortName "IsWaypointRelated"
+    }
+    SingleInputPortContainer SingleInputPortContainer {
+     Port 6
+     PortName "Waypoint Origin"
+    }
+   }
+  }
+  AITaskReturnState "Return State" {
+   Name "Return State"
+   EditorPos -82.825 843.057
+   Result RUNNING
+  }
+ }
+ Variables {
+  Variable bWaypointRelated {
+   VariableName "bWaypointRelated"
+   VariableTypeName "bool"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable fPriorityLevel {
+   VariableName "fPriorityLevel"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable waypoint {
+   VariableName "waypoint"
+   VariableTypeName "AIWaypoint"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable unit {
+   VariableName "unit"
+   VariableTypeName "AIAgent"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable vPosition {
+   VariableName "vPosition"
+   VariableTypeName "vector"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference bWaypointRelated {
+   VariableType 0
+   EditorPos -551.023 82.685
+  }
+  VariableReference fPriorityLevel {
+   VariableType 1
+   EditorPos -549.01 344.712
+  }
+  VariableReference waypoint {
+   VariableType 2
+   EditorPos -550.103 167.842
+  }
+  VariableReference bWaypointRelated {
+   VariableType 0
+   EditorPos -1029.997 659.455
+  }
+  VariableReference fPriorityLevel {
+   VariableType 1
+   EditorPos -1027.352 577.46
+  }
+  VariableReference vPosition {
+   VariableType 4
+   EditorPos -548.55 255.3
+  }
+  VariableReference vPosition {
+   VariableType 4
+   EditorPos -1027.812 744.843
+  }
+ }
+}

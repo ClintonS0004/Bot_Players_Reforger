@@ -156,3 +156,47 @@ class CLINTON_AIDecoTestIsInVehicleCondition : DecoratorTestScripted
 		return false; 
 	}
 };
+
+class CLINTON_AIDecoTestReservedSeatsInVehicleCondition : DecoratorScripted
+{
+	static const string VEHICLE_PORT = "Vehicle";
+	protected override bool TestFunction(AIAgent owner)
+	{
+		IEntity vic;
+		GetVariableIn(VEHICLE_PORT, vic);
+		
+		if(!vic		)	return false;
+		
+		BaseCompartmentManagerComponent compMan = BaseCompartmentManagerComponent.Cast(vic.FindComponent(BaseCompartmentManagerComponent));
+		if (!compMan)	return false;
+		array<BaseCompartmentSlot> compartments = {};
+		compMan.GetCompartments(compartments);
+		foreach (BaseCompartmentSlot comp: compartments)
+		{
+			if (comp.IsReserved() && !comp.GetOccupant()) 	return false;
+		}
+		
+		return true;
+	}
+	
+	//-----------------------------------------------------------------------------------------------------
+	protected static override bool VisibleInPalette()
+	{
+		return true;
+	}	
+	
+	//-----------------------------------------------------------------------------------------------------
+	protected static override string GetOnHoverDescription()
+	{
+		return "Compartments can be reserved by the GetIn behavior. Then no reservations means no-one is trying to board the vehicle.";
+	}
+	
+	//-----------------------------------------------------------------------------------------------------
+	protected static ref TStringArray s_aVarsIn = {
+		VEHICLE_PORT
+	};
+	protected override TStringArray GetVariablesIn()
+	{
+		return s_aVarsIn;
+	}
+};

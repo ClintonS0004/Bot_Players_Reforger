@@ -1,0 +1,131 @@
+BehaviorTree "{29A0ABBFA6056863}AI/BehaviorTrees/Chimera/Group/ActivityCarpool.bt" {
+ Name "AI/BehaviorTrees/Chimera/Group/ActivityCarpool.bt"
+ Nodes {
+  RootNode Root {
+   Name "Root"
+   EditorPos -50 -45
+   Nodes {
+    Sequence Sequence {
+     Name "Sequence"
+     EditorPos -56.968 113.7
+     Nodes {
+      SCR_AICarpoolActivityParameters "SCR_AI Carpool Activity Parameters" {
+       Name "SCR_AI Carpool Activity Parameters"
+       EditorPos -651.257 269.555
+       OutPorts {
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 0
+         PortName "WaypointRelated"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 1
+         PortName "Waypoint"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 6
+         PortName "Position"
+        }
+        SingleOutputPortContainer SingleOutputPortContainer {
+         Port 2
+         PortName "PriorityLevel"
+        }
+       }
+      }
+      SCR_AISendGoalMessage_Carpool "SCR_AI Send Goal Message_ Carpool" {
+       Name "SCR_AI Send Goal Message_ Carpool"
+       EditorPos 96.545 581.282
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
+         PortName "Receiver"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 3
+         PortName "PriorityLevel"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 4
+         PortName "IsWaypointRelated"
+        }
+        SingleInputPortContainer SingleInputPortContainer {
+         Port 5
+         PortName "Waypoint Origin"
+        }
+       }
+       m_sText "Hello"
+       m_fPriorityLevel 80
+       m_bIsWaypointRelated 1
+      }
+      AITaskReturnState "Return State" {
+       Name "Return State"
+       EditorPos 615.528 380.016
+       Result RUNNING
+      }
+     }
+    }
+   }
+  }
+ }
+ Variables {
+  Variable bWaypoinyRelated {
+   VariableName "bWaypoinyRelated"
+   VariableTypeName "bool"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable waypoint {
+   VariableName "waypoint"
+   VariableTypeName "AIWaypoint"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable fPriorityLevel {
+   VariableName "fPriorityLevel"
+   VariableTypeName "float"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable unit {
+   VariableName "unit"
+   VariableTypeName "AIAgent"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+  Variable vPosition {
+   VariableName "vPosition"
+   VariableTypeName "vector"
+   VariableExposedInput 0
+   VariableExposedOutput 0
+  }
+ }
+ VariablesRefs {
+  VariableReference bWaypoinyRelated {
+   VariableType 0
+   EditorPos -177.942 267.674
+  }
+  VariableReference waypoint {
+   VariableType 1
+   EditorPos -180.984 352.843
+  }
+  VariableReference fPriorityLevel {
+   VariableType 2
+   EditorPos -180.613 523.854
+  }
+  VariableReference fPriorityLevel {
+   VariableType 2
+   EditorPos -206.755 630.601
+  }
+  VariableReference bWaypoinyRelated {
+   VariableType 0
+   EditorPos -208.276 711.207
+  }
+  VariableReference vPosition {
+   VariableType 4
+   EditorPos -210 794
+  }
+  VariableReference vPosition {
+   VariableType 4
+   EditorPos -179.4 438.15
+  }
+ }
+}

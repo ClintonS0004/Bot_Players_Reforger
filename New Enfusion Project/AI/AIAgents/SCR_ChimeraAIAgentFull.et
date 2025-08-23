@@ -1,0 +1,12 @@
+SCR_ChimeraAIAgent {
+ ID "50C4E8413B94E8B0"
+ components {
+  SCR_AIConfigComponent "{5122F2C32CDD251C}" {
+   m_aGoalReactions {
+    SCR_AIGoalReaction_Carpool "{65F4556964AB6C9C}" {
+     m_eType CARPOOL
+    }
+   }
+  }
+ }
+}
