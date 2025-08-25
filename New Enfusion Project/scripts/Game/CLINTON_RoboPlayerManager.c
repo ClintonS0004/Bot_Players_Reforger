@@ -641,6 +641,8 @@ class CLINTON_Virtual_Player
 					faction_groups.Insert(closest_group);
 					groups.Set(this.GetFactionKey(), faction_groups);
 					terminate = true;
+					
+					current_group = closest_group;
 				}
 			}
 			else

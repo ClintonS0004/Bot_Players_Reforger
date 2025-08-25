@@ -110,8 +110,13 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 		{
 			foreach( SCR_CaptureAndHoldArea cap_i : m_aCaptureAreas)
 					{
-						Faction ownerFaction = SCR_CaptureArea.Cast(cap_i).GetOwningFaction();						
-						if( ownerFaction.GetFactionKey() == factionKey) continue;
+						SCR_CaptureArea debug_me = SCR_CaptureArea.Cast(cap_i);
+						Faction ownerFaction = debug_me.GetOwningFaction();
+				
+						if( ownerFaction != null)  // if it's null still consider it
+						{
+							if( ownerFaction.GetFactionKey() == factionKey ) continue;
+						}
 						if( !closest_point )
 						{
 							closest_point = cap_i;
@@ -140,10 +145,13 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 			if( GetGame().GetWorld().IsEditMode()) return false;
 			EntitySpawnParams spawnParamsT = new EntitySpawnParams();
 			spawnParamsT.TransformMode = ETransformMode.WORLD;
-			spawnParamsT.Transform[3] = leaderPosition; // interpreted as a vector                     I can't get a GetInNearest waypoint setup that works with a scattered group too far to all board a vehicle
+			spawnParamsT.Transform[3] = closest_point.GetOrigin(); // interpreted as a vector                 I can't get a GetInNearest waypoint setup that works with a scattered group too far to all board a vehicle
+			// spawnParamsT.Transform[3] = leaderPosition; // interpreted as a vector                     I can't get a GetInNearest waypoint setup that works with a scattered group too far to all board a vehicle
 																										// Try changing the radius setting on the waypoint, and even setting the completion condition to any member (or coding your own condition prehaps? :) )
-			IEntity new_waypointT = GetGame().SpawnEntityPrefab(Resource.Load("{B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et"), GetGame().GetWorld(), spawnParamsT);
-			grp.AddWaypoint(SCR_BoardingTimedWaypoint.Cast(new_waypointT));
+			// {20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et
+			// {B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et
+			IEntity new_waypointT = GetGame().SpawnEntityPrefab(Resource.Load("{20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et"), GetGame().GetWorld(), spawnParamsT);
+			grp.AddWaypoint(SCR_CarpoolWaypoint.Cast(new_waypointT));
 			
 			if( !marker )
 			{  // Make waypoint
@@ -245,7 +253,7 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 		if( !coords ) return true;
 		if( !checking ) register_a_group( SCR_AIGroup.Cast(grp), factionKey, coords);
 		
-		return false;
+		// return false;
 		EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(  // Can't find an Event Handler to create an invoker, see youtbe
 		SCR_AIGroup.Cast(grp).FindComponent(EventHandlerManagerComponent));
 		
@@ -334,6 +342,7 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 					if( !closest_point )
 					{
 						// TODO: Make a Snd or defend waypoint or soomthing
+						
 					}
 					// Possibly factor in Conflict bases
 					
@@ -345,14 +354,15 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 				
 				if ( false && grp.m_aStaticVehicles.Count() == 0 && !ChimeraCharacter.Cast(grp.GetLeaderEntity()).IsInVehicle())
 				{
-					// {13749E0FA05C1D5B}Prefabs/AI/Waypoints/CLINTON_GetInNearestLarger_Any.et
-					// {B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et
+					// {04E9DFE7245455FF}Prefabs/AI/Waypoints/CLINTON_GetInNearestLarger_NoAuto.et
+					// {20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et
 					if( GetGame().GetWorld().IsEditMode()) return;
 					EntitySpawnParams spawnParamsT = new EntitySpawnParams();
 					spawnParamsT.TransformMode = ETransformMode.WORLD;
-					spawnParamsT.Transform[3] = leaderPosition; // interpreted as a vector
+					spawnParamsT.Transform[3] = closest_point.GetOrigin(); // interpreted as a vector
+					//spawnParamsT.Transform[3] = leaderPosition; // interpreted as a vector
 					
-					IEntity new_waypointT = GetGame().SpawnEntityPrefab(Resource.Load("{04E9DFE7245455FF}Prefabs/AI/Waypoints/CLINTON_GetInNearestLarger_NoAuto.et"), GetGame().GetWorld(), spawnParamsT);
+					IEntity new_waypointT = GetGame().SpawnEntityPrefab(Resource.Load("{20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et"), GetGame().GetWorld(), spawnParamsT);
 					grp.AddWaypoint(SCR_BoardingTimedWaypoint.Cast(new_waypointT));
 				}
 					

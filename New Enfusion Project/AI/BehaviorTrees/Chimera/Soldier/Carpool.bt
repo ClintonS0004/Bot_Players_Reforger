@@ -93,9 +93,9 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
                    Nodes {
                     AITaskSetVariable "Set Variable" {
                      Name "Set Variable"
-                     EditorPos -598.055 2552.694
+                     EditorPos -595.41 2552.694
                      Group "{660A5D4651B015F7}"
-                     SetValue "20000.0"
+                     SetValue "300.0"
                      OutVariable 6
                     }
                     SCR_AIGetEntityPosition "SCR_AI Get Entity Position" {
