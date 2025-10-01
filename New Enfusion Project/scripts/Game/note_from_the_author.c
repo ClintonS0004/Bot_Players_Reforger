@@ -138,3 +138,104 @@ gm.AskAddAiMemberToGroup(
 I had to override the config file of the fullscreen map. This is found as a 
 setting for a (map) component of the gamemode entity
 */
+
+/*********************************************************
+ NextObjective original implementation
+if( !grp ) continue;  // Groups that are player's cause problems when debugging
+		AIWaypoint marker = null;
+		vector leaderPosition = grp.GetLeaderEntity().GetOrigin();
+		SCR_CaptureAndHoldArea closestNeutralPoint = null;
+		
+		if(m_aCaptureAreas)  // If CaP area's exist and Initialised
+		{
+			// TODO: Add sharing objectives around to each group
+			foreach( SCR_CaptureAndHoldArea cap_i : m_aCaptureAreas)
+			{
+				// Considers the Capture Area taken when triggered to be owned by you
+				Faction ownerFaction = SCR_CaptureArea.Cast(cap_i).GetOwningFaction();
+				
+				if( ownerFaction == factionWhichOwnsWP) continue;
+				if( cap_i == current_area) continue;
+				if( !closestNeutralPoint )
+				{
+					closestNeutralPoint = cap_i;
+					continue;
+				}
+				if( vector.Distance(leaderPosition, closestNeutralPoint.GetOrigin()) > vector.Distance(leaderPosition, cap_i.GetOrigin()))
+				{
+					closestNeutralPoint = SCR_CaptureAndHoldArea.Cast(cap_i);
+				}
+			}
+			if( !closestNeutralPoint )
+			{
+				// TODO: Make a Snd or defend waypoint or soomthing
+				
+			}
+			// Possibly factor in Conflict bases
+			
+			// Instead of making a waypoint for each group, make a waypoint for an area
+			ref map<SCR_CaptureAndHoldArea, AIWaypoint> captureAreaToWaypoint = new map<SCR_CaptureAndHoldArea, AIWaypoint>();
+			faction_and_waypoints.Find(factionWhichOwnsWP_key, captureAreaToWaypoint);
+			captureAreaToWaypoint.Find(closestNeutralPoint, marker);					
+		}
+		
+		if ( false && grp.m_aStaticVehicles.Count() == 0 && !ChimeraCharacter.Cast(grp.GetLeaderEntity()).IsInVehicle())
+		{
+			// {04E9DFE7245455FF}Prefabs/AI/Waypoints/CLINTON_GetInNearestLarger_NoAuto.et
+			// {20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et
+			if( GetGame().GetWorld().IsEditMode()) return;
+			EntitySpawnParams spawnParamsT = new EntitySpawnParams();
+			spawnParamsT.TransformMode = ETransformMode.WORLD;
+			spawnParamsT.Transform[3] = closestNeutralPoint.GetOrigin(); // interpreted as a vector
+			//spawnParamsT.Transform[3] = leaderPosition; // interpreted as a vector
+			
+			IEntity new_waypointT = GetGame().SpawnEntityPrefab(Resource.Load("{20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et"), GetGame().GetWorld(), spawnParamsT);
+			grp.AddWaypoint(SCR_BoardingTimedWaypoint.Cast(new_waypointT));
+		}
+			
+		if( !marker )
+		{  // If the closest area hasn't been given a waypoint
+			if( GetGame().GetWorld().IsEditMode()) return;
+	
+			EntitySpawnParams spawnParams = new EntitySpawnParams();
+			spawnParams.TransformMode = ETransformMode.WORLD;
+			spawnParams.Transform[3] = closestNeutralPoint.GetOrigin(); // interpreted as a vector
+			
+			IEntity new_waypoint = GetGame().SpawnEntityPrefab(Resource.Load("{750A8D1695BD6998}Prefabs/AI/Waypoints/AIWaypoint_Move.et"), GetGame().GetWorld(), spawnParams);
+			grp.AddWaypoint(AIWaypoint.Cast(new_waypoint));
+			
+			ref map<SCR_CaptureAndHoldArea, AIWaypoint> captureAreaToWaypoint = new map<SCR_CaptureAndHoldArea, AIWaypoint>();
+			faction_and_waypoints.Find(factionWhichOwnsWP_key, captureAreaToWaypoint);
+			
+			marker = AIWaypoint.Cast(new_waypoint);
+			
+			captureAreaToWaypoint.Set(closestNeutralPoint, marker);
+			faction_and_waypoints.Set(factionWhichOwnsWP_key, captureAreaToWaypoint);
+			
+			m_mWaypointToCapturepoint.Set( marker, closestNeutralPoint);
+		}
+		if(marker != wp)
+		{  // If the new Waypoint is not the Waypoint which was finished to trigger this
+			//
+			// TODO: Here we can add GetIn waypoints in the future
+			 
+			
+			grp.RemoveWaypointFromGroup(wp);
+			
+			ref map<SCR_CaptureAndHoldArea, ref array<SCR_AIGroup>> task_to_group = new map<SCR_CaptureAndHoldArea, ref array<SCR_AIGroup>>();
+			faction_and_tasks.Find(factionWhichOwnsWP_key, task_to_group);
+			
+			array<SCR_AIGroup>.Cast(task_to_group.Get(current_area)).RemoveItem(grp);
+			array<SCR_AIGroup> giveUs = array<SCR_AIGroup>.Cast(m_mWaypointToGroup.Get(wp));
+			giveUs.RemoveItem(grp);
+			m_mWaypointToGroup.Set(wp, giveUs);
+			m_mWaypointToCapturepoint.Remove(wp);
+			
+			grp.AddWaypointToGroup(marker);  
+			array<SCR_AIGroup>.Cast(task_to_group.Get(closestNeutralPoint)).Insert(grp);
+			ref array<SCR_AIGroup> markus = array<SCR_AIGroup>.Cast(m_mWaypointToGroup.Get(marker));
+			if(!markus) markus = new array<SCR_AIGroup>();
+			markus.Insert(grp);
+			m_mWaypointToGroup.Set(marker, markus);
+			m_mWaypointToCapturepoint.Set( marker, closestNeutralPoint);
+		}*/

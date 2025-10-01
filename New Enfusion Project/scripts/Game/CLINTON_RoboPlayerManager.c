@@ -7,6 +7,7 @@ class CLINTON_RoboPlayerManager
 	protected int m_iFactionListSize;
 	
 	ref protected static set<string> 								   m_aFactionsList = new set<string>();
+	[RplProp()]
 	ref protected static array<ref CLINTON_Virtual_Player> 			   m_aBots 		   = {};
 	ref protected static map<string, ref array<SCR_BasePlayerLoadout>> loadouts 	   = new map<string, ref array<SCR_BasePlayerLoadout>>();
 	
@@ -18,7 +19,7 @@ class CLINTON_RoboPlayerManager
 	protected static CLINTON_RoboPlayerManager s_Instance;
 	protected static float standard_respawn_time;
 	
-	void CLINTON_RoboPlayerManager(notnull World world)
+	void CLINTON_RoboPlayerManager()
 	{
 		if (s_Instance)
 		{
@@ -33,6 +34,9 @@ class CLINTON_RoboPlayerManager
 		
 		m_iAmount = 0;
 		m_aBots = {};
+		
+		World world = GetGame().GetWorld();
+		if (!world) return;
 		
 		edit_world(world);
 		discover_loadouts(world);
@@ -124,35 +128,63 @@ class CLINTON_RoboPlayerManager
 	
 	void add_bots_on_each_team(int quantity, int group_setting = 0)
 	{
+		//Print("authority-side code");
+
+		//if (turningOn == m_bIsTurnedOn)				// the authority has authority
+		//	return;									// prevent useless network messages
+		
 		foreach(string faction : m_aFactionsList)
 		{
 			for(int i = 0; i < quantity; i++)
 			{
-				m_aBots.Insert(new CLINTON_Virtual_Player(faction, group_setting));
+				CLINTON_Virtual_Player newPlayer = new CLINTON_Virtual_Player();
+				newPlayer.SetFactionKey(faction);
+				newPlayer.SetGroupSettings(group_setting);
+				m_aBots.Insert(newPlayer);
 				
 			}
 		}
+		
+		//Replication.BumpMe();
+	}
+	
+	protected void OnAddUpdate()
+	{
+		Print("proxy-side code");					// this method is called on proxies when m_bIsTurnedOn is updated through Replication
+													// it is NOT called on the authority
+		//SetLedLightColour();
+		SPK_myMenuUI openedMenu = SPK_myMenuUI.GetInstance();
+		if (!openedMenu)  // If the client doesn't have the menu open then forget about it
+			return;
+		else
+			openedMenu.UpdatePlayerList();
 	}
 	
 	void add_bots_on_faction(string faction, int quantity, int group_setting = 0)
 	{
 		for(int i = 0; i < quantity; i++)
 		{
-			m_aBots.Insert(new CLINTON_Virtual_Player(faction, group_setting));
-			//UpdatePlayerList(m_aBots.Count());
+			CLINTON_Virtual_Player newPlayer = new CLINTON_Virtual_Player();
+			newPlayer.SetFactionKey(faction);
+			newPlayer.SetGroupSettings(group_setting);
+			m_aBots.Insert(newPlayer);
 		}
 	}
 	
 	// I can't figure out adding menu entries here, unlike in removing
 	// Also I'm sending back the characters name
-	string add_bot(string faction, int group_setting = 0)
+	
+	void add_bot(string faction, int group_setting = 0, bool customNames = false)
 	{
-		CLINTON_Virtual_Player b = new CLINTON_Virtual_Player(faction, group_setting);
-		m_aBots.Insert(b);
-		return b.GetVirtualPlayerName();
+		Print("authority-side code | add_bot");
+		CLINTON_Virtual_Player newPlayer = new CLINTON_Virtual_Player();
+		newPlayer.SetFactionKey(faction);
+		newPlayer.SetGroupSettings(group_setting);
+		m_aBots.Insert(newPlayer);
+		//Replication.BumpMe();
 	}
 	
-	array<int> remove_bots_on_each_team(int quantity, array<ref SCR_PlayerListEntry> widgets_representing_bot)
+	array<int> remove_bots_on_each_team(int quantity, array<ref SCR_BotPlayerListEntry> widgets_representing_bot)
 	{
 		array<int> removed_bots = {};
 		
@@ -203,7 +235,7 @@ class CLINTON_RoboPlayerManager
 	}
 	
 	
-	array<int> remove_bots_on_faction(string faction, int quantity, array<ref SCR_PlayerListEntry> widgets_representing_bot)
+	array<int> remove_bots_on_faction(string faction, int quantity, array<ref SCR_BotPlayerListEntry> widgets_representing_bot)
 	{
 		array<int> removed_bots = {};
 		
@@ -374,6 +406,11 @@ class CLINTON_RoboPlayerManager
 		return this.m_aGroups;
 	}
 	
+	ref array<SCR_AIGroup> GetGroups(Faction f)
+	{
+		return this.m_aGroups.Get(f.GetFactionKey());
+	}
+	
 	void SetGroups( string key, array<SCR_AIGroup> val )
 	{
 		this.m_aGroups.Set(key, val);
@@ -381,7 +418,7 @@ class CLINTON_RoboPlayerManager
 	
 	string GetVirtualPlayerName(int id)
 	{
-		return "Bot_" + id.ToString();
+		return GetPlayer(id).GetPlayerName();
 	}
 	
 	string GetVirtualPlayerFactionKey(int id)
@@ -426,6 +463,57 @@ class CLINTON_RoboPlayerManager
 		if (!b) return false;  // No reservation
 		return true;
 	}
+	
+	// Networking Stuff
+	//protected CLINTON_Virtual_Player virtualPlayerData;
+	
+	// IDK what this is, I just copied the 6th Modding Bootcamp
+	static bool Extract(CLINTON_RoboPlayerManager instance, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+		bool tern = true;
+		foreach (CLINTON_Virtual_Player b : instance.m_aBots)
+		{
+			tern = tern && CLINTON_Virtual_Player.Extract(b, ctx, snapshot);
+		}
+		return tern;
+	}
+	
+	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, CLINTON_RoboPlayerManager instance)
+	{
+		bool tern = true;
+		foreach (CLINTON_Virtual_Player b : instance.m_aBots)
+		{
+			tern = tern && CLINTON_Virtual_Player.Inject(snapshot, ctx, b);
+		}
+		return tern;
+	}
+	
+	static void Encode(SSnapSerializerBase snapshot, ScriptCtx ctx, ScriptBitSerializer packet)
+	{
+		CLINTON_Virtual_Player.Encode(snapshot, ctx, packet);
+	}
+	
+	static bool Decode(ScriptBitSerializer packet, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+		return CLINTON_Virtual_Player.Decode(packet, ctx, snapshot);
+	}
+	
+	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx ctx)
+	{
+		return true;
+		return CLINTON_Virtual_Player.SnapCompare(lhs, rhs, ctx);
+	}
+	
+	static bool PropCompare(CLINTON_RoboPlayerManager instance, SSnapSerializerBase snapshot, ScriptCtx ctx)
+	{
+		bool tern = true;
+		foreach (CLINTON_Virtual_Player b : instance.m_aBots)
+		{
+			tern = tern && CLINTON_Virtual_Player.PropCompare(b, snapshot, ctx);  // Check video for whatr should return false and modify/inject data
+		}
+		return tern;
+	}
+	
 }
 
 
@@ -438,32 +526,24 @@ class CLINTON_Virtual_Player
 	protected string  m_sFactionKey;
 	protected int m_iGroupSetting;
 	protected bool m_bCharacterWaitingToRespawn;
+	protected string m_sCharacterName;
+	protected bool m_bUseCustomNames;
 	
 	float m_fSpawnDelay;
 	
-	CLINTON_Virtual_Player CLINTON_Virtual_Player(string factionKey = "US", int group_setting = 0)
-	{
-		/* singleton code
-		
-		if (s_Instance)
-		{
-			Print("Only one instance of CLINTON_Virtual_Player is allowed in the world!", LogLevel.WARNING);
-			// delete this;
-			// return null;
-			return this;
-		}
-		*/
-
-
-		// rest of the init code
+	// string factionKey = "US", int group_setting = 0, bool useCustomNames = false / removed parameters for the replication?
+	CLINTON_Virtual_Player CLINTON_Virtual_Player()
+	{		
+		// A bot's Id is just their position in an array storing them
 		
 		m_bCharacterAlive = false;
 		m_bCharacterWaitingToRespawn = false;
 		m_fSpawnDelay = 0.0;
 		m_cCurrentCharacter = null;
-		m_sFactionKey = factionKey;
-		m_iGroupSetting = group_setting;  // TODO: Implement group creating settings
-		// a bots id is just their position in an array storing them
+		m_sFactionKey = "US";
+		m_iGroupSetting = 0;  // TODO: Implement group creating settings
+		m_sCharacterName = "";
+		m_bUseCustomNames = false;
 		
 		return this;
 	}
@@ -476,24 +556,6 @@ class CLINTON_Virtual_Player
 		}
 		
 		delete m_OnCharacterDeath;
-	}
-	
-	// Now avoiding using the first characters identity to avoid UI complications
-	string GetVirtualPlayerName()
-	{
-			ChimeraCharacter char = ChimeraCharacter.Cast(GetCurrentCharacter());
-			if(!char)
-			{
-				 return "[Character not dressed yet!]";
-			}
-			SCR_CharacterIdentityComponent idComp = SCR_CharacterIdentityComponent.Cast(
-				char.FindComponent(SCR_CharacterIdentityComponent));
-			string format = "";
-			string name = "";
-			string alias = "";
-			string surname = "";
-			idComp.GetFormattedFullName(format,name,alias,surname);
-			return name + surname;
 	}
 		
 	ScriptInvokerVoid inoffencive_name()
@@ -554,6 +616,11 @@ class CLINTON_Virtual_Player
 		return m_sFactionKey;
 	}
 	
+	void SetFactionKey(string k)
+	{
+		m_sFactionKey = k;
+	}
+	
 	//------------------------------------------------------------------------------------------------
 	bool spawnIn(map<string, ref array<SCR_AIGroup>> groups)
 	{
@@ -579,6 +646,45 @@ class CLINTON_Virtual_Player
 			spawnParams
 		));
 		check_deaths();
+		
+		// Let's give them a name
+		ChimeraCharacter char;
+		if(m_sCharacterName == "")  // They need a name
+		{
+			if(m_bUseCustomNames != true)
+			{
+				char = ChimeraCharacter.Cast(GetCurrentCharacter());
+				if(!char)
+				{
+					
+					 "ChimeraCharacter not avaliable yet! | CLINTON_RoboPlayerManager.c";
+					return "";
+				}
+				
+				SCR_CharacterIdentityComponent idComp = SCR_CharacterIdentityComponent.Cast(
+					char.FindComponent(SCR_CharacterIdentityComponent));
+				if(!idComp)
+				{
+					"Cannot get SCR_CharacterIdentityComponent! | CLINTON_RoboPlayerManager.c";
+					return "";
+				}
+				string format = "";
+				string name = "";
+				string alias = "";
+				string surname = "";
+				idComp.GetFormattedFullName(format,name,alias,surname);
+				SetPlayerName( name + alias + surname );
+			}
+		}
+		char = ChimeraCharacter.Cast(GetCurrentCharacter());
+		// We need to override each characters name
+		SCR_CharacterIdentityComponent idComp = SCR_CharacterIdentityComponent.Cast(
+					char.FindComponent(SCR_CharacterIdentityComponent));
+		ref Identity ident = idComp.GetIdentity();  // maybe a reference works better?
+		ident.SetName(GetPlayerName());
+		ident.SetAlias("");
+		ident.SetSurname("");
+		// idComp.SetIdentity(i); i is a ref
 		
 		SCR_BaseGameMode 			   bgm = SCR_BaseGameMode.Cast(GetGame().GetGameMode());
 		ref SCR_GroupsManagerComponent gmc = SCR_GroupsManagerComponent.GetInstance();
@@ -737,5 +843,65 @@ class CLINTON_Virtual_Player
 	{
 		array<AIWaypoint> outWaypoints = new array<AIWaypoint>();
 		int waypoint_count = emptGroup.GetWaypoints(outWaypoints);
+	}
+	
+	string GetPlayerName(){ return m_sCharacterName;}
+	
+	void SetPlayerName(string s)
+	{
+		// Please ask about input sanitisation on the discord
+		if(s != "")
+		{
+			m_sCharacterName = s;
+		}
+		return;
+	}
+	
+	void SetGroupSettings(int setting)
+	{
+		m_iGroupSetting = setting;
+	}
+	
+	// IDK what this is, I just copied the 6th Modding Bootcamp
+	static void Encode(SSnapSerializerBase snapshot, ScriptCtx ctx, ScriptBitSerializer packet)
+	{
+		snapshot.EncodeString(packet);
+		snapshot.EncodeString(packet);
+	}
+	
+	static bool Decode(ScriptBitSerializer packet, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+		snapshot.DecodeString(packet);
+		snapshot.DecodeString(packet);
+		
+		return true;
+	}
+	
+	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx ctx)
+	{
+		return lhs.CompareStringSnapshots(rhs)  // m_String
+			&& lhs.CompareStringSnapshots(rhs);  // m_String
+	}
+	
+	static bool PropCompare(CLINTON_Virtual_Player instance, SSnapSerializerBase snapshot, ScriptCtx ctx)
+	{
+		return snapshot.CompareString(instance.m_sFactionKey)
+		    && snapshot.CompareString(instance.m_sCharacterName);
+	}
+	
+	static bool Extract(CLINTON_Virtual_Player instance, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+        snapshot.SerializeString(instance.m_sFactionKey);
+        snapshot.SerializeString(instance.m_sCharacterName);
+		
+		return true;
+	}
+	
+	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, CLINTON_Virtual_Player instance)
+	{
+		snapshot.SerializeString(instance.m_sFactionKey);
+        snapshot.SerializeString(instance.m_sCharacterName);
+		
+		return true;
 	}
 }

@@ -10,14 +10,40 @@ class myNewLayoutClass: SCR_SuperMenuBase
 	// somewhere else
 }
 
+class SCR_BotPlayerListEntry
+{
+	SCR_ScoreInfo m_Info;
+	int m_iID;
+	Widget m_wRow;
+	Faction m_Faction;
+	int m_iSortFrequency;
+
+	SCR_ButtonBaseComponent m_Mute;
+	SCR_ButtonBaseComponent m_Friend;
+	SCR_ComboBoxComponent m_PlayerActionList;
+
+	EditBoxWidget m_wName;
+	TextWidget m_wKills;
+	TextWidget m_wFreq;
+	TextWidget m_wDeaths;
+	TextWidget m_wScore;
+	ImageWidget m_wLoadoutIcon;
+	ImageWidget m_wPlatformIcon;
+	Widget m_wTaskIcon;
+	Widget m_wFactionImage;
+	Widget m_wVotingNotification;
+	Widget m_wBlockedIcon;
+};
+
 class SPK_myMenuUI: SCR_SuperMenuBase
 {    
 	// please copy SCR_PlayerListMenu into here
 	// this class is registered in chimeraMenus.conf
 		
-	protected ref array<ref SCR_PlayerListEntry> m_aEntries = new array<ref SCR_PlayerListEntry>();
+	protected ref array<ref SCR_BotPlayerListEntry> m_aEntries = new array<ref SCR_BotPlayerListEntry>();
 	protected ref map<int, SCR_ScoreInfo> m_aAllPlayersInfo = new map<int, SCR_ScoreInfo>();
-	protected ResourceName m_sScoreboardRow = "{65369923121A38E7}UI/layouts/Menus/PlayerList/PlayerListEntry.layout";
+	// protected ResourceName m_sScoreboardRow = "{65369923121A38E7}UI/layouts/Menus/PlayerList/PlayerListEntry.layout";
+	protected ResourceName m_sScoreboardRow = "{DC9E20F1ACA98BC4}UI/layouts/Menus/PlayerList/BotPlayerListEntry.layout";
 	protected Widget m_wTable;
 	protected ref array<Faction> m_aFactions = {null};
 	
@@ -41,7 +67,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 	protected PlayerController m_PlayerController;
 	protected SCR_BaseScoringSystemComponent m_ScoringSystem;
 	SCR_SortHeaderComponent m_Header;
-	protected SCR_PlayerListEntry m_SelectedEntry;
+	protected SCR_BotPlayerListEntry m_SelectedEntry;
 	protected SocialComponent m_SocialComponent;
 	
 	protected const string FILTER_NAME = "Name";
@@ -55,6 +81,25 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 	protected static ref ScriptInvoker s_OnPlayerListMenu = new ScriptInvoker();
 	
 	protected ref Color m_PlayerNameSelfColor = new Color(0.898, 0.541, 0.184, 1);
+	
+	protected static SPK_myMenuUI s_Instance;
+	
+	void SPK_myMenuUI()
+	{
+		if (s_Instance)
+		{
+			Print("Only one instance of CLINTON_BotsManagerEntity is allowed in the world!", LogLevel.WARNING);
+			delete this;
+			return;
+		}
+
+		s_Instance = this;
+	}
+	
+	static SPK_myMenuUI GetInstance()
+	{
+		return s_Instance;
+	}
 	
 	/*!
 	Get event called when player list opens or closes.
@@ -114,7 +159,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			direction = -1;
 
 		array<string> names = {};
-		foreach (SCR_PlayerListEntry entry : m_aEntries)
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			if (entry.m_wName)
 				names.Insert(entry.m_wName.GetText());
@@ -122,7 +167,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 
 		names.Sort();
 
-		foreach (SCR_PlayerListEntry entry : m_aEntries)
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			if (!entry.m_wName)
 				continue;
@@ -148,7 +193,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		if (reverseSort)
 			direction = -1;
 
-		foreach (SCR_PlayerListEntry entry : m_aEntries)
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			entry.m_wRow.SetZOrder(entry.m_iSortFrequency * direction);
 		}
@@ -321,7 +366,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		
 		s_OnPlayerListMenu.Invoke(true);
 	}
-	
+
 	// Parity check when doing replication
 	
 	// Consider 'updating' the player list by directly deleting or adding layouts
@@ -330,19 +375,33 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 	void CreateEntry(int id, SCR_PlayerDelegateEditorComponent editorDelegateManager, Faction faction = null)
 	{
 		//check for existing entry, return if it exists already
-		foreach (SCR_PlayerListEntry entry : m_aEntries)
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			if (entry.m_iID == id)
 				return;
 		}
 
 		ImageWidget badgeTop, badgeMiddle, badgeBottom;
+		
+		// Delay the widget until the character has a name (has spawned)
+		CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
+		if(!pm)
+		{ 
+			Print("Haven't Initiated CLINTON_RoboPlayerManager!", LogLevel.ERROR);
+            return;
+		}
+		string botName = pm.GetVirtualPlayerName(id);
+		if(botName == "")
+		{
+			GetGame().GetCallqueue().CallLater(CreateEntry, 512, false, id, editorDelegateManager, faction);
+			return;
+		}
 
 		Widget w = GetGame().GetWorkspace().CreateWidgets(m_sScoreboardRow, m_wTable);
 		if (!w)
 			return;
 
-		SCR_PlayerListEntry entry = new SCR_PlayerListEntry();
+		SCR_BotPlayerListEntry entry = new SCR_BotPlayerListEntry();
 		entry.m_iID = id;
 		entry.m_wRow = w;
 
@@ -387,17 +446,20 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 				factionImage.SetVisible(false);
 		}
 
-		entry.m_wName = TextWidget.Cast(w.FindAnyWidget("PlayerName"));
+		entry.m_wName = EditBoxWidget.Cast(w.FindAnyWidget("PlayerName"));
 
 		if (entry.m_wName)
 		{
-			CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
-			if(pm){
+			//CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
+			if(pm)
+			{
 				//delayed_name_set(entry, id);
 				entry.m_wName.SetText(pm.GetVirtualPlayerName(id));
 			}
 			if (entry.m_iID == m_PlayerController.GetPlayerId())
+			{
 				entry.m_wName.SetColor(m_PlayerNameSelfColor);
+			}
 		}
 
 
@@ -467,7 +529,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		Faction entryPlayerFaction;
 		if (!faction)
 		{
-			CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
+			// CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
 			playerFaction = factionManager.GetFactionByKey(pm.GetVirtualPlayerFactionKey(id));
 			entry.m_Faction = playerFaction;
 		}
@@ -499,7 +561,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			return;
 		}
 	
-		string mem = bot.GetVirtualPlayerName();
+		string mem = bot.GetPlayerName();
 		if( mem == "[Character not dressed yet!]")
 		{
 			GetGame().GetCallqueue().CallLater(delayed_name_set, 512, true, entry, bot_id);
@@ -519,13 +581,36 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 	
 	
 	//------------------------------------------------------------------------------------------------
-	void RemoveEntry(notnull SCR_PlayerListEntry entry)
+	void RemoveEntry(notnull SCR_BotPlayerListEntry entry)
 	{
 		if (entry.m_wRow)
 			entry.m_wRow.RemoveFromHierarchy();
 
 
 		m_aEntries.RemoveItem(entry);
+	}
+	
+	void UpdatePlayerList()
+	{
+		// With the Replication Update, delete the table and repopulate on the client's side instead of mutating the list (w/ changes)
+		
+		// Create table
+		if (!m_wTable || m_sScoreboardRow == string.Empty)
+			return;
+
+		//Get editor Delegate manager to check if has editor rights
+		SCR_PlayerDelegateEditorComponent editorDelegateManager = SCR_PlayerDelegateEditorComponent.Cast(SCR_PlayerDelegateEditorComponent.GetInstance(SCR_PlayerDelegateEditorComponent));
+
+		array<ref CLINTON_Virtual_Player> players = CLINTON_RoboPlayerManager.GetPlayers();
+		// GetGame().GetPlayerManager().GetPlayers(ids);
+		
+		m_aEntries.Clear();
+		for (int i = 0; i < players.Count(); i++) // starts from 1 to not have 0-based index miscalculation
+		{
+				CreateEntry(i, editorDelegateManager);
+		}
+		
+		InitSorting();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -547,7 +632,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		if (!m_PlayerController)
 			return;
 		
-		foreach (SCR_PlayerListEntry entry : m_aEntries)
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			if (!entry)
 				continue;
@@ -693,7 +778,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		}
 
 		int lowestZOrder = int.MAX;
-		foreach (SCR_PlayerListEntry entry : m_aEntries)
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			if (!entry.m_wRow)
 				continue;
@@ -729,7 +814,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 				localFaction = factionAffiliation.GetAffiliatedFaction();
 		}
 
-		foreach (SCR_PlayerListEntry entry : m_aEntries)
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			if (entry.m_Faction == localFaction)
 			{
@@ -810,8 +895,15 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		if(!scr) Print("Wrong Handler / Controller", LogLevel.ERROR);
 		int groups_setting = scr.GetCurrentIndex();
 		
+		// TODO: Bot naming convension stuff
+		// Bots are named when they first spawn a character.
+		// The empty string signifies no name.
+		bool useCustomNames = false;
+		
 		int last_existing_bot_index = CLINTON_RoboPlayerManager.GetPlayers().Count();
-		string bot_name;
+		CLINTON_BotsManagerEntity worldEnt = CLINTON_BotsManagerEntity.Cast(GetGame().GetWorld().FindEntityByName("CLINTON_BotsManagerEntity"));
+		if( !worldEnt ) Print("MyScriptedMapUI.c cannot find the CLINTON_BotsManagerEntity! ", LogLevel.ERROR);
+		
 		if(faction_setting < 0)
 		{
 			int j = 0;
@@ -819,9 +911,11 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			{
 				for(int i = 0; i < converted; i++)
 				{
-					bot_name = CLINTON_RoboPlayerManager.getInstance().add_bot( faction.GetFactionKey(), groups_setting);
-					UpdatePlayerList(last_existing_bot_index + j, faction);
-					j = j + 1
+					CLINTON_BotsManagerEntity.GetInstance().RequestAddBots(faction.GetFactionKey(), groups_setting, useCustomNames);
+					// worldEnt.RequestAddBots(faction.GetFactionKey(), groups_setting, useCustomNames);
+					
+					//UpdatePlayerList(last_existing_bot_index + j, faction);  // #### Remove client side UI manip.?
+					j = j + 1;
 				}
 			}
 			//CLINTON_RoboPlayerManager.getInstance().add_bots_on_each_team(converted, groups_setting);
@@ -829,8 +923,9 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			string factionKey = m_aFactions[faction_setting].GetFactionKey();
 			for(int i = 0; i < converted; i++)
 			{
-				bot_name = CLINTON_RoboPlayerManager.getInstance().add_bot(factionKey, groups_setting);
-				UpdatePlayerList(last_existing_bot_index + i, m_aFactions[faction_setting]);
+				CLINTON_BotsManagerEntity.GetInstance().RequestAddBots(factionKey, groups_setting, useCustomNames);
+				//CLINTON_RoboPlayerManager.getInstance().add_bot(factionKey, groups_setting, useCustomNames);
+				//UpdatePlayerList(last_existing_bot_index + i, m_aFactions[faction_setting]);
 			}
 		}
 		

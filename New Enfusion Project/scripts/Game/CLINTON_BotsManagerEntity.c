@@ -9,6 +9,7 @@ class CLINTON_BotsManagerEntity : GenericEntity
 	protected float m_fWaitingTime = float.INFINITY;	// trigger Print on start
 	protected int m_iCycleDuration = 2;				// in seconds
 	
+	[RplProp(onRplName: "OnRoboManagerUpdated")]
 	ref CLINTON_RoboPlayerManager robot_manager;
 	
 	protected static CLINTON_BotsManagerEntity s_Instance;
@@ -48,11 +49,59 @@ class CLINTON_BotsManagerEntity : GenericEntity
 
 		s_Instance = this;
 		
-		SetEventMask(EntityEvent.FRAME);
+		// SetEventMask(EntityEvent.FRAME);
+		
+		// We must belong to some RplComponent in order for replication to work.
+        // We search for it and warn user when we can't find it.
+        auto rplComponent = BaseRplComponent.Cast(GenericEntity.Cast(this).FindComponent(RplComponent));
+        if (!rplComponent)
+        {
+            Print("This example requires that the entity has an RplComponent.", LogLevel.WARNING);
+            return;
+        }
+ 
+        // We only perform simulation on the authority instance, while all proxy
+        // instances just show result of the simulation. Therefore, we only have to
+        // subscribe to "frame" events on authority, leaving proxy instances as
+        // passive components that do something only when necessary.
+        if (rplComponent.Role() == RplRole.Authority)
+        {
+            SetEventMask(EntityEvent.FRAME);
+        }
 		
 		// Initialise
 		World world = GetGame().GetWorld();
-		robot_manager = new CLINTON_RoboPlayerManager(world);
+		robot_manager = new CLINTON_RoboPlayerManager();
 		robot_manager.check_respawns();
+	}
+	
+	static CLINTON_BotsManagerEntity GetInstance()
+	{
+		return s_Instance;
+	}
+	
+	// See: https://community.bistudio.com/wiki/Arma_Reforger:Multiplayer_Scripting#RplRpc
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void RpcAsk_AddBots(string faction, int group_setting, bool customNames)
+	{
+		Print("authority-side code | RpcAsk_AddBots");
+		robot_manager.add_bot( faction, group_setting, customNames);
+		Replication.BumpMe();
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	void RequestAddBots(string faction, int group_setting = 0, bool customNames = false)  // #### Are the different functions necessary?
+	{
+		Print("client-side code | RequestAddBots");
+		Rpc(RpcAsk_AddBots, faction, group_setting, customNames);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	void OnRoboManagerUpdated()
+	{
+		Print("proxy-side code | OnRoboManagerUpdated");	
+		SPK_myMenuUI menu = SPK_myMenuUI.GetInstance();
+		if (menu)
+			menu.UpdatePlayerList();
 	}
 }

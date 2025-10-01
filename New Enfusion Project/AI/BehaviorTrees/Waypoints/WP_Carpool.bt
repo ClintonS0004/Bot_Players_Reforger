@@ -31,6 +31,16 @@ BehaviorTree {
         }
        }
       }
+      SCR_AIGroupSetMovementSpeed "SCR_AI Group Set Movement Speed" {
+       Name "SCR_AI Group Set Movement Speed"
+       EditorPos -334.592 142.962
+       InPorts {
+        SingleInputPortContainer SingleInputPortContainerClass {
+         PortName "Speed"
+        }
+       }
+       m_eSpeed RUN
+      }
       Repeater Repeater {
        Name "Repeater"
        EditorPos -122.325 130.415
