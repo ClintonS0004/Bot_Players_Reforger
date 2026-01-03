@@ -1,0 +1,8 @@
+SCR_CarpoolWaypoint {
+ ID "662ED0C294C75680"
+ AIBehaviorTree "{12B5E7C57B1B48B1}AI/BehaviorTrees/Waypoints/WP_Carpool.bt"
+ Autocomplete 0
+ m_TimedWaypointParameters SCR_AITimedWaypointParameters "{65F48200E64DE2A4}" {
+  m_holdingTime 10
+ }
+}
