@@ -1,0 +1,9 @@
+RplBotsManagerController {
+ ID "66BC60EAFAF72D92"
+ components {
+  RplComponent "{66BC60EAE8AB3E57}" {
+   "Rpl State Override" Runtime
+   Streamable Disabled
+  }
+ }
+}

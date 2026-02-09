@@ -1,0 +1,8 @@
+CLINTON_ReplicationPractice {
+ ID "6684D1493A617F4F"
+ components {
+  RplComponent "{6684D14906E44D09}" {
+  }
+ }
+ coords 5267.152 22.472 4055.755
+}

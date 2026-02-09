@@ -1,7 +1,8 @@
 CLINTON_BotsManagerEntity {
- ID "64B60222AFA4FFDB"
+ ID "6682CE43CD1F41D1"
  components {
-  RplComponent "{667C6ADC9A73B2C3}" {
+  RplComponent "{6682CE43A0E47730}" {
   }
  }
+ coords 102.919 1 160.104
 }

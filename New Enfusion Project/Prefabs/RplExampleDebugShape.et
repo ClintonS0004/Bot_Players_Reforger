@@ -1,0 +1,11 @@
+RplExampleDebugShape {
+ ID "66864AE5CD2BC26B"
+ components {
+  RplExample2ComponentColorAnim "{66864AE0C047D43B}" {
+  }
+  RplComponent "{6686102601486A0F}" {
+   "Rpl State Override" Runtime
+  }
+ }
+ coords 5273.107 23.03 4055.821
+}

@@ -1,0 +1,9 @@
+RplExample3Controller {
+ ID "6688830EB3910462"
+ components {
+  RplComponent "{6688830EBBA281F4}" {
+   "Rpl State Override" Runtime
+  }
+ }
+ coords 5277.573 23.659 4060.244
+}

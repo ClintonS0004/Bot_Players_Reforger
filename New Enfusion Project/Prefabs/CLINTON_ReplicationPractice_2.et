@@ -1,0 +1,11 @@
+CLINTON_ReplicationPractice {
+ ID "66864AE5DF0401B5"
+ components {
+  CLINTON_RplComponentChangeValue "{66864AE0D05F5595}" {
+  }
+  RplComponent "{66864AE0DA9C1165}" {
+   "Rpl State Override" Runtime
+  }
+ }
+ coords 5271.514 22.826 4054.946
+}

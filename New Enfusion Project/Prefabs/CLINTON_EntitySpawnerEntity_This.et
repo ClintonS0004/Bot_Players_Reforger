@@ -1,0 +1,11 @@
+CLINTON_EntitySpawnerEntity {
+ ID "66BC451AD8CDE547"
+ components {
+  CLINTON_BotsManagerSystem "{66BC4519137918BD}" {
+  }
+  RplComponent "{66BC451916BE675B}" {
+   "Rpl State Override" Runtime
+   Streamable Disabled
+  }
+ }
+}
