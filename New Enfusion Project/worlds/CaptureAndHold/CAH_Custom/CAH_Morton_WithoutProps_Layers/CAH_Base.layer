@@ -1,0 +1,38 @@
+SCR_AIWorld : "{9B711C8377D39E6F}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/AIWorld_Eden.et" {
+ components {
+  NavmeshWorldComponent "{5584F30E67F617AD}" {
+   NavmeshSettings NavmeshWorld "{50FC63BEBE3973C5}" {
+    NavmeshFilesConfig BaseNavmeshFilesConfig "{60AEBC5BD6646487}" {
+     NavmeshFileOveride {
+      "{4D4DCF5758664D6B}worlds/CaptureAndHold/CAH_Custom/CAH_Morton/Large_Both_Spawns.nmn"
+     }
+    }
+   }
+  }
+  NavmeshWorldComponent "{5C8C9B750D124A63}" {
+   Enabled 1
+  }
+ }
+ coords 5188.566 15.419 3993.66
+}
+ScriptedChatEntity : "{059B30252CDC7967}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/ChatEntity.et" {
+ coords 5200.971 15.949 3999.92
+}
+PerceptionManager PerceptionManager1 : "{3E623E70C0A2F8E6}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/PerceptionManager.et" {
+ coords 5217.445 17.042 4013.176
+}
+RadioManagerEntity : "{E060C61C7D9D17F9}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/RadioManager.et" {
+ coords 5220.586 17.26 4015.437
+}
+ItemPreviewManagerEntity ItemPreviewManager1 : "{019A3A1A4ACDEC6B}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/ItemPreviewManager.et" {
+ coords 5210.439 16.47 4006.239
+}
+SCR_MPDestructionManager : "{8B629E0A7ABA06BA}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/DestructionManager.et" {
+ coords 5206.456 16.24 4002.988
+}
+BasePreloadManager CaptureAndHoldPreloadManager1 : "{960BE20581DB2C0E}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/CaptureAndHoldPreloadManager1.et" {
+ coords 5195.318 15.68 3996.929
+}
+MusicManager : "{CFC42690EF444EEC}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/Manager_Campaign.et" {
+ coords 5213.573 16.741 4009.358
+}

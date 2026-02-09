@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{019A3A1A4ACDEC6B}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/ItemPreviewManager.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

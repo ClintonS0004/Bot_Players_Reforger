@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{8CFF044D7488B6E8}worlds/CaptureAndHold/CAH_Custom/CAH_Morton_WithoutProps.ent"
+ Configurations {
+  ENTResourceClass PC {
+  }
+  ENTResourceClass XBOX_ONE : PC {
+  }
+  ENTResourceClass XBOX_SERIES : PC {
+  }
+  ENTResourceClass PS4 : PC {
+  }
+  ENTResourceClass PS5 : PC {
+  }
+  ENTResourceClass HEADLESS : PC {
+  }
+ }
+}

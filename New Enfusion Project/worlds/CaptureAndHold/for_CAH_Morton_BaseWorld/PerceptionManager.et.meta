@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{3E623E70C0A2F8E6}worlds/CaptureAndHold/for_CAH_Morton_BaseWorld/PerceptionManager.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

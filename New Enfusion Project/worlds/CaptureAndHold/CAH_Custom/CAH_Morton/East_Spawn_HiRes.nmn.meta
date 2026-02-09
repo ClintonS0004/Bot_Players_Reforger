@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{5438A233DC5EC3ED}worlds/CaptureAndHold/CAH_Custom/CAH_Morton/East_Spawn_HiRes.nmn"
+ Configurations {
+  NavMeshResourceClass PC {
+  }
+  NavMeshResourceClass XBOX_ONE : PC {
+  }
+  NavMeshResourceClass XBOX_SERIES : PC {
+  }
+  NavMeshResourceClass PS4 : PC {
+  }
+  NavMeshResourceClass PS5 : PC {
+  }
+  NavMeshResourceClass HEADLESS : PC {
+  }
+ }
+}

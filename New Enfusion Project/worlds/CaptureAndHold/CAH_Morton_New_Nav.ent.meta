@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{0CAFDBE540650B27}worlds/CaptureAndHold/CAH_Morton_New_Nav.ent"
+ Configurations {
+  ENTResourceClass PC {
+  }
+  ENTResourceClass XBOX_ONE : PC {
+  }
+  ENTResourceClass XBOX_SERIES : PC {
+  }
+  ENTResourceClass PS4 : PC {
+  }
+  ENTResourceClass PS5 : PC {
+  }
+  ENTResourceClass HEADLESS : PC {
+  }
+ }
+}
