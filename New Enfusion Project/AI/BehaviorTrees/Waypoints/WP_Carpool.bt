@@ -35,11 +35,12 @@ BehaviorTree {
        Name "SCR_AI Group Set Movement Speed"
        EditorPos -334.592 142.962
        InPorts {
-        SingleInputPortContainer SingleInputPortContainerClass {
+        SingleInputPortContainer SingleInputPortContainer {
+         Port -1
          PortName "Speed"
         }
        }
-       m_eSpeed RUN
+       m_eSpeed SPRINT
       }
       Repeater Repeater {
        Name "Repeater"
@@ -85,7 +86,7 @@ BehaviorTree {
   }
   SCR_AIGetWaypointParameters "SCR_AI Get Waypoint Parameters" {
    Name "SCR_AI Get Waypoint Parameters"
-   EditorPos -915.68 317.181
+   EditorPos -880 272
    InPorts {
     SingleInputPortContainer SingleInputPortContainer {
      Port -1
@@ -140,35 +141,25 @@ BehaviorTree {
   }
  }
  Variables {
-  Variable bWaypointRelated {
-   VariableName "bWaypointRelated"
-   VariableTypeName "bool"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableBool bWaypointRelated {
+   Flags 0
+   Desc "bool"
   }
-  Variable fPriorityLevel {
-   VariableName "fPriorityLevel"
-   VariableTypeName "float"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableScalar fPriorityLevel {
+   Flags 0
+   Desc "float"
   }
-  Variable waypoint {
-   VariableName "waypoint"
-   VariableTypeName "AIWaypoint"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableEntity waypoint {
+   Flags 0
+   Desc "AIWaypoint"
   }
-  Variable unit {
-   VariableName "unit"
-   VariableTypeName "AIAgent"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableEntity unit {
+   Flags 0
+   Desc "AIAgent"
   }
-  Variable vPosition {
-   VariableName "vPosition"
-   VariableTypeName "vector"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableVector vPosition {
+   Flags 0
+   Desc "vector"
   }
  }
  VariablesRefs {

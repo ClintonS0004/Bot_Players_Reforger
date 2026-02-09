@@ -29,7 +29,7 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
       }
       DecoTestVariable "Test Variable" {
        Name "Test Variable"
-       EditorPos -6.874 -69.876
+       EditorPos -16 -96
        Nodes {
         Selector Selector {
          Name "Selector"
@@ -57,7 +57,7 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
                    Nodes {
                     AITaskMove Move {
                      Name "Move"
-                     EditorPos -655.036 1252.302
+                     EditorPos -608 1248
                      Group "{660A40F3BDBE319A}"
                      InTargetLocation 26
                     }
@@ -71,7 +71,7 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
                   }
                   AITaskIdle Idle {
                    Name "Idle"
-                   EditorPos -187.89 1197.093
+                   EditorPos -144 1104
                    Group "{6606B9A5074F9BD8}"
                   }
                  }
@@ -152,7 +152,7 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
                     }
                     AITaskSetVariable "Set Variable" {
                      Name "Set Variable"
-                     EditorPos 164.391 2453.365
+                     EditorPos 176 2432
                      SetValue "true"
                      OutVariable 24
                     }
@@ -231,7 +231,7 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
                 }
                 AITaskMove Move {
                  Name "Move"
-                 EditorPos 605.393 1183.504
+                 EditorPos 592 976
                  Group "{660A40F3BDBE319A}"
                  InTargetLocation 27
                 }
@@ -283,7 +283,7 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
   }
   SCR_AIFindAvailableVehicle "SCR_AI Find Available Vehicle" {
    Name "SCR_AI Find Available Vehicle"
-   EditorPos -170.516 3016.833
+   EditorPos -160 2848
    InPorts {
     SingleInputPortContainer SingleInputPortContainer {
      Port -1
@@ -360,87 +360,63 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
   }
  }
  Variables {
-  Variable activity {
-   VariableName "activity"
-   VariableTypeName "SCR_AIActivityBase"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableObject activity {
+   Flags 0
+   Desc "SCR_AIActivityBase"
   }
-  Variable movePosition {
-   VariableName "movePosition"
-   VariableTypeName "vector"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableVector movePosition {
+   Flags 0
+   Desc "vector"
   }
-  Variable vehicleFound {
-   VariableName "vehicleFound"
-   VariableTypeName "bool"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableBool vehicleFound {
+   Flags 0
+   Desc "bool"
   }
-  Variable vehicle {
-   VariableName "vehicle"
-   VariableTypeName "IEntity"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableEntity vehicle {
+   Flags 0
+   Desc "IEntity"
   }
-  Variable agentPosition {
-   VariableName "agentPosition"
-   VariableTypeName "vector"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableVector agentPosition {
+   Flags 0
+   Desc "vector"
   }
-  Variable radius {
-   VariableName "radius"
-   VariableTypeName "float"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableScalar radius {
+   Flags 0
+   Desc "float"
   }
-  Variable boardingParams {
-   VariableName "boardingParams"
-   VariableTypeName "SCR_AIBoardingParameters"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableObject boardingParams {
+   Flags 0
+   Desc "SCR_AIBoardingParameters"
   }
-  Variable compSlot {
-   VariableName "compSlot"
-   VariableTypeName "BaseCompartmentSlot"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableObject compSlot {
+   Flags 0
+   Desc "BaseCompartmentSlot"
   }
-  Variable roleInVehicle {
-   VariableName "roleInVehicle"
-   VariableTypeName "int"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableInteger roleInVehicle {
+   Flags 0
+   Desc "int"
   }
-  Variable skip {
-   VariableName "skip"
-   VariableTypeName "bool"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableBool skip {
+   Flags 0
+   Desc "bool"
   }
-  Variable testingVehicle {
-   VariableName "testingVehicle"
-   VariableTypeName "IEntity"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableEntity testingVehicle {
+   Flags 0
+   Desc "IEntity"
   }
-  Variable tester {
-   VariableName "tester"
-   VariableTypeName "bool"
-   VariableExposedInput 0
-   VariableExposedOutput 0
+  BtVariableBool tester {
+   Flags 0
+   Desc "bool"
   }
  }
  VariablesRefs {
   VariableReference activity {
    VariableType 0
-   EditorPos -537.29 97.783
+   EditorPos -512 32
   }
   VariableReference movePosition {
    VariableType 1
-   EditorPos -532.835 -3.535
+   EditorPos -512 -48
   }
   VariableReference vehicleFound {
    VariableType 2
@@ -449,12 +425,12 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
   }
   VariableReference vehicleFound {
    VariableType 2
-   EditorPos 726.744 3095.74
+   EditorPos 720 3104
    Group "{660A5D4651B015F7}"
   }
   VariableReference vehicle {
    VariableType 3
-   EditorPos 132.612 2851.574
+   EditorPos 112 2672
    Group "{660A5D4651B015F7}"
   }
   VariableReference agentPosition {
@@ -464,41 +440,41 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
   }
   VariableReference radius {
    VariableType 5
-   EditorPos -355.865 2659.472
+   EditorPos -368 2656
    Group "{660A5D4651B015F7}"
   }
   VariableReference boardingParams {
    VariableType 6
-   EditorPos -540.023 197.052
+   EditorPos -512 112
   }
   VariableReference boardingParams {
    VariableType 6
-   EditorPos -599.377 2833.122
+   EditorPos -464 2832
    Group "{660A5D4651B015F7}"
   }
   VariableReference vehicle {
    VariableType 3
-   EditorPos 753.87 3268.153
+   EditorPos 816 3248
   }
   VariableReference boardingParams {
    VariableType 6
-   EditorPos 521.191 3373.593
+   EditorPos 736 3328
   }
   VariableReference compSlot {
    VariableType 7
-   EditorPos 128.282 3019.267
+   EditorPos 112 2832
   }
   VariableReference roleInVehicle {
    VariableType 8
-   EditorPos 129.605 2935.95
+   EditorPos 112 2752
   }
   VariableReference roleInVehicle {
    VariableType 8
-   EditorPos 737.803 3475.138
+   EditorPos 800 3408
   }
   VariableReference compSlot {
    VariableType 7
-   EditorPos 617.852 3581.336
+   EditorPos 784 3488
   }
   VariableReference movePosition {
    VariableType 1
@@ -506,23 +482,23 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
   }
   VariableReference skip {
    VariableType 9
-   EditorPos -161.849 10.478
+   EditorPos -144 -16
   }
   VariableReference vehicle {
    VariableType 3
-   EditorPos 367.291 2654.991
+   EditorPos 400 2672
   }
   VariableReference testingVehicle {
    VariableType 10
-   EditorPos 56.272 733.062
+   EditorPos 32 752
   }
   VariableReference testingVehicle {
    VariableType 10
-   EditorPos -1046.362 1087.426
+   EditorPos -1008 1104
   }
   VariableReference agentPosition {
    VariableType 4
-   EditorPos 9.351 2552.406
+   EditorPos -64 2560
   }
   VariableReference vehicleFound {
    VariableType 2
@@ -540,27 +516,27 @@ BehaviorTree "{C2D96DE4F1B19B4C}AI/BehaviorTrees/Chimera/Soldier/Carpool.bt" {
   }
   VariableReference tester {
    VariableType 11
-   EditorPos 390.865 2486.631
+   EditorPos 384 2512
   }
   VariableReference movePosition {
    VariableType 1
-   EditorPos 406.391 290.864
+   EditorPos 464 320
   }
   VariableReference movePosition {
    VariableType 1
-   EditorPos -1030.518 1285.884
+   EditorPos -832 1296
   }
   VariableReference movePosition {
    VariableType 1
-   EditorPos 326.622 1219.725
+   EditorPos 384 1024
   }
   VariableReference movePosition {
    VariableType 1
-   EditorPos 815.036 2628.756
+   EditorPos 864 2640
   }
   VariableReference skip {
    VariableType 9
-   EditorPos 566.625 478.759
+   EditorPos 544 496
   }
  }
  Groups {
