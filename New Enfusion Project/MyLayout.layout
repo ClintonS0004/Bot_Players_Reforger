@@ -862,6 +862,65 @@ FrameWidgetClass {
               }
              }
             }
+            HorizontalLayoutWidgetClass "{6731494B7FA66B6F}" {
+             Name "CLINTON_loadout_settings"
+             Slot LayoutSlot "{6510D5A185CC51F1}" {
+             }
+             "Z Order" 1
+             {
+              HorizontalLayoutWidgetClass "{6731494B7FA66B6D}" {
+               Name "HorizontalLayout0"
+               Slot LayoutSlot "{6510D5A064C893F9}" {
+                Padding 0 -5 0 -5
+               }
+               "Z Order" 1
+               {
+                OverlayWidgetClass "{6731494B7FA66B62}" {
+                 Name "Overlay0"
+                 Slot LayoutSlot "{6510D5A10F70AC64}" {
+                 }
+                 {
+                  ButtonWidgetClass "{6731494B7FA66B60}" : "{4B5AE6E64037FFB4}UI/layouts/WidgetLibrary/ComboBox/WLib_ComboBox.layout" {
+                   Name "CLINTON_ComboLoadoutMode"
+                   Slot OverlayWidgetSlot "{651E92CAAE3F8EE0}" {
+                    HorizontalAlign 3
+                    VerticalAlign 3
+                    Padding 0 0 -80 0
+                   }
+                   {
+                    SizeLayoutWidgetClass "{553AE28F8D0EA0E1}" {
+                     Prefab "{553AE28F8D0EA0E1}"
+                     {
+                      OverlayWidgetClass "{55367D8E531FD623}" {
+                       Prefab "{55367D8E531FD623}"
+                       {
+                        HorizontalLayoutWidgetClass "{55367D8E4592BC6E}" {
+                         Prefab "{55367D8E4592BC6E}"
+                         Slot OverlayWidgetSlot "{55367D8E4592B383}" {
+                          Padding 8 8 0 8
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                  ImageWidgetClass "{6731494B7FA66B64}" {
+                   Name "CLINTON_box_white"
+                   Slot OverlayWidgetSlot "{6512096A8C2B9084}" {
+                    Padding 1.5 0 1.5 0
+                   }
+                   "Z Order" -1
+                   Color 0 0 0 1
+                   Size 256 32
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
            }
           }
           ButtonWidgetClass "{54ACA297FECC1128}" {

@@ -3,10 +3,12 @@ GameProject {
  GUID "62AECC4293365E6A"
  TITLE "New Enfusion Project"
  Dependencies {
-  "58D0FB3206B6F859"
+  "58D0FB3206B6F859" "68797034D0C68EE6"
  }
  Configurations {
   GameProjectConfig PC {
+   SystemModuleSettings SystemModuleSettings "{5F10A1570304557B}" {
+   }
   }
   GameProjectConfig XBOX_ONE {
   }
