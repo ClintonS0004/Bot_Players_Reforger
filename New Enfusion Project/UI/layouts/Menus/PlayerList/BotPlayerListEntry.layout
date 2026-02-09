@@ -174,10 +174,8 @@ ButtonWidgetClass {
             FillWeight 6
            }
            Clipping Ancestor
-           text "Player Name"
            "Font Size" 16
            "Use placeholder text" 1
-           "Placeholder text" "Bot Name"
            "Vertical alignment" Top
            FontProperties FontProperties "{66781CEC16A3BF4C}" {
             Font "{3E7733BAC8C831F6}UI/Fonts/RobotoCondensed/RobotoCondensed_Regular.fnt"
@@ -508,86 +506,6 @@ ButtonWidgetClass {
          WidthOverride 26
          AllowHeightOverride 1
          HeightOverride 26
-         {
-          OverlayWidgetClass "{66781CE350D16F00}" {
-           Prefab "{5548E6E7F213FBF1}"
-           Name "Overlay0"
-           Slot ButtonWidgetSlot "{5548E6E7F213FB11}" {
-            HorizontalAlign 1
-            VerticalAlign 1
-            Padding 0 0 0 0
-           }
-           {
-            ImageWidgetClass "{66781CE350D16F01}" {
-             Prefab "{5548E6E7DF4EE3F2}"
-             Name "Image0"
-             Color 1 1 1 0
-            }
-            PanelWidgetClass "{66781CE350D08F11}" {
-             Prefab "{5548E6E7D859FCBF}"
-             Name "Panel0"
-             "Is Visible" 0
-            }
-            ScaleWidgetClass "{66781CE350D08F12}" {
-             Prefab "{55589476C896A09B}"
-             Name "Scale0"
-             {
-              ImageWidgetClass "{66781CE350D08F13}" {
-               Prefab "{55589476CBD910D4}"
-               Name "Image0"
-               Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
-               Image "disable"
-               Size 64 64
-              }
-             }
-            }
-           }
-          }
-         }
-        }
-        SizeLayoutWidgetClass "{66781CE350D08F1C}" {
-         Prefab "{5548E6E7E6AEDDA7}"
-         Name "SizeLayout"
-         Slot LayoutSlot "{62DE95B9DA74AC86}" {
-         }
-         "Is Enabled" 0
-         "Is Visible" 0
-         Clipping True
-         AllowWidthOverride 1
-         WidthOverride 26
-         AllowHeightOverride 1
-         HeightOverride 26
-         {
-          OverlayWidgetClass "{66781CE350D03E11}" {
-           Prefab "{5548E6E7F213FBF1}"
-           Slot ButtonWidgetSlot "{5548E6E7F213FB11}" {
-            HorizontalAlign 1
-            VerticalAlign 1
-            Padding 0 0 0 0
-           }
-           {
-            ImageWidgetClass "{66781CE350D03E10}" {
-             Prefab "{5548E6E7DF4EE3F2}"
-             Color 1 1 1 0
-            }
-            PanelWidgetClass "{66781CE350D013F5}" {
-             Prefab "{5548E6E7D859FCBF}"
-             "Is Visible" 0
-            }
-            ScaleWidgetClass "{66781CE350D013F6}" {
-             Prefab "{55589476C896A09B}"
-             {
-              ImageWidgetClass "{66781CE350D013F7}" {
-               Prefab "{55589476CBD910D4}"
-               Texture "{2EFEA2AF1F38E7F0}UI/Textures/Icons/icons_wrapperUI-64.imageset"
-               Image "disable"
-               Size 64 64
-              }
-             }
-            }
-           }
-          }
-         }
         }
         ButtonWidgetClass "{66781CE350D06036}" : "{CD16D03EC21D3D8B}UI/layouts/WidgetLibrary/ComboBox/PlayerListComboButton.layout" {
          Name "VotingCombo"
@@ -639,6 +557,206 @@ ButtonWidgetClass {
                       SizeLayoutWidgetClass "{5AA28B35D82FB8C3}" {
                        Prefab "{5AA28B35D82FB8C3}"
                        Slot OverlayWidgetSlot "{5AB09213414CA01A}" {
+                       }
+                      }
+                      RichTextWidgetClass "{5AA28B35D82FB8C2}" {
+                       Prefab "{5AA28B35D82FB8C2}"
+                       Slot OverlayWidgetSlot "{553AE28C87F7783B}" {
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        ButtonWidgetClass "{67364436A2B5AF28}" : "{CD16D03EC21D3D8B}UI/layouts/WidgetLibrary/ComboBox/PlayerListComboButton.layout" {
+         Name "PreferenceCombo"
+         Slot LayoutSlot "{5AA28B352C862CC3}" {
+          Padding 4 4 4 4
+         }
+         components {
+          SCR_ComboBoxComponent "{546B1D464BC32853}" {
+           m_sSoundClicked ""
+           m_fExtraPaddingLeft 0
+           m_fListForcedWidth 410
+           m_fListXOffset -366
+          }
+         }
+         {
+          SizeLayoutWidgetClass "{5AA28B35D82FB8FF}" {
+           Prefab "{5AA28B35D82FB8FF}"
+           Slot ButtonWidgetSlot "{553AE28F8D0EA018}" {
+           }
+           {
+            OverlayWidgetClass "{55367D8E531FD623}" {
+             Prefab "{55367D8E531FD623}"
+             Slot AlignableSlot "{55367D8E531FD640}" {
+             }
+             {
+              PanelWidgetClass "{55367D8E4A135500}" {
+               Prefab "{55367D8E4A135500}"
+               Slot OverlayWidgetSlot "{55367D8E4A13554A}" {
+               }
+              }
+              HorizontalLayoutWidgetClass "{55367D8E4592BC6E}" {
+               Prefab "{55367D8E4592BC6E}"
+               {
+                ButtonWidgetClass "{5AA28B35D82FB8FB}" {
+                 Prefab "{5AA28B35D82FB8FB}"
+                 Slot LayoutSlot "{553AE2894447E1D1}" {
+                 }
+                 {
+                  HorizontalLayoutWidgetClass "{5AA28B35D82FB8C4}" {
+                   Prefab "{5AA28B35D82FB8C4}"
+                   Slot ButtonWidgetSlot "{553AE289445CDD20}" {
+                   }
+                   {
+                    OverlayWidgetClass "{5AA28B35D82FB8C5}" {
+                     Prefab "{5AA28B35D82FB8C5}"
+                     Slot LayoutSlot "{553AE28B995C2A1A}" {
+                     }
+                     {
+                      SizeLayoutWidgetClass "{5AA28B35D82FB8C3}" {
+                       Prefab "{5AA28B35D82FB8C3}"
+                       Slot OverlayWidgetSlot "{5AB09213414CA01A}" {
+                       }
+                       "Is Visible" 0
+                       {
+                        OverlayWidgetClass "{5AA28B35D82FB8CC}" {
+                         Prefab "{5AA28B35D82FB8CC}"
+                         "Is Visible" 0
+                         {
+                          ScaleWidgetClass "{5AA28B35D82FB8CE}" {
+                           Prefab "{5AA28B35D82FB8CE}"
+                           "Is Visible" 0
+                           {
+                            ImageWidgetClass "{5AA28B35D82FB8CF}" {
+                             Prefab "{5AA28B35D82FB8CF}"
+                             "Is Visible" 0
+                            }
+                           }
+                          }
+                          ScaleWidgetClass "{5AA28B35D82FB8C8}" {
+                           Prefab "{5AA28B35D82FB8C8}"
+                           "Is Visible" 0
+                           {
+                            ImageWidgetClass "{5AA28B35D82FB8C9}" {
+                             Prefab "{5AA28B35D82FB8C9}"
+                             "Is Visible" 0
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                      RichTextWidgetClass "{5AA28B35D82FB8C2}" {
+                       Prefab "{5AA28B35D82FB8C2}"
+                       Slot OverlayWidgetSlot "{553AE28C87F7783B}" {
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+        ButtonWidgetClass "{673E07D77CD917E4}" : "{CD16D03EC21D3D8B}UI/layouts/WidgetLibrary/ComboBox/PlayerListComboButton.layout" {
+         Name "SpecificCombo"
+         Slot LayoutSlot "{5AA28B352C862CC3}" {
+          Padding 4 4 4 4
+         }
+         components {
+          SCR_ComboBoxComponent "{546B1D464BC32853}" {
+           m_sSoundClicked ""
+           m_fExtraPaddingLeft 0
+           m_fListForcedWidth 410
+           m_fListXOffset -366
+          }
+         }
+         {
+          SizeLayoutWidgetClass "{5AA28B35D82FB8FF}" {
+           Prefab "{5AA28B35D82FB8FF}"
+           Slot ButtonWidgetSlot "{553AE28F8D0EA018}" {
+           }
+           {
+            OverlayWidgetClass "{55367D8E531FD623}" {
+             Prefab "{55367D8E531FD623}"
+             Slot AlignableSlot "{55367D8E531FD640}" {
+             }
+             {
+              PanelWidgetClass "{55367D8E4A135500}" {
+               Prefab "{55367D8E4A135500}"
+               Slot OverlayWidgetSlot "{55367D8E4A13554A}" {
+               }
+              }
+              HorizontalLayoutWidgetClass "{55367D8E4592BC6E}" {
+               Prefab "{55367D8E4592BC6E}"
+               {
+                ButtonWidgetClass "{5AA28B35D82FB8FB}" {
+                 Prefab "{5AA28B35D82FB8FB}"
+                 Slot LayoutSlot "{553AE2894447E1D1}" {
+                 }
+                 {
+                  HorizontalLayoutWidgetClass "{5AA28B35D82FB8C4}" {
+                   Prefab "{5AA28B35D82FB8C4}"
+                   Slot ButtonWidgetSlot "{553AE289445CDD20}" {
+                   }
+                   {
+                    OverlayWidgetClass "{5AA28B35D82FB8C5}" {
+                     Prefab "{5AA28B35D82FB8C5}"
+                     Slot LayoutSlot "{553AE28B995C2A1A}" {
+                     }
+                     {
+                      SizeLayoutWidgetClass "{5AA28B35D82FB8C3}" {
+                       Prefab "{5AA28B35D82FB8C3}"
+                       Slot OverlayWidgetSlot "{5AB09213414CA01A}" {
+                       }
+                       "Is Visible" 0
+                       {
+                        OverlayWidgetClass "{5AA28B35D82FB8CC}" {
+                         Prefab "{5AA28B35D82FB8CC}"
+                         "Is Visible" 0
+                         {
+                          ScaleWidgetClass "{5AA28B35D82FB8CE}" {
+                           Prefab "{5AA28B35D82FB8CE}"
+                           "Is Visible" 0
+                           {
+                            ImageWidgetClass "{5AA28B35D82FB8CF}" {
+                             Prefab "{5AA28B35D82FB8CF}"
+                             "Is Visible" 0
+                            }
+                           }
+                          }
+                          ScaleWidgetClass "{5AA28B35D82FB8C8}" {
+                           Prefab "{5AA28B35D82FB8C8}"
+                           "Is Visible" 0
+                           {
+                            ImageWidgetClass "{5AA28B35D82FB8C9}" {
+                             Prefab "{5AA28B35D82FB8C9}"
+                             "Is Visible" 0
+                            }
+                           }
+                          }
+                         }
+                        }
                        }
                       }
                       RichTextWidgetClass "{5AA28B35D82FB8C2}" {
