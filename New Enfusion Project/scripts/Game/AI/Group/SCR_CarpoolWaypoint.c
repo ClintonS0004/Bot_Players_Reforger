@@ -2,6 +2,11 @@ class SCR_CarpoolWaypointClass : SCR_TimedWaypointClass
 {
 }
 
+/*
+ * Car Pool Waypoint
+ *  Use this like a move waypoint. The group's units will board vehicles near them if their distance to the waypoint is greater then the value listed somewhere in the behaviou trees
+ */
+
 class SCR_CarpoolWaypoint : SCR_TimedWaypoint
 {
 	//------------------------------------------------------------------------------------------------

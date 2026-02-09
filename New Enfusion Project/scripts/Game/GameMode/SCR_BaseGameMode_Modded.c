@@ -4,24 +4,31 @@ modded class ArmaReforgerScripted
 	{
 		super.OnWorldPostProcess(world);
 		
-		// Incase someone places it by the workdesk
-		if( world.IsEditMode()) return;
+		RplMode mode = RplSession.Mode();
+        if (mode == RplMode.Client)
+        {
+            return;
+        }
 		
-		CLINTON_BotsManagerEntity worldEnt = CLINTON_BotsManagerEntity.Cast(world.FindEntityByName("CLINTON_BotsManagerEntity"));
+		// Incase someone places it by the workdesk
+		if( world.IsEditMode()) return; //{D0F84AE355C0CFDE}Prefabs/CLINTON_EntitySpawnerEntity_Networked.et
+		/*
+		CLINTON_EntitySpawnerEntity worldEnt = CLINTON_EntitySpawnerEntity.Cast(GetGame().GetWorld().FindEntityByName("CLINTON_EntitySpawnerEntity_This"));
 		
 		if( !worldEnt )
 		{  // this is to be expected
-			ref Resource reso = Resource.Load("{875AF9006032BBD8}Prefabs/CLINTON_BotsManagerEntity.et");
+			ref Resource reso = Resource.Load("{0D9B08390A093235}Prefabs/CLINTON_EntitySpawnerEntity_This.et");
 			
 			EntitySpawnParams spawnParams = new EntitySpawnParams();
 			spawnParams.TransformMode = ETransformMode.WORLD;
 			spawnParams.Transform[3] = "0 0 0";
-			GetGame().SpawnEntityPrefab(
+			CLINTON_EntitySpawnerEntity.Cast(GetGame().SpawnEntityPrefab(
 					reso,
-					world,
+					GetGame().GetWorld(),
 					spawnParams
-			);
-		}
+			));
+		}*/
+		
 		
 		CLINTON_BotWaypointManagerEntity movementEnt = CLINTON_BotWaypointManagerEntity.Cast(world.FindEntityByName("CLINTON_BotWaypointManagerEntity"));
 	
@@ -37,13 +44,6 @@ modded class ArmaReforgerScripted
 					world,
 					spawnParams
 			);
-		}
-		float standard_respawn_time = 10;
-		SCR_RespawnTimerComponent debug_me = SCR_RespawnTimerComponent.Cast(
-		SCR_BaseGameMode.Cast(GetGameMode()).FindComponent(SCR_RespawnTimerComponent));
-		if( debug_me )
-		{
-			standard_respawn_time = debug_me.GetRespawnTime();
 		}
 	}
 }

@@ -1,5 +1,21 @@
-modded enum ChimeraMenuPreset {
+modded enum ChimeraMenuPreset { // Do I need this?
     SCR_MapsBotsMenuUI
+}
+
+//------------------------------------------------------------------------------------------------
+class CLINTON_WidgetOnClickHandler : ScriptedWidgetEventHandler
+{
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		super.OnClick(w,x,y,button);
+		return true;
+	}
+	
+	override bool OnFocusLost( Widget w, int x, int y)
+	{
+		super.OnFocusLost(w, x, y);
+		return true;
+	}
 }
 
 class myNewLayoutClass: SCR_SuperMenuBase
@@ -17,10 +33,13 @@ class SCR_BotPlayerListEntry
 	Widget m_wRow;
 	Faction m_Faction;
 	int m_iSortFrequency;
+	bool m_toBeDeleted;
 
 	SCR_ButtonBaseComponent m_Mute;
 	SCR_ButtonBaseComponent m_Friend;
 	SCR_ComboBoxComponent m_PlayerActionList;
+	SCR_ComboBoxComponent m_LoadoutPreferenceList;
+	SCR_ComboBoxComponent m_SpecLoadoutList;
 
 	EditBoxWidget m_wName;
 	TextWidget m_wKills;
@@ -35,7 +54,7 @@ class SCR_BotPlayerListEntry
 	Widget m_wBlockedIcon;
 };
 
-class SPK_myMenuUI: SCR_SuperMenuBase
+class CLINTON_BotMenuUI: SCR_SuperMenuBase
 {    
 	// please copy SCR_PlayerListMenu into here
 	// this class is registered in chimeraMenus.conf
@@ -82,13 +101,18 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 	
 	protected ref Color m_PlayerNameSelfColor = new Color(0.898, 0.541, 0.184, 1);
 	
-	protected static SPK_myMenuUI s_Instance;
+	protected static CLINTON_BotMenuUI s_Instance;
 	
-	void SPK_myMenuUI()
+	static CLINTON_VirtualPlayerManager pm;
+	static string testName;
+	
+	static ref array<string> m_mBotNames = new array<string>();
+	
+	void CLINTON_BotMenuUI()
 	{
 		if (s_Instance)
 		{
-			Print("Only one instance of CLINTON_BotsManagerEntity is allowed in the world!", LogLevel.WARNING);
+			Print("Only one instance of CLINTON_BotsManagerEntity is allowed in the world!", LogLevel.DEBUG);
 			delete this;
 			return;
 		}
@@ -96,7 +120,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		s_Instance = this;
 	}
 	
-	static SPK_myMenuUI GetInstance()
+	static CLINTON_BotMenuUI GetInstance()
 	{
 		return s_Instance;
 	}
@@ -206,7 +230,24 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		else if (filterName == FILTER_FREQ)
 			SortByFrequency(sortUp);
 	}
-
+	
+	//------------------------------------------------------------------------------------------------
+	/*CLINTON_VirtualPlayerManager GetBotsManager()
+	{
+		BotsWorldController controller = GetBotsController();
+		CLINTON_VirtualPlayerManager manny = controller.GetVirtualPlayerManager();
+		return manny;
+	} */
+	
+	//------------------------------------------------------------------------------------------------
+	BotsWorldController GetBotsController()
+	{
+		BotsWorldController controller = BotsWorldController.Cast(
+		GetGame().GetWorld().GetSystems().FindMyController(BotsWorldController));
+		if (!controller)
+			Print("No Controller Found! | MyScriptedMapUI.c", LogLevel.ERROR);
+		return controller;
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	override void OnMenuOpen()
@@ -278,9 +319,6 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			m_Block.SetLabel("Remove");
 		}
 		
-		//SetupComboBoxDropdown(m_aFactions);
-
-		
 		// Create table
 		if (!m_wTable || m_sScoreboardRow == string.Empty)
 			return;
@@ -288,18 +326,10 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		//Get editor Delegate manager to check if has editor rights
 		SCR_PlayerDelegateEditorComponent editorDelegateManager = SCR_PlayerDelegateEditorComponent.Cast(SCR_PlayerDelegateEditorComponent.GetInstance(SCR_PlayerDelegateEditorComponent));
 
-		// #### Replace this
-		array<int> ids = {};
-		
-		array<ref CLINTON_Virtual_Player> players = CLINTON_RoboPlayerManager.GetPlayers();
-		// GetGame().GetPlayerManager().GetPlayers(ids);
-		
-		for (int i = 0; i < players.Count(); i++) // starts from 1 to not have 0-based index miscalculation
-		{
-				CreateEntry(i, editorDelegateManager);
-		}
-		
-		InitSorting();
+		//use RPC, on the controller call RPC to server to get the data, send it back to the owner's controller then call CreateEntry on here
+		BotsWorldController controller = GetBotsController();
+		controller.RequestGetNumberForMenu();
+		controller.RequestGetPlayerManagerForMenu();
 		
 		m_SuperMenuComponent.GetTabView().GetOnChanged().Insert(OnTabChanged);
 		
@@ -312,7 +342,7 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 
 			scrFaction = SCR_Faction.Cast(faction);
 			if (scrFaction && !scrFaction.IsPlayable())
-				continue; //--- ToDo: Refresh dynamically when a new faction is added/removed
+				continue;
 			
 			string name = faction.GetFactionName();
 			m_SuperMenuComponent.GetTabView().AddTab(ResourceName.Empty,name);
@@ -334,9 +364,6 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		
 		//---------------------------------------------------------------------------
 		// Get Combo box widget and populate with the factions list
-		// add invokers for choosing an option and initialise the memory
-		// TODO: Add a Faction key as data
-		// scr.AddItem( "Each Faction", false );
 		XComboBoxWidget factionBox = XComboBoxWidget.Cast(GetRootWidget().FindAnyWidget("CLINTON_ComboBox"));
 		factionBox.AddItem("Each Faction");
 		foreach (Faction faction : m_aFactions)
@@ -346,56 +373,231 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 
 			scrFaction = SCR_Faction.Cast(faction);
 			if (scrFaction && !scrFaction.IsPlayable())
-				continue; //--- ToDo: Refresh dynamically when a new faction is added/removed
+				continue;
 			
 			string name = faction.GetFactionName();
-			factionBox.AddItem( name );  // returns int as index
+			factionBox.AddItem( name );
 		}
+		Widget w;
+		SCR_ComboBoxComponent scr;
 		
-		Widget w = GetRootWidget().FindAnyWidget("CLINTON_ComboRoot");
-		// Idk why the ComboBoxComponent is the first Handler
-		// if this breaks find a way to get the specific Handler irespective of pos
-		SCR_ComboBoxComponent scr = SCR_ComboBoxComponent.Cast(w.GetHandler(0));
+		w = GetRootWidget().FindAnyWidget("CLINTON_ComboRoot");
+		scr = SCR_ComboBoxComponent.Cast(w.GetHandler(0));
 		if(!scr) Print("Wrong Handler / Controller", LogLevel.ERROR);
 		
-		scr.AddItem( "Join Groups based on distance", false );
+		scr.AddItem( "Join Groups based on distance", false );  // **** Let's turn this into localised strings before publishing
 		scr.AddItem( "Fill Player groups first", false );
 		scr.AddItem( "Cohesive Groups", true );
 		
-		scr.GetCurrentIndex();
+		// scr.GetCurrentIndex(); wot?
+		
+		w = GetRootWidget().FindAnyWidget("CLINTON_ComboLoadoutMode");
+		scr = SCR_ComboBoxComponent.Cast(w.GetHandler(0));
+		if(!scr) Print("Wrong Handler / Controller", LogLevel.ERROR);
+		
+		// Factions can have different amounts of loadouts so let's not add specific loadouts here
+		scr.AddItem( "Even Loadouts", false );
+		scr.AddItem( "Random Loadouts Each Spawn", false );
+		scr.AddItem( "Random Loadouts", true );
 		
 		s_OnPlayerListMenu.Invoke(true);
 	}
-
-	// Parity check when doing replication
 	
-	// Consider 'updating' the player list by directly deleting or adding layouts
-	// Avoids events like deleting one player in a list of one hundred
+	void RecieveNumber(int x)
+	{
+		Print("Hello and welcome %1", x);
+		// CreateEntry(data);
+	}
+	
+	map<string, ref array<SCR_BasePlayerLoadout>> loadout_data;
+	
+	void RecievePlayerList_Open(array<ref CLINTON_Virtual_Player> botsListForMenu, CLINTON_VirtualPlayerManager virtManager)
+	{
+		if (m_aEntries.Count() > 0)
+		{
+			Print("Still data? 	| 		MyScriptedMapUI.c", LogLevel.ERROR);
+		}
+		loadout_data = virtManager.GetLoadouts();
+		ref CLINTON_VirtualPlayerManager many = CLINTON_VirtualPlayerManager.GetInstance();
+		loadout_data = many.GetLoadouts();
+		for (int i = 0; i < botsListForMenu.Count(); i++)
+		{
+			ref CLINTON_Virtual_Player p = botsListForMenu.Get(i);
+			CreateEntry(p, i);
+		}
+		for (int i = 0; i < virtManager.GetPlayers().Count(); i++) // Why do I have two loops?
+		{
+			ref CLINTON_Virtual_Player p = virtManager.GetPlayers().Get(i);
+			CreateEntry(p, i);
+		}
+		InitSorting();
+	}
+	
+	void RecievePlayerList_Add(array<ref CLINTON_Virtual_Player> botsListForMenu) //, CLINTON_VirtualPlayerManager virtManager)
+	{
+		int start = m_aEntries.Count();
+		if (start >= botsListForMenu.Count())
+			Print("Arithmatic Epic Fail. 	| 		MyScriptedMapUI.c", LogLevel.ERROR);
+		CLINTON_Virtual_Player p;
+		for (int i = start; i < botsListForMenu.Count(); i++)
+		{
+			p = botsListForMenu.Get(i);
+			CreateEntry(p, i);
+		}
+		InitSorting();
+	}
+	
+	void RecievePlayerList_Subtract(array<ref CLINTON_Virtual_Player> botsListForMenu)  // Maybe hash maps are bettre
+	{
+		int i = botsListForMenu.Count() - 1; // i is the new list
+		int j = m_aEntries.Count() - 1 ; 		// j is the old list
+		string characterName;
+	
+		while(i > -1 && j > -1) // Avoid botsListForMenu.Count() in the loop condition because that's the container we're deleting from
+		{
+			if( j < i )
+			{
+				Print("Subtraction Error. 	| 	MyScriptedMapUI.c", LogLevel.ERROR);
+			}
+			CLINTON_Virtual_Player p = botsListForMenu.Get(i);
+			SCR_BotPlayerListEntry bp = m_aEntries.Get(j);
+			characterName = string.Format("%1", p.GetPlayerName());
+			if (characterName != bp.m_wName.GetText())  // Current comparison function is just compare the names
+			{
+				RemoveEntry(m_aEntries.Get(j));
+				m_mBotNames.RemoveOrdered(j);
+			} else {
+				i = i - 1;
+			}
+			j = j - 1;
+		}
+		if( i > 0 )	 Print("Not enough m_aEntries. 	| 	MyScriptedMapUI.c", LogLevel.ERROR);
+		// Remove from the end of the list
+		while ( j > -1)
+		{
+			RemoveEntry(m_aEntries.Get(j));
+			m_mBotNames.RemoveOrdered(j);
+			j = j - 1
+		}
+		InitSorting();
+	}
+	
+	void RecievePlayerUpdate(int botId, string newName)  // Usefull for renaming one bot
+	{
+		UpdateEntry(botId, newName);
+	}
+	
+	void InsertName(int i, CLINTON_Virtual_Player p, EditBoxWidget w)
+	{
+			if( i >= m_mBotNames.Count())
+			{
+				m_mBotNames.Insert(p.GetPlayerName());
+			} else {
+				m_mBotNames.Set(i, p.GetPlayerName());  // Still need this?
+			}
+			string latest_name = m_mBotNames.Get(i);
+			if(latest_name)
+			{
+				//delayed_name_set(entry, id);
+				w.SetText(latest_name);
+			}
+			else
+			{
+				Print("Names are not working! 	| 	MyScriptedMapUI.c", LogLevel.ERROR);
+			}
+	}
+	
+	void SetLoadoutImage(int i, CLINTON_Virtual_Player p, ImageWidget img)
+	{
+		SCR_BotPlayerListEntry entry = m_aEntries.Get(i);
+		ref ImageWidget w_img = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("LoadoutIcon"));
+		w_img.SetVisible(true);
+		
+		int loadoutIndex = p.GetLoadoutIndex();
+		ref array<SCR_BasePlayerLoadout> faction_loadouts = loadout_data.Get(p.GetFactionKey()); 
+		if (!faction_loadouts)
+		{
+			Print("Faction loadout list is not working! 	| 	MyScriptedMapUI.c", LogLevel.ERROR);
+		}
+		SCR_BasePlayerLoadout playerLoadout = SCR_BasePlayerLoadout.Cast( faction_loadouts.Get(loadoutIndex));
+		Resource res = Resource.Load(playerLoadout.GetLoadoutResource());
+		IEntityComponentSource source = SCR_BaseContainerTools.FindComponentSource(res, "SCR_EditableCharacterComponent");
+		if (!source)
+			return;
+		BaseContainer container = source.GetObject("m_UIInfo");
+		SCR_EditableEntityUIInfo info = SCR_EditableEntityUIInfo.Cast(BaseContainerTools.CreateInstanceFromContainer(container));
+		info.SetIconTo(w_img); // info.SetIconTo(entry.m_wLoadoutIcon)
+	}
+
+	// Bots recieve their name when they spawn their first character.
+	// They are then given the character's name, so there is a delay between clicking add and knowing the names.
+	// Bots have empty name tags until they have their info.
 	//------------------------------------------------------------------------------------------------
-	void CreateEntry(int id, SCR_PlayerDelegateEditorComponent editorDelegateManager, Faction faction = null)
+	void WaitForFirstSpawn(int botID, CLINTON_Virtual_Player p, EditBoxWidget w, ImageWidget img)
+	{
+		string latest_name = p.GetPlayerName();
+		if (!latest_name || latest_name == "")
+		{
+			GetGame().GetCallqueue().CallLater(WaitForFirstSpawn, 1024, false, botID, p, w, img);
+			return;
+		}
+		InsertName(botID, p, w);
+		SetLoadoutImage(botID, p, img);
+	}
+	
+	
+	//------------------------------------------------------------------------------------------------
+	void m_OnFocusLost(Widget w)
+	{
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
+		{
+			if (!entry)
+				continue;
+
+			Widget row = entry.m_wName;
+			if (row != w)
+				continue;
+
+			m_SelectedEntry = entry;
+			break;
+		}
+		if (m_SelectedEntry)
+		{
+			string selectedEntryText = m_SelectedEntry.m_wName.GetText();
+			if (selectedEntryText == "")
+				m_SelectedEntry.m_wName.SetText(m_mBotNames.Get(m_SelectedEntry.m_iID));
+			if (selectedEntryText != m_mBotNames.Get(m_SelectedEntry.m_iID))
+			{
+				//use RPC, on the controller call RPC to server to get the data, send it back to teh owner's controller then call CreateEntry on here
+				BotsWorldController controller = GetBotsController();
+				
+				if (!controller)
+				{
+					Print("Can't get Controller!	|	MyScriptedMapUI.c", LogLevel.ERROR);
+					return;
+				}
+				controller.RequestNameChange(m_SelectedEntry.m_iID, m_SelectedEntry.m_wName.GetText());
+				// controller.RequestGetPlayerManagerForMenu(); Instead the server will call an update function on all/some clients
+			}
+		}
+	}
+	
+	// When clients recieve a copy of the list of bots, clients will reuse the widgets they have instead of clearing +repopulating.
+	// This avoids lag then the server is using a large number of bots
+	//------------------------------------------------------------------------------------------------
+	void CreateEntry(CLINTON_Virtual_Player p, int id, Faction faction = null)
 	{
 		//check for existing entry, return if it exists already
 		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
 		{
 			if (entry.m_iID == id)
+			{
+				entry.m_toBeDeleted = false;
 				return;
+			}
 		}
 
 		ImageWidget badgeTop, badgeMiddle, badgeBottom;
-		
-		// Delay the widget until the character has a name (has spawned)
-		CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
-		if(!pm)
-		{ 
-			Print("Haven't Initiated CLINTON_RoboPlayerManager!", LogLevel.ERROR);
-            return;
-		}
-		string botName = pm.GetVirtualPlayerName(id);
-		if(botName == "")
-		{
-			GetGame().GetCallqueue().CallLater(CreateEntry, 512, false, id, editorDelegateManager, faction);
-			return;
-		}
 
 		Widget w = GetGame().GetWorkspace().CreateWidgets(m_sScoreboardRow, m_wTable);
 		if (!w)
@@ -404,8 +606,36 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		SCR_BotPlayerListEntry entry = new SCR_BotPlayerListEntry();
 		entry.m_iID = id;
 		entry.m_wRow = w;
+		entry.m_toBeDeleted = false;
 
-		//--- 'rid the voting
+		entry.m_PlayerActionList = SCR_ComboBoxComponent.GetComboBoxComponent("VotingCombo", w); 
+		if (true)  // m_VotingManager
+		{
+			entry.m_PlayerActionList.m_OnOpened.Insert(SetupPlayerActionList);
+			entry.m_PlayerActionList.m_OnChanged.Insert(OnComboBoxConfirm); // Scat corn
+			entry.m_PlayerActionList.SetEnabled(true);
+
+			// entry.m_wVotingNotification = entry.m_wRow.FindAnyWidget("VotingNotification");
+			//entry.m_wVotingNotification.SetVisible(IsVotedAbout(entry));
+		}
+		else
+		{
+			entry.m_PlayerActionList.SetVisible(false);
+		}
+		
+		entry.m_LoadoutPreferenceList = SCR_ComboBoxComponent.GetComboBoxComponent("PreferenceCombo", w); 
+		if (true)
+		{
+			entry.m_LoadoutPreferenceList.SetEnabled(true);
+			entry.m_LoadoutPreferenceList.SetVisible(true);
+		}
+
+		entry.m_SpecLoadoutList = SCR_ComboBoxComponent.GetComboBoxComponent("SpecificCombo", w); 
+		if (true)
+		{
+			entry.m_SpecLoadoutList.SetEnabled(true);
+			entry.m_SpecLoadoutList.SetVisible(true);
+		}
 
 		SCR_ButtonBaseComponent handler = SCR_ButtonBaseComponent.Cast(w.FindHandler(SCR_ButtonBaseComponent));
 		if (handler)
@@ -430,9 +660,9 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
 		if (!faction)
 		{
-			faction = factionManager.GetPlayerFaction(entry.m_iID);
-			//string factionK = CLINTON_RoboPlayerManager.GetPlayer(entry.m_iID).GetFactionKey();
-			//Faction faction = factionManager.GetFactionByKey(factionK);
+			//faction = factionManager.GetPlayerFaction(entry.m_iID);
+			string factionK = p.GetFactionKey();
+			faction = factionManager.GetFactionByKey(factionK);
 		}
 		entry.m_Faction = faction;
 
@@ -446,20 +676,204 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 				factionImage.SetVisible(false);
 		}
 
-		entry.m_wName = EditBoxWidget.Cast(w.FindAnyWidget("PlayerName"));
+		entry.m_wFreq = TextWidget.Cast(w.FindAnyWidget("Freq"));
+		// entry.m_wKills = TextWidget.Cast(w.FindAnyWidget("Kills"));
+		// entry.m_wDeaths = TextWidget.Cast(w.FindAnyWidget("Deaths"));
+		// entry.m_wScore = TextWidget.Cast(w.FindAnyWidget("Score"));
+		if (entry.m_Info)
+		{
+			if (entry.m_wKills)
+				entry.m_wKills.SetText(entry.m_Info.m_iKills.ToString());
+			if (entry.m_wDeaths)
+				entry.m_wDeaths.SetText(entry.m_Info.m_iDeaths.ToString());
+			if (entry.m_wScore)
+			{
+				// Use modifiers from scoring system where applicable!!!
+				int score;
+				if (m_ScoringSystem)
+					score = m_ScoringSystem.GetPlayerScore(id);
 
+				entry.m_wScore.SetText(score.ToString());
+			}
+		}
+		else
+		{
+
+			if (entry.m_wKills)
+				entry.m_wKills.SetText("");
+			if (entry.m_wDeaths)
+				entry.m_wDeaths.SetText("");
+			if (entry.m_wScore)
+				entry.m_wScore.SetText("");
+			// Unfortunately the parent that must be hidden is two parents above the text widgets
+			/*
+			if (entry.m_wKills)
+				entry.m_wKills.GetParent().GetParent().SetVisible(false);
+			if (entry.m_wDeaths)
+				entry.m_wDeaths.GetParent().GetParent().SetVisible(false);
+			if (entry.m_wScore)
+				entry.m_wScore.GetParent().GetParent().SetVisible(false);
+			*/
+		}
+		
+		entry.m_wLoadoutIcon = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("LoadoutIcon"));
+		entry.m_wPlatformIcon = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("PlatformIcon"));
+		
+		entry.m_wPlatformIcon.SetVisible(false);
+		
+		ImageWidget background = ImageWidget.Cast(w.FindAnyWidget("Background"));
+
+		badgeTop = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("BadgeTop"));
+		badgeMiddle = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("BadgeMiddle"));
+		badgeBottom = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("BadgeBottom"));
+		Color factionColor;
+
+		if (badgeTop && badgeMiddle && badgeBottom && entry.m_Faction)
+		{
+			factionColor = entry.m_Faction.GetFactionColor();
+			badgeTop.SetColor(factionColor);
+			badgeMiddle.SetColor(factionColor);
+			badgeBottom.SetColor(factionColor);
+		}
+		
+		m_aEntries.Insert(entry);
+		
+		entry.m_wName = EditBoxWidget.Cast(w.FindAnyWidget("PlayerName"));
+		string latest_name = p.GetPlayerName();
+		
+		//SCR_ButtonBaseComponent handler = SCR_ButtonBaseComponent.Cast(w.FindHandler(SCR_ButtonBaseComponent));
+		//if (handler)
+		//{
+		//	handler.m_OnFocus.Insert(OnEntryFocused);
+		//	handler.m_OnFocusLost.Insert(OnEntryFocusLost);
+		//}
+		
+		SCR_ButtonBaseComponent nameTextHandler = SCR_ButtonBaseComponent.Cast(entry.m_wName.FindHandler(SCR_ButtonBaseComponent));
+		if (nameTextHandler)
+		{
+			// nameTextHandler.m_OnFocus.Insert(OnEntryFocused);
+			nameTextHandler.m_OnFocusLost.Insert(OnNameFocusLost);
+		} else {
+			/*The if statement usually fails.
+				I need to make my own handler class that extends from ScriptedWidgetEventHandler and overrides the OnFocusLost Function
+			 */
+			nameTextHandler = new SCR_ButtonBaseComponent();
+			entry.m_wName.AddHandler(nameTextHandler);
+			nameTextHandler.m_OnFocusLost.Insert(OnNameFocusLost);
+			
+		}
+		
+		if (!latest_name || latest_name == "")
+		{
+			GetGame().GetCallqueue().CallLater(WaitForFirstSpawn, 1024, false, id, p, entry.m_wName, entry.m_wLoadoutIcon);
+			return;
+		}
+		
+		InsertName(id, p, entry.m_wName);
+		SetLoadoutImage(id, p, entry.m_wLoadoutIcon);
+		
+		if (entry.m_iID == m_PlayerController.GetPlayerId())
+		{
+			entry.m_wName.SetColor(m_PlayerNameSelfColor);
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	void UpdateEntry(CLINTON_Virtual_Player p, int id, Faction faction = null)
+	{
+		if (!m_aEntries.Get(id))
+		{
+			Print("Trying to update a missing row! 		| 		MyScriptedMapUI.c", LogLevel.ERROR);
+			return;
+		}
+		
+		ref SCR_BotPlayerListEntry entry = m_aEntries.Get(id);
+		
+		entry.m_toBeDeleted = false;
+
+		ImageWidget badgeTop, badgeMiddle, badgeBottom;
+		
+		
+		string botName = m_mBotNames.Get(id);
+		if(botName == "")
+		{
+			GetGame().GetCallqueue().CallLater(CreateEntry, 512, false, p, id, faction);
+			return;
+		}
+
+		// Widget w = GetGame().GetWorkspace().CreateWidgets(m_sScoreboardRow, m_wTable);
+		ref Widget w = entry.m_wRow;
+		if (!w)
+			return;
+
+		//SCR_BotPlayerListEntry entry = new SCR_BotPlayerListEntry();
+		//entry.m_iID = id;
+		//entry.m_wRow = w;
+		//entry.m_toBeDeleted = false;
+
+		//SCR_ButtonBaseComponent handler = SCR_ButtonBaseComponent.Cast(w.FindHandler(SCR_ButtonBaseComponent));
+		//if (handler)
+		//{
+		//	handler.m_OnFocus.Insert(OnEntryFocused);
+		//	handler.m_OnFocusLost.Insert(OnEntryFocusLost);
+		//}
+
+		if (m_aAllPlayersInfo)
+		{
+			foreach (int playerId, SCR_ScoreInfo info : m_aAllPlayersInfo)  // ?
+			{
+				if (!info || playerId != id)
+					continue;
+
+				entry.m_Info = info;
+				break;
+			}
+		}
+
+		// Find faction
+		SCR_FactionManager factionManager = SCR_FactionManager.Cast(GetGame().GetFactionManager());
+		if (!faction)
+		{
+			//faction = factionManager.GetPlayerFaction(entry.m_iID);
+			string factionK = p.GetFactionKey();
+			faction = factionManager.GetFactionByKey(factionK);
+		}
+		entry.m_Faction = faction;
+
+		Widget factionImage = w.FindAnyWidget("FactionImage");
+
+		if (factionImage)
+		{
+			if (entry.m_Faction)
+				factionImage.SetColor(entry.m_Faction.GetFactionColor());
+			else
+				factionImage.SetVisible(false);
+		}
+
+		//entry.m_wName = EditBoxWidget.Cast(w.FindAnyWidget("PlayerName"));
+		string latest_name;
+		
 		if (entry.m_wName)
 		{
-			//CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
-			if(pm)
+			//CLINTON_VirtualPlayerManager pm = CLINTON_VirtualPlayerManager.getInstance();
+			latest_name = m_mBotNames.Get(id);
+			if(latest_name)
 			{
 				//delayed_name_set(entry, id);
-				entry.m_wName.SetText(pm.GetVirtualPlayerName(id));
+				entry.m_wName.SetText(latest_name);
 			}
-			if (entry.m_iID == m_PlayerController.GetPlayerId())
+			else
 			{
-				entry.m_wName.SetColor(m_PlayerNameSelfColor);
+				Print("Names are not working! 	| 	MyScriptedMapUI.c", LogLevel.DEBUG);
 			}
+			//if (entry.m_iID == m_PlayerController.GetPlayerId())
+			//{
+			//	entry.m_wName.SetColor(m_PlayerNameSelfColor);
+			//}
+		}
+		else
+		{
+			Print("Missing name Widget! 	| 	MyScriptedMapUI.c", LogLevel.ERROR);
 		}
 
 
@@ -502,7 +916,105 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 				entry.m_wScore.GetParent().GetParent().SetVisible(false);
 			*/
 		}
-		ImageWidget background = ImageWidget.Cast(w.FindAnyWidget("Background")); /*
+		ImageWidget background = ImageWidget.Cast(w.FindAnyWidget("Background"));
+
+		badgeTop = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("BadgeTop"));
+		badgeMiddle = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("BadgeMiddle"));
+		badgeBottom = ImageWidget.Cast(entry.m_wRow.FindAnyWidget("BadgeBottom"));
+		Color factionColor;
+
+		if (badgeTop && badgeMiddle && badgeBottom && entry.m_Faction)
+		{
+			factionColor = entry.m_Faction.GetFactionColor();
+			badgeTop.SetColor(factionColor);
+			badgeMiddle.SetColor(factionColor);
+			badgeBottom.SetColor(factionColor);
+		}
+		
+		// m_aEntries.Insert(entry);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	void UpdateEntry(int id, string newName, Faction faction = null)
+	{
+		//check for existing entry
+		SCR_BotPlayerListEntry entry;
+		foreach (SCR_BotPlayerListEntry i_entry : m_aEntries)
+		{
+			if (i_entry.m_iID == id)
+			{
+				entry = i_entry;
+				break;
+			}
+		}
+		if (!entry) return;
+
+		ImageWidget badgeTop, badgeMiddle, badgeBottom;
+		
+		if(newName == "")
+		{
+			// GetGame().GetCallqueue().CallLater(UpdateEntry, 512, false, id, newName, faction);
+			Print("No name being provided!		|		MyScriptedMapUI.c", LogLevel.ERROR);
+			return;
+		}
+
+		//Widget w = GetGame().GetWorkspace().CreateWidgets(m_sScoreboardRow, m_wTable);
+		Widget w = entry.m_wRow;
+		if (!w)
+		{
+			Print("Missing widget!		|		MyScriptedMapUI.c", LogLevel.ERROR);
+			return;
+		}/*
+		SCR_BotPlayerListEntry entry = new SCR_BotPlayerListEntry();
+		entry.m_iID = id;
+		entry.m_wRow = w; */
+		
+		m_mBotNames.Set(id, newName);
+		entry.m_wName.SetText(newName);
+		if (entry.m_iID == m_PlayerController.GetPlayerId())
+		{
+			entry.m_wName.SetColor(m_PlayerNameSelfColor);
+		}/*	
+		entry.m_wFreq = TextWidget.Cast(w.FindAnyWidget("Freq"));
+		entry.m_wKills = TextWidget.Cast(w.FindAnyWidget("Kills"));
+		entry.m_wDeaths = TextWidget.Cast(w.FindAnyWidget("Deaths"));
+		entry.m_wScore = TextWidget.Cast(w.FindAnyWidget("Score"));
+		if (entry.m_Info)
+		{
+			if (entry.m_wKills)
+				entry.m_wKills.SetText(entry.m_Info.m_iKills.ToString());
+			if (entry.m_wDeaths)
+				entry.m_wDeaths.SetText(entry.m_Info.m_iDeaths.ToString());
+			if (entry.m_wScore)
+			{
+				// Use modifiers from scoring system where applicable!!!
+				int score;
+				if (m_ScoringSystem)
+					score = m_ScoringSystem.GetPlayerScore(id);
+
+				entry.m_wScore.SetText(score.ToString());
+			}
+		}
+		else
+		{
+
+			if (entry.m_wKills)
+				entry.m_wKills.SetText("");
+			if (entry.m_wDeaths)
+				entry.m_wDeaths.SetText("");
+			if (entry.m_wScore)
+				entry.m_wScore.SetText("");
+			// Unfortunately the parent that must be hidden is two parents above the text widgets
+			
+			if (entry.m_wKills)
+				entry.m_wKills.GetParent().GetParent().SetVisible(false);
+			if (entry.m_wDeaths)
+				entry.m_wDeaths.GetParent().GetParent().SetVisible(false);
+			if (entry.m_wScore)
+				entry.m_wScore.GetParent().GetParent().SetVisible(false);
+			
+		}
+		ImageWidget background = ImageWidget.Cast(w.FindAnyWidget("Background")); 
 		SCR_GroupsManagerComponent groupManager = SCR_GroupsManagerComponent.GetInstance();
 		if (!groupManager)
 			return;
@@ -523,14 +1035,14 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			{
 				entry.m_wTaskIcon.SetOpacity(0);
 			}
-		}*/
+		}
 
 		Faction playerFaction;		
 		Faction entryPlayerFaction;
 		if (!faction)
 		{
-			// CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
-			playerFaction = factionManager.GetFactionByKey(pm.GetVirtualPlayerFactionKey(id));
+			// CLINTON_VirtualPlayerManager pm = CLINTON_VirtualPlayerManager.getInstance();
+			playerFaction = factionManager.GetFactionByKey(p.GetFactionKey());
 			entry.m_Faction = playerFaction;
 		}
 
@@ -547,83 +1059,178 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			badgeBottom.SetColor(factionColor);
 		}
 		
-		m_aEntries.Insert(entry);
+		m_aEntries.Insert(entry); */
 	}
 	
-	void delayed_name_set(SCR_PlayerListEntry entry, int bot_id)
+	//------------------------------------------------------------------------------------------------
+	protected void SetupPlayerActionList(notnull SCR_ComboBoxComponent combo)
 	{
-		CLINTON_RoboPlayerManager pm = CLINTON_RoboPlayerManager.getInstance();
-		CLINTON_Virtual_Player bot = pm.GetPlayer(bot_id);
-	
-		if(!bot)
-		{
-			GetGame().GetCallqueue().CallLater(delayed_name_set, 2048, true, entry, bot_id);
-			return;
-		}
-	
-		string mem = bot.GetPlayerName();
-		if( mem == "[Character not dressed yet!]")
-		{
-			GetGame().GetCallqueue().CallLater(delayed_name_set, 512, true, entry, bot_id);
-			return;
-		}
-		entry.m_wName.SetText(mem);
+		//if (!m_VotingManager || !m_VoterComponent)
+		//	return;
+		combo.ClearAll();
+		combo.AddItem("Loadout Preference");
+		combo.AddItem("Choose Loadout");
+		combo.AddItem("Respawn");
+		combo.AddItem("Delete",true);
 	}
 	
-	// Written by me
+	
+	//------------------------------------------------------------------------------------------------
+	protected void SetupLoadoutPreferenceList(notnull SCR_ComboBoxComponent combo)
+	{
+		//if (!m_VotingManager || !m_VoterComponent)
+		//	return;
+		combo.ClearAll();
+		combo.AddItem("Even loadouts");
+		combo.AddItem("Random Loadout each Spawn");
+		combo.AddItem("Random Loadout Chosen Once",true);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	void DeleteEntry(notnull SCR_PlayerListEntry entry, int id)
 	{
 		if (entry.m_wRow)
 			entry.m_wRow.RemoveFromHierarchy();
 		
-		m_aEntries.RemoveOrdered(id);  // Is this enough?
+		m_aEntries.RemoveOrdered(id);  // RemoveFromHierarchy and RemoveOrdered should be enough
 	}
 	
+	int botId = -1;
+	//------------------------------------------------------------------------------------------------
+	protected void OnComboBoxConfirm(notnull SCR_ComboBoxComponent combo, int index)
+	{
+		// Widget w = GetRootWidget().FindAnyWidget("Table");
+		botId = GetVotingPlayerID(combo);
+		Widget w = m_aEntries[botId].m_wRow;
+		SCR_ComboBoxComponent next_menu;
+		switch (index)
+		{
+			// Loadout Preference
+			case 0:
+			{
+				next_menu = SCR_ComboBoxComponent.GetComboBoxComponent("PreferenceCombo", w);
+				//combo.m_OnOpened.Insert(SetupLoadoutPreferenceList);
+				
+				next_menu.ClearAll();
+				
+				next_menu.AddItem("Even loadouts");
+				next_menu.AddItem("Random Loadout each Spawn");
+				next_menu.AddItem("Random Loadout Chosen Once",true);
+				
+				next_menu.m_OnChanged.Clear();
+				next_menu.m_OnChanged.Insert(OnComboBoxLoadoutPreferenceConfirm);
+				next_menu.SetEnabled(true);
+				next_menu.SetVisible(true);
+				
+				next_menu.OpenList();
+				break;
+			}
+			
+			// Specific Loadout
+			case 1:
+			{
+				next_menu = SCR_ComboBoxComponent.GetComboBoxComponent("SpecificCombo", w);
+				string fKey = m_aEntries[botId].m_Faction.GetFactionKey();
+				if (!fKey)
+				{
+					Print("Factions are playing-up!", LogLevel.ERROR);
+					break;	
+				}
+				array<SCR_BasePlayerLoadout> loadouts_in_faction;  // idk this doesn't have to be seperate
+				loadouts_in_faction = loadout_data.Get(fKey);
+				/*if (loadouts_in_faction != null)
+				{
+					PrintFormat("Loadouts in faction %1 | DEBUG", loadouts_in_faction.Count());
+				}*/
+				int index_of_last_loadout = loadouts_in_faction.Count() -1;
+				int i = 0;
+				next_menu.ClearAll();
+				foreach( SCR_BasePlayerLoadout loadout : loadouts_in_faction)
+				{
+					if(i == index_of_last_loadout)
+					{
+						next_menu.AddItem(loadout.GetLoadoutName(), true);  // Is knowing the last entry helping?
+					} else {
+						next_menu.AddItem(loadout.GetLoadoutName());
+					}
+					i = i + 1;
+				}
+				
+				next_menu.m_OnChanged.Clear();
+				next_menu.m_OnChanged.Insert(OnComboBoxSpecificLoadoutConfirm);
+				next_menu.SetEnabled(true);
+				next_menu.SetVisible(true);
+				
+				next_menu.OpenList();
+					
+				break;
+			}
+			
+			// Respawn
+			case 2:
+			{
+				OnPromptRespawnConfirmed(botId);
+				break;
+			}
+			
+			// Delete
+			case 3:
+			{
+				OnDeleteConfirmed(botId);
+				break;
+			}
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void OnComboBoxLoadoutPreferenceConfirm(notnull SCR_ComboBoxComponent combo, int index)
+	{
+		BotsWorldController controller = GetBotsController();
+		if (!controller) 		Print("No Controller Found! | MyScriptedMapUI.c", LogLevel.ERROR);
+		controller.RequestChangeBotPreference(botId, index);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void OnComboBoxSpecificLoadoutConfirm(notnull SCR_ComboBoxComponent combo, int index)
+	{
+		BotsWorldController controller = GetBotsController();
+		if (!controller) 		Print("No Controller Found! | MyScriptedMapUI.c", LogLevel.ERROR);
+		controller.RequestChangeBotLoadout(botId, index);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void OnPromptRespawnConfirmed(int id)
+	{
+		BotsWorldController controller = GetBotsController();
+		if (!controller) 		Print("No Controller Found! | MyScriptedMapUI.c", LogLevel.ERROR);
+		controller.RequestRespawn(id);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void OnDeleteConfirmed(int id)
+	{
+		BotsWorldController controller = GetBotsController();
+		if (!controller) 		Print("No Controller Found! | MyScriptedMapUI.c", LogLevel.ERROR);
+		controller.RequestDelete(id);
+	}
+	
+	//------------------------------------------------------------------------------------------------ Do this but for the m_loadout etc
+	protected int GetVotingPlayerID(SCR_ComboBoxComponent combo)
+	{
+		for (int i, count = m_aEntries.Count(); i < count; i++)
+		{
+			if (m_aEntries[i].m_PlayerActionList == combo)
+				return m_aEntries[i].m_iID;
+		}
+		return 0;
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	void RemoveEntry(notnull SCR_BotPlayerListEntry entry)
 	{
 		if (entry.m_wRow)
 			entry.m_wRow.RemoveFromHierarchy();
-
-
-		m_aEntries.RemoveItem(entry);
-	}
-	
-	void UpdatePlayerList()
-	{
-		// With the Replication Update, delete the table and repopulate on the client's side instead of mutating the list (w/ changes)
-		
-		// Create table
-		if (!m_wTable || m_sScoreboardRow == string.Empty)
-			return;
-
-		//Get editor Delegate manager to check if has editor rights
-		SCR_PlayerDelegateEditorComponent editorDelegateManager = SCR_PlayerDelegateEditorComponent.Cast(SCR_PlayerDelegateEditorComponent.GetInstance(SCR_PlayerDelegateEditorComponent));
-
-		array<ref CLINTON_Virtual_Player> players = CLINTON_RoboPlayerManager.GetPlayers();
-		// GetGame().GetPlayerManager().GetPlayers(ids);
-		
-		m_aEntries.Clear();
-		for (int i = 0; i < players.Count(); i++) // starts from 1 to not have 0-based index miscalculation
-		{
-				CreateEntry(i, editorDelegateManager);
-		}
-		
-		InitSorting();
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	void UpdatePlayerList( int id, Faction faction)
-	{
-			SCR_PlayerDelegateEditorComponent editorDelegateManager = SCR_PlayerDelegateEditorComponent.Cast(SCR_PlayerDelegateEditorComponent.GetInstance(SCR_PlayerDelegateEditorComponent));
-			CreateEntry(id, editorDelegateManager, faction);
-
-			// Get current sort method and re-apply sorting
-			if (!m_Header)
-				return;
-
-			OnHeaderChanged(m_Header);
+		m_aEntries.RemoveItemOrdered(entry);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -646,7 +1253,9 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		}
 		
 		if (m_SelectedEntry)
+		{
 			UpdateViewProfileButton(m_SelectedEntry.m_iID);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -654,9 +1263,46 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 	{
 		UpdateViewProfileButton(0, true);
 	}
-
+	
+	// This is triggered on the client once they have entered a new name for a bot
 	//------------------------------------------------------------------------------------------------
-	// IsLocalPlayer would be better naming
+	void OnNameFocusLost(Widget w)
+	{
+		if (!m_PlayerController)
+			return;
+		
+		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
+		{
+			if (!entry)
+				continue;
+
+			Widget row = entry.m_wName;
+			if (row != w)
+				continue;
+
+			m_SelectedEntry = entry;
+			break;
+		}
+		if (m_SelectedEntry)
+		{
+			string selectedEntryText = m_SelectedEntry.m_wName.GetText();
+			if (selectedEntryText == "")
+				m_SelectedEntry.m_wName.SetText(m_mBotNames.Get(m_SelectedEntry.m_iID));
+			if (selectedEntryText != m_mBotNames.Get(m_SelectedEntry.m_iID))
+			{
+				BotsWorldController controller = GetBotsController();
+				if (!controller)
+				{
+					Print("Can't get Controller!	|	MyScriptedMapUI.c", LogLevel.ERROR);
+					return;
+				}
+				controller.RequestNameChange(m_SelectedEntry.m_iID, m_SelectedEntry.m_wName.GetText());
+			}
+		}
+	}
+
+	// Leftover from SCR_PlayerListMenu
+	//------------------------------------------------------------------------------------------------
 	protected bool IsLocalPlayer(int id)
 	{
 		if (id <= 0)
@@ -797,50 +1443,6 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	void UpdateFrequencies()
-	{
-		return;
-		SCR_GadgetManagerComponent gadgetManager;
-		IEntity localPlayer = SCR_PlayerController.GetLocalMainEntity();
-		Faction localFaction;
-		set<int> localFrequencies = new set<int>();
-		if (localPlayer)
-		{
-			gadgetManager = SCR_GadgetManagerComponent.Cast(localPlayer.FindComponent(SCR_GadgetManagerComponent));
-			SCR_Global.GetFrequencies(gadgetManager, localFrequencies);
-
-			FactionAffiliationComponent factionAffiliation = FactionAffiliationComponent.Cast(localPlayer.FindComponent(FactionAffiliationComponent));
-			if (factionAffiliation)
-				localFaction = factionAffiliation.GetAffiliatedFaction();
-		}
-
-		foreach (SCR_BotPlayerListEntry entry : m_aEntries)
-		{
-			if (entry.m_Faction == localFaction)
-			{
-				IEntity playerEntity = IEntity.Cast(CLINTON_RoboPlayerManager.GetPlayers()[entry.m_iID].GetCurrentCharacter());
-				
-				if (playerEntity)
-				{
-					//--- ToDo: Don't extract frequencies locally; do it on server and distribute values to all clients
-					gadgetManager = SCR_GadgetManagerComponent.Cast(playerEntity.FindComponent(SCR_GadgetManagerComponent));
-					set<int> frequencies = new set<int>();
-					SCR_Global.GetFrequencies(gadgetManager, frequencies);
-					if (!frequencies.IsEmpty())
-					{
-						entry.m_iSortFrequency = frequencies[0];
-						entry.m_wFreq.SetText(SCR_FormatHelper.FormatFrequencies(frequencies, localFrequencies));
-						continue;
-					}
-				}
-			}
-			entry.m_iSortFrequency = int.MAX;
-			entry.m_wFreq.SetText("-");
-		}
-		GetGame().GetCallqueue().CallLater(UpdateFrequencies, 1000, false);
-	}
-	
-	//------------------------------------------------------------------------------------------------
 	void AddFactionPlayerCounter(Faction faction)
 	{
 		SCR_Faction scriptedFaction = SCR_Faction.Cast(faction);
@@ -890,20 +1492,28 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		XComboBoxWidget factionBox = XComboBoxWidget.Cast(GetRootWidget().FindAnyWidget("CLINTON_ComboBox"));
 		int faction_setting = factionBox.GetCurrentItem() -1;
 		
-		Widget w = GetRootWidget().FindAnyWidget("CLINTON_ComboRoot");
-		SCR_ComboBoxComponent scr = SCR_ComboBoxComponent.Cast(w.GetHandler(0));
+		Widget w;
+		SCR_ComboBoxComponent scr;
+		
+		w = GetRootWidget().FindAnyWidget("CLINTON_ComboRoot");
+		scr = SCR_ComboBoxComponent.Cast(w.GetHandler(0));
 		if(!scr) Print("Wrong Handler / Controller", LogLevel.ERROR);
 		int groups_setting = scr.GetCurrentIndex();
 		
-		// TODO: Bot naming convension stuff
-		// Bots are named when they first spawn a character.
-		// The empty string signifies no name.
+		w = GetRootWidget().FindAnyWidget("CLINTON_ComboLoadoutMode");
+		scr = SCR_ComboBoxComponent.Cast(w.GetHandler(0));
+		if(!scr) Print("Wrong Handler / Controller", LogLevel.ERROR);
+		int loadouts_setting = scr.GetCurrentIndex();
+		
+		// TODO: Config file that allows custom bot name templates
 		bool useCustomNames = false;
 		
-		int last_existing_bot_index = CLINTON_RoboPlayerManager.GetPlayers().Count();
-		CLINTON_BotsManagerEntity worldEnt = CLINTON_BotsManagerEntity.Cast(GetGame().GetWorld().FindEntityByName("CLINTON_BotsManagerEntity"));
-		if( !worldEnt ) Print("MyScriptedMapUI.c cannot find the CLINTON_BotsManagerEntity! ", LogLevel.ERROR);
-		
+		//RplComponent ent = RplComponent.Cast(Replication.FindItem(botsController));  // Can't get it registered on Clients
+		//IEntity enty = IEntity.Cast(BaseRplComponent.Cast(ent).GetEntity());
+		//RplBotsManagerController yourController = RplBotsManagerController.Cast(enty);
+		BotsWorldController controller = GetBotsController();
+		if (!controller)
+			Print("No Controller Found! | MyScriptedMapUI.c", LogLevel.ERROR);
 		if(faction_setting < 0)
 		{
 			int j = 0;
@@ -911,35 +1521,19 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 			{
 				for(int i = 0; i < converted; i++)
 				{
-					CLINTON_BotsManagerEntity.GetInstance().RequestAddBots(faction.GetFactionKey(), groups_setting, useCustomNames);
-					// worldEnt.RequestAddBots(faction.GetFactionKey(), groups_setting, useCustomNames);
-					
-					//UpdatePlayerList(last_existing_bot_index + j, faction);  // #### Remove client side UI manip.?
+					controller.RequestAddBots( faction.GetFactionKey(), groups_setting, useCustomNames, loadouts_setting);
 					j = j + 1;
 				}
 			}
-			//CLINTON_RoboPlayerManager.getInstance().add_bots_on_each_team(converted, groups_setting);
 		} else {
 			string factionKey = m_aFactions[faction_setting].GetFactionKey();
 			for(int i = 0; i < converted; i++)
 			{
-				CLINTON_BotsManagerEntity.GetInstance().RequestAddBots(factionKey, groups_setting, useCustomNames);
-				//CLINTON_RoboPlayerManager.getInstance().add_bot(factionKey, groups_setting, useCustomNames);
-				//UpdatePlayerList(last_existing_bot_index + i, m_aFactions[faction_setting]);
+				controller.RequestAddBots(factionKey, groups_setting, useCustomNames, loadouts_setting);
 			}
 		}
-		
-		// Consider another way todo this
-		int i = 0;
-		int j = converted;
-		if(faction_setting < 0) j = j * m_aFactions.Count();
-		while( i < j)
-		{
-			//UpdatePlayerList( true, last_existing_bot_index + i);
-			i = i + 1;
-		}
-		
-		return;
+		// Wait some then display changes
+		GetGame().GetCallqueue().CallLater(controller.RequestGetAddMenu, 512, false);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -961,20 +1555,31 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		XComboBoxWidget factionBox = XComboBoxWidget.Cast(GetRootWidget().FindAnyWidget("CLINTON_ComboBox"));
 		int faction_setting = factionBox.GetCurrentItem() -1;
 		
-		array<int> deleted_indexes = {};
+		BotsWorldController controller = GetBotsController();
+		
+		if (!controller)
+			Print("No Controller Found! | MyScriptedMapUI.c", LogLevel.ERROR);
 		
 		if(faction_setting < 0)
 		{
-			deleted_indexes = CLINTON_RoboPlayerManager.getInstance().remove_bots_on_each_team(converted, m_aEntries);
+			int j = 0;
+			foreach(Faction faction : m_aFactions)
+			{
+				for(int i = 0; i < converted; i++)
+				{
+					controller.RequestRemoveBots( faction.GetFactionKey() );
+					j = j + 1;
+				}
+			}
 		} else {
 			string factionKey = m_aFactions[faction_setting].GetFactionKey();
-			deleted_indexes = CLINTON_RoboPlayerManager.getInstance().remove_bots_on_faction(factionKey, converted, m_aEntries);
+			for(int i = 0; i < converted; i++)
+			{
+				controller.RequestRemoveBots(factionKey);
+			}
 		}
-		foreach( int index : deleted_indexes)
-		{
-			//UpdatePlayerList( false, index);  // is index considering the removed items?
-		}
-		return;
+		// Wait some then display changes
+		GetGame().GetCallqueue().CallLater(controller.RequestGetRemoveMenu, 512, false);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -985,21 +1590,13 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		//else
 			Close();
 	}
-	/*
-	//------------------------------------------------------------------------------------------------
-	void SetupComboBoxDropdown(array<Faction> m_aFactions)
-	{
-		FrameWidget fw = FrameWidget.Cast(GetRootWidget().FindAnyWidget("Attribute_Dropdown0"));
-		SCR_DropdownEditorAttributeUIComponent dropDownComp = fw.FindHandler(SCR_DropdownEditorAttributeUIComponent);
-		// See SCR_DropdownEditorAttributeUIComponent.GetEntries()
-	}*/
 	
 	protected ref array<ref string> myInfoList = {};
     protected int currentSelectedItem = 0;
     
     // -----------------------------------------------------------------------------------------------------
     array<ref string> GetInfo()
-    {                
+    {
         return myInfoList;
     }
     
@@ -1032,11 +1629,3 @@ class SPK_myMenuUI: SCR_SuperMenuBase
 		// -ripped from discord
     }  
 }
-
-/*
-now this sends the button info
-
-MenuBase myMenu = GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.SPK_myTestGui); 
-SPK_myMenuUI myMenuUI = SPK_myMenuUI.Cast(myMenu);
-myMenuUI.myCallerEntity = pOwnerEntity;  // pOwnerEntity is the variable we want to be able to use in the GUI on this example.
-*/

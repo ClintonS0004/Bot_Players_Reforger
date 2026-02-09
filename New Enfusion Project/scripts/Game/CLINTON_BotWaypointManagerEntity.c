@@ -1,4 +1,4 @@
-[EntityEditorProps(category: "Tutorial/Entities", description: "Farts and poos")]
+[EntityEditorProps(category: "Tutorial/Entities", description: "Placed by my scripts. Creates waypoints for the generated groups")]
 class CLINTON_BotWaypointManagerEntityClass : GenericEntityClass
 {
 	// See: https://community.bistudio.com/wiki/Arma_Reforger:Create_an_Entity
@@ -26,7 +26,7 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 		if (s_Instance)
 		{
 			Print("Only one instance of CLINTON_BotWaypointManagerEntity is allowed in the world!", LogLevel.WARNING);
-			delete this;
+			//delete this;
 			return;
 		}
 		s_Instance = this;
@@ -51,7 +51,7 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 	
 	static CLINTON_BotWaypointManagerEntity getInstance(){ return s_Instance; }
 	
-	// Here place other capture point and bases managers
+	// Place capture point and base managers
 	//------------------------------------------------------------------------------------------------
 	void setting_mems()
 	{ 	
@@ -89,13 +89,9 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 			}
 			foreach (Faction faction : m_aFactions)
 			{
-				if (!faction)
-					continue;
-	
+				if (!faction) 	continue;
 				scrFaction = SCR_Faction.Cast(faction);
-				if (scrFaction && !scrFaction.IsPlayable())
-					continue;
-				
+				if (scrFaction && !scrFaction.IsPlayable()) 	continue;
 				string factionKey = faction.GetFactionKey();
 				
 				// Make a copy of task_to_group_record
@@ -108,7 +104,6 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 					empty_set_of_waypoints.Insert(area, null);
 				}
 				faction_and_tasks.Set(factionKey, area_to_group);
-				
 				if( !faction_and_waypoints ) 
 				{ 
 					faction_and_waypoints = new map<string, ref map<SCR_CaptureAndHoldArea, AIWaypoint>>();
@@ -124,9 +119,9 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 	bool register_a_group(SCR_AIGroup grp, string factionKey, vector leaderPosition)
 	{
 		// int LeaderID = grp.GetLeaderID();
-		SCR_CaptureAndHoldArea closestNeutralPoint  = null;
+		SCR_CaptureAndHoldArea closestNeutralPoint  	= null;
 		SCR_CaptureAndHoldArea closestEnemyPoint 	= null;
-		SCR_CaptureAndHoldArea closestFriendlyPoint = null;
+		SCR_CaptureAndHoldArea closestFriendlyPoint 	= null;
 		SCR_CaptureAndHoldArea sector;
 		if(m_aCaptureAreas)  // If CaP area's exist and Initialised
 		{
@@ -185,26 +180,19 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 			{
 				faction_and_waypoints.Get(factionKey).Find(sector, marker);
 			}
-			// {04E9DFE7245455FF}Prefabs/AI/Waypoints/CLINTON_GetInNearestLarger_NoAuto.et
-			// {B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et
 			if( GetGame().GetWorld().IsEditMode()) return false;
 			EntitySpawnParams spawnParamsT = new EntitySpawnParams();
 			spawnParamsT.TransformMode = ETransformMode.WORLD;
-			spawnParamsT.Transform[3] = sector.GetOrigin(); // interpreted as a vector                 I can't get a GetInNearest waypoint setup that works with a scattered group too far to all board a vehicle
-			// spawnParamsT.Transform[3] = leaderPosition; // interpreted as a vector                     I can't get a GetInNearest waypoint setup that works with a scattered group too far to all board a vehicle
-																										// Try changing the radius setting on the waypoint, and even setting the completion condition to any member (or coding your own condition prehaps? :) )
-			// {20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et
-			// {B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et
+			spawnParamsT.Transform[3] = sector.GetOrigin();
 			IEntity new_waypointT = GetGame().SpawnEntityPrefab(Resource.Load("{20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et"), GetGame().GetWorld(), spawnParamsT);
 			grp.AddWaypoint(SCR_CarpoolWaypoint.Cast(new_waypointT));
-			
 			if( !marker )
 			{  // Make waypoint
 				if( GetGame().GetWorld().IsEditMode() ) return false;
 				
 				EntitySpawnParams spawnParams = new EntitySpawnParams();
 				spawnParams.TransformMode = ETransformMode.WORLD;
-				spawnParams.Transform[3] = sector.GetOrigin(); // interpreted as a vector
+				spawnParams.Transform[3] = sector.GetOrigin();
 				
 				IEntity new_waypoint = GetGame().SpawnEntityPrefab(Resource.Load("{750A8D1695BD6998}Prefabs/AI/Waypoints/AIWaypoint_Move.et"), GetGame().GetWorld(), spawnParams);
 				AIWaypoint new_waypoint_waypoint = AIWaypoint.Cast(new_waypoint);
@@ -249,7 +237,7 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 		*/
 		
 		// Check if groups have any waypoints
-		map<string, ref array<SCR_AIGroup>> skibidi = CLINTON_RoboPlayerManager.getInstance().GetGroups();
+		map<string, ref array<SCR_AIGroup>> skibidi = CLINTON_VirtualPlayerManager.GetInstance().GetGroups();
 		
 		// Loop through factions
 		FactionManager fm = GetGame().GetFactionManager();
@@ -263,26 +251,17 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 		}
 		foreach (Faction faction : m_aFactions)
 		{
-			if (!faction)
-				continue;
-
+			if (!faction) 	continue;
 			scrFaction = SCR_Faction.Cast(faction);
-			if (scrFaction && !scrFaction.IsPlayable())
-				continue;
+			if (scrFaction && !scrFaction.IsPlayable()) 	continue;
 			
 			string factionKey = faction.GetFactionKey();
 			foreach(SCR_AIGroup grp : skibidi.Get(factionKey))
 			{
 				AIWaypoint checking = grp.GetCurrentWaypoint();
 				vector coords = grp.GetLeaderEntity().GetOrigin();
-				if( !coords )
-				{
-					continue;
-				}
-				if( !checking )
-				{
-					register_a_group( SCR_AIGroup.Cast(grp), factionKey, coords);
-				}
+				if( !coords ) 	continue;
+				if( !checking ) 	register_a_group( SCR_AIGroup.Cast(grp), factionKey, coords);
 			} 
 		}
 		// array< ref CLINTON_Virtual_Player> list_of_bots = CLINTON_RoboPlayerManager.GetPlayers();
@@ -298,20 +277,15 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 		if( !coords ) return true;
 		if( !checking ) register_a_group( SCR_AIGroup.Cast(grp), factionKey, coords);
 		
-		// return false;
-		EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(  // Can't find an Event Handler to create an invoker, see youtbe
+		EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(
 		SCR_AIGroup.Cast(grp).FindComponent(EventHandlerManagerComponent));
-		
-		// Alternatively I can make my own listerner. But I have tried that and it doesn't like to work
-		// eventHandler.RegisterScriptHandler("OnWaypointCompleted", grp.GetCurrentWaypoint(), NextObjective);
-		// https://youtu.be/f-eok217WmU?si=kKRLPYEkkwpW7_yN&t=521
 		
 		array<BaseEventHandler> base = {};
 		int number = eventHandler.GetEventHandlers(base);
 		if( number != 0 )
 		{
-			//onWaypointCompleted = SCR_AIGroup.Cast(grp).GetOnWaypointCompleted();
-			//onWaypointCompleted.Insert( NextObjective );
+			//onWaypointCompleted = SCR_AIGroup.Cast(grp).GetOnWaypointCompleted(); // If there is an error then
+			//onWaypointCompleted.Insert( NextObjective ); 												 // comment these lines out
 		}
 		return false;
 	}
@@ -339,7 +313,7 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 			scrFaction = SCR_Faction.Cast(faction);
 			if (scrFaction && !scrFaction.IsPlayable()) continue;  // is this good?
 			factionKey = faction.GetFactionKey();
-			groupsInaFaction = CLINTON_RoboPlayerManager.getInstance().GetGroups(faction);
+			groupsInaFaction = CLINTON_VirtualPlayerManager.GetInstance().GetGroups(faction);
 			if( !groupsInaFaction) continue;
 			if( newOwner != faction )
 			{
@@ -498,16 +472,10 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 			{
 				faction_and_waypoints.Get(factionKey).Find(sector, marker);
 			}
-			// {04E9DFE7245455FF}Prefabs/AI/Waypoints/CLINTON_GetInNearestLarger_NoAuto.et
-			// {B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et
 			if( GetGame().GetWorld().IsEditMode()) return;
 			EntitySpawnParams spawnParamsT = new EntitySpawnParams();
 			spawnParamsT.TransformMode = ETransformMode.WORLD;
-			spawnParamsT.Transform[3] = sector.GetOrigin(); // interpreted as a vector                 I can't get a GetInNearest waypoint setup that works with a scattered group too far to all board a vehicle
-			// spawnParamsT.Transform[3] = leaderPosition; // interpreted as a vector                     I can't get a GetInNearest waypoint setup that works with a scattered group too far to all board a vehicle
-																										// Try changing the radius setting on the waypoint, and even setting the completion condition to any member (or coding your own condition prehaps? :) )
-			// {20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et
-			// {B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et
+			spawnParamsT.Transform[3] = sector.GetOrigin();
 			IEntity new_waypointT = GetGame().SpawnEntityPrefab(Resource.Load("{20EB568072BC0ADB}scripts/Game/CLINTON_CarpoolWaypointEntity.et"), GetGame().GetWorld(), spawnParamsT);
 			grp.AddWaypoint(SCR_CarpoolWaypoint.Cast(new_waypointT));
 			
@@ -527,7 +495,6 @@ class CLINTON_BotWaypointManagerEntity : GenericEntity
 				ref array<SCR_AIGroup> mem_group_array = {};
 				mem_group_array.Insert(grp);
 				m_mWaypointToGroup.Set( new_waypoint_waypoint, mem_group_array );
-				
 				m_mWaypointToCapturepoint.Set( new_waypoint_waypoint, sector );
 			} 
 			else 

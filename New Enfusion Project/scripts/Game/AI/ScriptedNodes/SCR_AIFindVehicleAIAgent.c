@@ -16,7 +16,7 @@ class SCR_AIFindVehicleAIAgent: AITaskScripted
 	
 	private BaseWorld m_world;
 	protected SCR_AIGroup m_group;
-	private CLINTON_RoboPlayerManager m_RoboPlayerManager;
+	private CLINTON_VirtualPlayerManager m_RoboPlayerManager;
 	
 	private ref array<BaseCompartmentSlot> m_CompartmentSlots = {};
 	protected IEntity m_VehicleToTestForCompartments;
@@ -43,7 +43,7 @@ class SCR_AIFindVehicleAIAgent: AITaskScripted
 		m_Compartment = null;
 		//m_mAgentsReservedCompartment = new map<AIAgent,ref BaseCompartmentSlot>();
 		
-		m_RoboPlayerManager = CLINTON_RoboPlayerManager.getInstance();
+		m_RoboPlayerManager = CLINTON_VirtualPlayerManager.GetInstance();
 	}
 	
 	//------------------------------------------------------------------------------------------------

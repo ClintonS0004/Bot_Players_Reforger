@@ -128,7 +128,7 @@ class SPK_MyUtilityEditorAttribute : SCR_BaseFloatValueHolderEditorAttribute
 			return null;
 		
 		// Search your component in editableEntity.GetOwner()
-		SPK_myMenuUI myComp = SPK_myMenuUI.Cast(editableEntity.GetOwner().FindComponent(SCR_CLINTON_DropdownEditorAttributeUIComponent));
+		CLINTON_BotMenuUI myComp = CLINTON_BotMenuUI.Cast(editableEntity.GetOwner().FindComponent(SCR_CLINTON_DropdownEditorAttributeUIComponent));
 		if (!myComp)
 			return null;	
 		
@@ -151,7 +151,7 @@ class SPK_MyUtilityEditorAttribute : SCR_BaseFloatValueHolderEditorAttribute
 			return;
 		
 		// Search your component in editableEntity.GetOwner()
-		SPK_myMenuUI myComp = SPK_myMenuUI.Cast(editableEntity.GetOwner().FindComponent(SCR_CLINTON_DropdownEditorAttributeUIComponent));
+		CLINTON_BotMenuUI myComp = CLINTON_BotMenuUI.Cast(editableEntity.GetOwner().FindComponent(SCR_CLINTON_DropdownEditorAttributeUIComponent));
 		if (!myComp)
 			return;	
 		
